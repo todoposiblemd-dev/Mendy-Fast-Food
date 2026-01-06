@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de Inventario – Mendy Fast Food</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 15px;
+}
+
+.container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+}
+
+.header {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF4500 100%);
+    color: white;
+    padding: 25px 30px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.header p {
+    font-size: 14px;
+    opacity: 0.95;
+}
+
+.content {
+    padding: 30px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #FF6B35;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: #FF6B35;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #FF4500;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255,107,53,0.4);
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.actions {
+    margin-bottom: 25px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.product-list {
+    display: grid;
+    gap: 15px;
+}
+
+.category-group {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.category-header {
+    font-size: 18px;
+    font-weight: 700;
+    color: #495057;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.category-icon {
+    font-size: 24px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+    border-left: 4px solid #ddd;
+}
+
+.product-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.product-card.stock-critical {
+    border-left-color: #dc3545;
+    background: #fff5f5;
+}
+
+.product-card.stock-low {
+    border-left-color: #ffc107;
+    background: #fffbf0;
+}
+
+.product-card.stock-ok {
+    border-left-color: #28a745;
+    background: #f0fff4;
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.product-details {
+    font-size: 13px;
+    color: #666;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.product-detail {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.product-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF4500 100%);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 15px 15px 0 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal-footer {
+    padding: 20px 25px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #FF6B35;
+    box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+}
+
+select.form-control {
+    cursor: pointer;
+}
+
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+}
+
+.empty-state-text {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.empty-state-subtext {
+    font-size: 14px;
+    color: #999;
+}
+
+@media (max-width: 768px) {
+    .product-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .product-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🍔 Control de Inventario</h1>
+        <p>Mendy Fast Food</p>
+        <p id="ultima-actualizacion" style="font-size: 12px; opacity: 0.8; margin-top: 5px;">
+            💾 Sistema listo
+        </p>
+    </div>
+
+    <div class="content">
+        <div class="section-title">Gestión de Productos</div>
+        
+        <div class="actions">
+            <button class="btn btn-primary" onclick="abrirModalAgregar()">
+                ➕ Agregar Producto
+            </button>
+            <button class="btn btn-success" onclick="guardarTodo()">
+                💾 Guardar
+            </button>
+            <button class="btn btn-success" onclick="exportarExcel()">
+                📊 Exportar a Excel
+            </button>
+        </div>
+        
+        <div id="mensaje-guardado" style="display: none; margin-bottom: 20px;"></div>
+
+        <div id="productos-container"></div>
+    </div>
+</div>
+
+<!-- Modal Agregar/Editar Producto -->
+<div id="modalProducto" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span id="modal-titulo">Agregar Producto</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="form-label">Nombre del Producto</label>
+                <input type="text" id="input-nombre" class="form-control" placeholder="Ej: Carne de res artesanal">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Categoría</label>
+                <select id="input-categoria" class="form-control">
+                    <option value="proteinas">🍖 Proteínas</option>
+                    <option value="panes">🍞 Panes</option>
+                    <option value="lacteos">🧀 Lácteos</option>
+                    <option value="acompañamientos">🥗 Acompañamientos y Vegetales</option>
+                    <option value="salsas">🌶️ Salsas y Otros</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Unidad de Medida</label>
+                <select id="input-unidad" class="form-control">
+                    <option value="kg">Kilogramos (kg)</option>
+                    <option value="lb">Libras (lb)</option>
+                    <option value="gramos">Gramos (g)</option>
+                    <option value="unidades">Unidades</option>
+                    <option value="docena">Docena</option>
+                    <option value="litros">Litros (L)</option>
+                    <option value="ml">Mililitros (ml)</option>
+                    <option value="onzas">Onzas (oz)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Cantidad Actual</label>
+                <input type="number" id="input-cantidad" class="form-control" placeholder="0" step="0.01" min="0">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Stock Mínimo (Alerta)</label>
+                <input type="number" id="input-minimo" class="form-control" placeholder="0" step="0.01" min="0">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Stock Máximo (Opcional)</label>
+                <input type="number" id="input-maximo" class="form-control" placeholder="0" step="0.01" min="0">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+            <button class="btn btn-primary" onclick="guardarProducto()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<script>
+// ==================== DATOS Y CONFIGURACIÓN ====================
+
+const CATEGORIAS = {
+    'proteinas': { nombre: '🍖 Proteínas', emoji: '🍖' },
+    'panes': { nombre: '🍞 Panes', emoji: '🍞' },
+    'lacteos': { nombre: '🧀 Lácteos', emoji: '🧀' },
+    'acompañamientos': { nombre: '🥗 Acompañamientos y Vegetales', emoji: '🥗' },
+    'salsas': { nombre: '🌶️ Salsas y Otros', emoji: '🌶️' }
+};
+
+let productos = [];
+let productoEditando = null;
+
+// ==================== INICIALIZACIÓN ====================
+
+function inicializar() {
+    cargarDatos();
+    
+    // Si no hay productos, cargar los iniciales
+    if (productos.length === 0) {
+        productos = [
+            { id: Date.now() + 1, nombre: 'Carne de res artesanal', categoria: 'proteinas', unidad: 'kg', cantidad: 0, minimo: 5, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 2, nombre: 'Milanesa de pollo', categoria: 'proteinas', unidad: 'kg', cantidad: 0, minimo: 3, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 3, nombre: 'Chorizo de ternera', categoria: 'proteinas', unidad: 'kg', cantidad: 0, minimo: 2, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 4, nombre: 'Chorizo mexicano', categoria: 'proteinas', unidad: 'kg', cantidad: 0, minimo: 2, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 5, nombre: 'Salchicha americana', categoria: 'proteinas', unidad: 'kg', cantidad: 0, minimo: 2, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 6, nombre: 'Pepperoni', categoria: 'proteinas', unidad: 'kg', cantidad: 0, minimo: 1, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 7, nombre: 'Tocineta premium', categoria: 'proteinas', unidad: 'kg', cantidad: 0, minimo: 1, maximo: 0, fechaCreacion: new Date().toISOString() },
+            
+            { id: Date.now() + 8, nombre: 'Pan broché', categoria: 'panes', unidad: 'unidades', cantidad: 0, minimo: 50, maximo: 0, fechaCreacion: new Date().toISOString() },
+            
+            { id: Date.now() + 9, nombre: 'Queso Cheddar', categoria: 'lacteos', unidad: 'kg', cantidad: 0, minimo: 2, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 10, nombre: 'Queso mozzarella', categoria: 'lacteos', unidad: 'kg', cantidad: 0, minimo: 2, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 11, nombre: 'Queso costeño rallado', categoria: 'lacteos', unidad: 'kg', cantidad: 0, minimo: 1, maximo: 0, fechaCreacion: new Date().toISOString() },
+            
+            { id: Date.now() + 12, nombre: 'Lechuga', categoria: 'acompañamientos', unidad: 'unidades', cantidad: 0, minimo: 5, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 13, nombre: 'Tomate', categoria: 'acompañamientos', unidad: 'kg', cantidad: 0, minimo: 3, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 14, nombre: 'Cebolla blanca / roja', categoria: 'acompañamientos', unidad: 'kg', cantidad: 0, minimo: 2, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 15, nombre: 'Cebolla caramelizada', categoria: 'acompañamientos', unidad: 'kg', cantidad: 0, minimo: 1, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 16, nombre: 'Papa ripio', categoria: 'acompañamientos', unidad: 'kg', cantidad: 0, minimo: 5, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 17, nombre: 'Papas a la francesa', categoria: 'acompañamientos', unidad: 'kg', cantidad: 0, minimo: 10, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 18, nombre: 'Maicitos', categoria: 'acompañamientos', unidad: 'kg', cantidad: 0, minimo: 2, maximo: 0, fechaCreacion: new Date().toISOString() },
+            
+            { id: Date.now() + 19, nombre: 'Salsas tradicionales', categoria: 'salsas', unidad: 'litros', cantidad: 0, minimo: 2, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 20, nombre: 'Salsas especiales', categoria: 'salsas', unidad: 'litros', cantidad: 0, minimo: 1, maximo: 0, fechaCreacion: new Date().toISOString() },
+            { id: Date.now() + 21, nombre: 'Picante artesanal', categoria: 'salsas', unidad: 'litros', cantidad: 0, minimo: 1, maximo: 0, fechaCreacion: new Date().toISOString() }
+        ];
+        guardarDatos();
+    }
+    
+    renderizarProductos();
+    
+    // Mostrar última actualización si existe
+    const datosGuardados = localStorage.getItem('mendy_inventario');
+    if (datosGuardados) {
+        const datos = JSON.parse(datosGuardados);
+        if (datos.ultimaActualizacion) {
+            const fecha = new Date(datos.ultimaActualizacion);
+            const hora = fecha.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('ultima-actualizacion').textContent = `💾 Guardado: ${hora}`;
+        }
+    }
+    
+    // Configurar evento de cerrar modal
+    const modal = document.getElementById('modalProducto');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) cerrarModal();
+        });
+    }
+}
+
+function cargarDatos() {
+    const datosGuardados = localStorage.getItem('mendy_inventario');
+    if (datosGuardados) {
+        const datos = JSON.parse(datosGuardados);
+        productos = datos.productos || [];
+    }
+}
+
+function guardarDatos() {
+    const ahora = new Date();
+    localStorage.setItem('mendy_inventario', JSON.stringify({
+        productos: productos,
+        ultimaActualizacion: ahora.toISOString()
+    }));
+    
+    // Actualizar indicador
+    const hora = ahora.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('ultima-actualizacion').textContent = `💾 Guardado: ${hora}`;
+}
+
+function guardarTodo() {
+    guardarDatos();
+    mostrarMensajeGuardado('✅ Datos guardados correctamente');
+}
+
+function mostrarMensajeGuardado(mensaje) {
+    const div = document.getElementById('mensaje-guardado');
+    div.innerHTML = `<div class="alert alert-success">${mensaje}</div>`;
+    div.style.display = 'block';
+    
+    setTimeout(() => {
+        div.style.display = 'none';
+    }, 3000);
+}
+
+// ==================== RENDERIZADO ====================
+
+function renderizarProductos() {
+    const container = document.getElementById('productos-container');
+    
+    if (productos.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📦</div>
+                <div class="empty-state-text">Haz el conteo físico de tus productos</div>
+                <div class="empty-state-subtext">Luego haz clic en "➕ Agregar Producto" para registrarlos</div>
+            </div>
+        `;
+        return;
+    }
+    
+    const productosPorCategoria = {};
+    productos.forEach(p => {
+        if (!productosPorCategoria[p.categoria]) {
+            productosPorCategoria[p.categoria] = [];
+        }
+        productosPorCategoria[p.categoria].push(p);
+    });
+    
+    let html = '';
+    
+    Object.keys(productosPorCategoria).forEach(cat => {
+        const productosCategoria = productosPorCategoria[cat];
+        const catInfo = CATEGORIAS[cat];
+        
+        html += `
+            <div class="category-group">
+                <div class="category-header">
+                    <span class="category-icon">${catInfo.emoji}</span>
+                    <span>${catInfo.nombre}</span>
+                </div>
+                <div class="product-list">
+        `;
+        
+        productosCategoria.forEach(p => {
+            const estadoStock = obtenerEstadoStock(p);
+            const cardClass = estadoStock === 'critical' ? 'stock-critical' : 
+                             estadoStock === 'low' ? 'stock-low' : 'stock-ok';
+            
+            html += `
+                <div class="product-card ${cardClass}">
+                    <div class="product-info">
+                        <div class="product-name">${p.nombre}</div>
+                        <div class="product-details">
+                            <div class="product-detail">
+                                <strong>Stock:</strong> ${p.cantidad}
+                            </div>
+                            <div class="product-detail">
+                                <strong>Unidad:</strong> ${p.unidad}
+                            </div>
+                            <div class="product-detail">
+                                <strong>Mínimo:</strong> ${p.minimo}
+                            </div>
+                            ${p.maximo > 0 ? `
+                            <div class="product-detail">
+                                <strong>Máximo:</strong> ${p.maximo}
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-sm" onclick="editarProducto(${p.id})">
+                            ✏️ Editar
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${p.id})">
+                            🗑️ Eliminar
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+function obtenerEstadoStock(producto) {
+    if (producto.cantidad < producto.minimo) return 'critical';
+    if (producto.cantidad <= producto.minimo * 1.2) return 'low';
+    return 'ok';
+}
+
+// ==================== MODALES ====================
+
+function abrirModalAgregar() {
+    productoEditando = null;
+    document.getElementById('modal-titulo').textContent = 'Agregar Producto';
+    document.getElementById('input-nombre').value = '';
+    document.getElementById('input-categoria').value = 'proteinas';
+    document.getElementById('input-unidad').value = 'kg';
+    document.getElementById('input-cantidad').value = '0';
+    document.getElementById('input-minimo').value = '0';
+    document.getElementById('input-maximo').value = '0';
+    document.getElementById('modalProducto').classList.add('active');
+}
+
+function editarProducto(id) {
+    const producto = productos.find(p => p.id === id);
+    if (!producto) return;
+    
+    productoEditando = producto;
+    document.getElementById('modal-titulo').textContent = 'Editar Producto';
+    document.getElementById('input-nombre').value = producto.nombre;
+    document.getElementById('input-categoria').value = producto.categoria;
+    document.getElementById('input-unidad').value = producto.unidad;
+    document.getElementById('input-cantidad').value = producto.cantidad;
+    document.getElementById('input-minimo').value = producto.minimo;
+    document.getElementById('input-maximo').value = producto.maximo || 0;
+    document.getElementById('modalProducto').classList.add('active');
+}
+
+function cerrarModal() {
+    document.getElementById('modalProducto').classList.remove('active');
+}
+
+// ==================== ACCIONES ====================
+
+function guardarProducto() {
+    const nombre = document.getElementById('input-nombre').value.trim();
+    const categoria = document.getElementById('input-categoria').value;
+    const unidad = document.getElementById('input-unidad').value;
+    const cantidad = parseFloat(document.getElementById('input-cantidad').value) || 0;
+    const minimo = parseFloat(document.getElementById('input-minimo').value) || 0;
+    const maximo = parseFloat(document.getElementById('input-maximo').value) || 0;
+    
+    if (!nombre) {
+        alert('Por favor ingresa el nombre del producto');
+        return;
+    }
+    
+    if (productoEditando) {
+        // Editar
+        productoEditando.nombre = nombre;
+        productoEditando.categoria = categoria;
+        productoEditando.unidad = unidad;
+        productoEditando.cantidad = cantidad;
+        productoEditando.minimo = minimo;
+        productoEditando.maximo = maximo;
+        mostrarMensajeGuardado('✅ Producto actualizado correctamente');
+    } else {
+        // Agregar nuevo
+        productos.push({
+            id: Date.now(),
+            nombre: nombre,
+            categoria: categoria,
+            unidad: unidad,
+            cantidad: cantidad,
+            minimo: minimo,
+            maximo: maximo,
+            fechaCreacion: new Date().toISOString()
+        });
+        mostrarMensajeGuardado('✅ Producto agregado correctamente');
+    }
+    
+    guardarDatos();
+    renderizarProductos();
+    cerrarModal();
+}
+
+function eliminarProducto(id) {
+    if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+    
+    productos = productos.filter(p => p.id !== id);
+    guardarDatos();
+    renderizarProductos();
+    mostrarMensajeGuardado('✅ Producto eliminado correctamente');
+}
+
+// ==================== EXPORTAR ====================
+
+function exportarExcel() {
+    if (productos.length === 0) {
+        alert('No hay productos para exportar');
+        return;
+    }
+    
+    // Preparar datos
+    const data = productos.map(p => {
+        const estadoStock = obtenerEstadoStock(p);
+        const estado = estadoStock === 'critical' ? '🔴 CRÍTICO' :
+                      estadoStock === 'low' ? '🟡 BAJO' : '🟢 OK';
+        
+        return {
+            'Producto': p.nombre,
+            'Categoría': CATEGORIAS[p.categoria].nombre,
+            'Stock Actual': p.cantidad,
+            'Unidad': p.unidad,
+            'Stock Mínimo': p.minimo,
+            'Stock Máximo': p.maximo || '-',
+            'Estado': estado
+        };
+    });
+    
+    // Crear libro de Excel
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, 'Inventario');
+    
+    // Descargar
+    const fecha = new Date().toISOString().split('T')[0];
+    XLSX.writeFile(wb, `Mendy_Inventario_${fecha}.xlsx`);
+}
+
+// ==================== INICIO ====================
+
+window.addEventListener('DOMContentLoaded', inicializar);
+
+</script>
+
+</body>
+</html>
