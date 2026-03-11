@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemas – Mendy Fast Food</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary:   #FF6B35;
+            --secondary: #00B4D8;
+            --accent:    #FFD166;
+            --dark:      #1B2432;
+            --mid:       #2C3A50;
+            --card-bg:   #FFFFFF;
+            --muted:     #6B7280;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 36px 20px 56px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: .18;
+            pointer-events: none;
+        }
+        body::before {
+            width: 520px; height: 520px;
+            background: var(--primary);
+            top: -120px; left: -160px;
+        }
+        body::after {
+            width: 400px; height: 400px;
+            background: var(--secondary);
+            bottom: -80px; right: -120px;
+        }
+
+        .container { max-width: 1100px; width: 100%; position: relative; z-index: 1; }
+
+        /* ── HEADER ── */
+        header { text-align: center; margin-bottom: 44px; }
+
+        .logo-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 76px; height: 76px;
+            background: var(--primary);
+            border-radius: 24px;
+            font-size: 2.5rem;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 28px rgba(255,107,53,.5);
+            animation: pop .5s cubic-bezier(.34,1.56,.64,1) both;
+        }
+
+        @keyframes pop {
+            from { transform: scale(.6); opacity: 0; }
+            to   { transform: scale(1);  opacity: 1; }
+        }
+        @keyframes fadeUp {
+            from { transform: translateY(18px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+
+        header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        header h1 span { color: var(--primary); }
+        header p {
+            color: rgba(255,255,255,.45);
+            font-size: .9rem;
+        }
+
+        /* ── PROGRESS ── */
+        .progress-wrap {
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 18px;
+            padding: 20px 24px;
+            margin-bottom: 36px;
+            animation: fadeUp .4s .1s both;
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: .85rem;
+            color: rgba(255,255,255,.7);
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .progress-header strong { color: var(--accent); font-family: 'Syne', sans-serif; }
+        .progress-track {
+            height: 10px;
+            background: rgba(255,255,255,.1);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 86%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 99px;
+            transition: width 1s ease;
+        }
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: .7rem;
+            color: rgba(255,255,255,.35);
+        }
+
+        /* ── SECTION LABEL ── */
+        .section-label {
+            font-family: 'Syne', sans-serif;
+            font-size: .78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: rgba(255,255,255,.4);
+            margin-bottom: 14px;
+            margin-top: 4px;
+        }
+
+        /* ── GRID ── */
+        .systems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 18px;
+            margin-bottom: 32px;
+        }
+
+        /* ── CARD ── */
+        .system-card {
+            position: relative;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 22px 20px 18px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,.18);
+            transition: transform .2s, box-shadow .2s;
+            animation: fadeUp .4s both;
+            overflow: hidden;
+        }
+        .system-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 5px; height: 100%;
+            border-radius: 20px 0 0 20px;
+        }
+        .system-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 32px rgba(0,0,0,.28);
+        }
+        .system-card.pending {
+            background: rgba(255,255,255,.04);
+            border: 1.5px dashed rgba(255,255,255,.14);
+            box-shadow: none;
+        }
+        .system-card.pending:hover { transform: none; }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1B2432;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .system-card.pending .card-title { color: rgba(255,255,255,.7); }
+        .card-desc {
+            font-size: .84rem;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+        .system-card.pending .card-desc { color: rgba(255,255,255,.38); }
+        .card-features {
+            font-size: .78rem;
+            color: #999;
+            margin-top: 8px;
+            line-height: 1.7;
+        }
+        .system-card.pending .card-features { color: rgba(255,255,255,.28); }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: .7rem;
+            font-weight: 700;
+            margin-top: 14px;
+            align-self: flex-start;
+        }
+        .s-active  { background: #22C55E; color: #fff; }
+        .s-next    { background: var(--accent); color: #1B2432; }
+        .s-pending { background: rgba(255,255,255,.12); color: rgba(255,255,255,.5); }
+
+        .version-badge {
+            position: absolute;
+            top: 14px; right: 14px;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: .65rem;
+            font-weight: 700;
+        }
+        .new-badge {
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: .63rem;
+            font-weight: 700;
+        }
+
+        /* color bars */
+        .c-inventario::before { background: #22C55E; }
+        .c-recetas::before    { background: var(--primary); }
+        .c-reportes::before   { background: var(--secondary); }
+        .c-sanea::before      { background: #14B8A6; }
+        .c-turnos::before     { background: #F59E0B; }
+        .c-personal::before   { background: #8B5CF6; }
+        .c-induccion::before  { background: var(--accent); }
+
+        /* ── KPI ROW ── */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
+            gap: 12px;
+            margin-bottom: 32px;
+            animation: fadeUp .4s .15s both;
+        }
+        .kpi-box {
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 16px;
+            padding: 16px 14px;
+            text-align: center;
+        }
+        .kpi-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.9rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .kpi-lbl { font-size: .72rem; color: rgba(255,255,255,.45); line-height:1.4; }
+
+        /* ── ROADMAP ── */
+        .roadmap-box {
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 18px;
+            padding: 22px 24px;
+            margin-top: 4px;
+            color: white;
+            animation: fadeUp .4s .5s both;
+        }
+        .roadmap-box h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: .95rem;
+            margin-bottom: 16px;
+            color: var(--accent);
+        }
+        .roadmap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+            gap: 8px 24px;
+        }
+        .roadmap-item {
+            font-size: .83rem;
+            opacity: .8;
+            line-height: 1.7;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .roadmap-item.done   { opacity: 1; }
+        .roadmap-item.done span strong { color: #22C55E; }
+        .roadmap-item.last span strong { color: var(--accent); }
+
+        footer {
+            text-align: center;
+            color: rgba(255,255,255,.25);
+            font-size: .76rem;
+            margin-top: 28px;
+        }
+
+        @media (max-width: 640px) {
+            header h1 { font-size: 2rem; }
+            .systems-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <header>
+        <div class="logo-wrap">🍟</div>
+        <h1>Mendy <span>Fast Food</span></h1>
+        <p>Sistema de Gestión Operativa · San Andrés Islas · Transformación Digital</p>
+    </header>
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+        <div class="kpi-box">
+            <div class="kpi-num" style="color:#22C55E">7</div>
+            <div class="kpi-lbl">Sistemas activos</div>
+        </div>
+        <div class="kpi-box">
+            <div class="kpi-num" style="color:var(--accent)">100%</div>
+            <div class="kpi-lbl">Transformación completa</div>
+        </div>
+        <div class="kpi-box">
+            <div class="kpi-num" style="color:var(--primary)">5</div>
+            <div class="kpi-lbl">Personas en el equipo</div>
+        </div>
+        <div class="kpi-box">
+            <div class="kpi-num" style="color:var(--secondary)">36</div>
+            <div class="kpi-lbl">Recetas estandarizadas</div>
+        </div>
+    </div>
+
+    <!-- BARRA DE PROGRESO -->
+    <div class="progress-wrap">
+        <div class="progress-header">
+            <span>🚀 Progreso de transformación digital — Plan 90 días</span>
+            <strong>7 de 7 sistemas activos · 100% ✅</strong>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#22C55E,var(--accent));"></div>
+        </div>
+        <div class="progress-steps">
+            <span>✅ Radiografiar</span>
+            <span>✅ Estandarizar</span>
+            <span>✅ Delegar / Controlar</span>
+            <span>✅ Alinear equipo</span>
+        </div>
+    </div>
+
+    <!-- SISTEMAS ACTIVOS -->
+    <div class="section-label">✅ Sistemas activos — 7 de 7</div>
+    <div class="systems-grid">
+
+        <a href="inventario-mendy.html" class="system-card c-inventario" style="animation-delay:.1s">
+            <span class="version-badge" style="background:#22C55E">V1.0</span>
+            <span class="card-icon">📦</span>
+            <div class="card-title">Inventario</div>
+            <p class="card-desc">Control de entradas, salidas y conteo físico de 38 insumos de cocina</p>
+            <div class="card-features">
+                📊 Alertas de stock con semáforo · 🔍 Conteo diario<br>
+                📋 Orden de compra automática · 💬 Compartir por WhatsApp<br>
+                ⬇ Exportar / ⬆ Importar JSON
+            </div>
+            <span class="status-badge s-active">✅ ACTIVO</span>
+        </a>
+
+        <a href="recetario-mendy.html" class="system-card c-recetas" style="animation-delay:.15s">
+            <span class="version-badge" style="background:#FF6B35">V1.0</span>
+            <span class="card-icon">📖</span>
+            <div class="card-title">Recetario <span class="new-badge">36 RECETAS</span></div>
+            <p class="card-desc">Recetas estandarizadas con fotos, ingredientes y gramajes exactos</p>
+            <div class="card-features">
+                🍟 Salchipapas · 🌮 Picadas · 🌽 Maíz<br>
+                🌭 Perros · 🍔 Hamburguesas<br>
+                🔐 Admin con PIN · ⬇ Exportar / ⬆ Importar JSON
+            </div>
+            <span class="status-badge s-active">✅ ACTIVO</span>
+        </a>
+
+        <a href="reportes-mendy.html" class="system-card c-reportes" style="animation-delay:.2s">
+            <span class="version-badge" style="background:#00B4D8">V1.0</span>
+            <span class="card-icon">📊</span>
+            <div class="card-title">Reportes Diarios</div>
+            <p class="card-desc">Cierre diario de operaciones con semáforo de indicadores clave</p>
+            <div class="card-features">
+                🚦 Semáforo visual · 📱 Diseño móvil<br>
+                💾 Guardado con confirmación · 📅 Historial de reportes
+            </div>
+            <span class="status-badge s-active">✅ ACTIVO</span>
+        </a>
+
+        <a href="sanea-mendy.html" class="system-card c-sanea" style="animation-delay:.25s">
+            <span class="version-badge" style="background:#14B8A6">V1.0</span>
+            <span class="card-icon">🧼</span>
+            <div class="card-title">Saneamiento y Equipos</div>
+            <p class="card-desc">Control de limpieza, sanitización y estado de 18 equipos de cocina</p>
+            <div class="card-features">
+                🌅 Apertura · 🌙 Cierre · 📅 Semanal<br>
+                22 tareas de limpieza · 4 áreas · Historial de cumplimiento<br>
+                🔐 PIN por usuario · ⬇ Exportar JSON
+            </div>
+            <span class="status-badge s-active">✅ ACTIVO</span>
+        </a>
+
+        <a href="turnos-mendy.html" class="system-card c-turnos" style="animation-delay:.3s">
+            <span class="version-badge" style="background:#F59E0B">V1.0</span>
+            <span class="card-icon">⏰</span>
+            <div class="card-title">Control de Turnos</div>
+            <p class="card-desc">Checklist operativo de apertura, mitad de turno y cierre por área</p>
+            <div class="card-features">
+                🍳 Cocina · 💳 Caja · 🛎 Servicio<br>
+                9 combinaciones área × momento · Horarios editables<br>
+                📊 Resumen del día para Aljavis
+            </div>
+            <span class="status-badge s-active">✅ ACTIVO</span>
+        </a>
+
+        <a href="personal-mendy.html" class="system-card c-personal" style="animation-delay:.35s">
+            <span class="version-badge" style="background:#8B5CF6">V1.0</span>
+            <span class="card-icon">👥</span>
+            <div class="card-title">Central de Personal <span class="new-badge">NUEVO</span></div>
+            <p class="card-desc">Gestión completa del equipo de 5 personas con normatividad laboral</p>
+            <div class="card-features">
+                👑 Aljavis · 👴 Don Alfonso · 👩 3 Empleadas<br>
+                💰 Pagos y desprendibles · 📚 Capacitaciones<br>
+                ⚖️ Normatividad Colombia + San Andrés
+            </div>
+            <span class="status-badge s-active">✅ ACTIVO</span>
+        </a>
+
+        <a href="rentabilidad-mendy.html" class="system-card" style="animation-delay:.4s;--before-bg:#F59E0B" >
+            <span class="version-badge" style="background:#F59E0B">V1.0</span>
+            <span class="card-icon">💰</span>
+            <div class="card-title">Rentabilidad por Plato <span class="new-badge">NUEVO</span></div>
+            <p class="card-desc">Costo real, margen bruto y semáforo de rentabilidad para los 28 platos del menú</p>
+            <div class="card-features">
+                🟢 Excelente ≥65% · 🟡 Aceptable 50–64% · 🔴 Revisar &lt;50%<br>
+                38 insumos · Cálculo automático por gramaje<br>
+                📊 Ranking · 🧂 Precios de compra por insumo
+            </div>
+            <span class="status-badge s-active">✅ ACTIVO</span>
+        </a>
+
+    </div>
+
+    <!-- HOJA DE RUTA -->
+    <div class="roadmap-box">
+        <h3>🗺 Hoja de ruta — Transformación completa Mendy Fast Food</h3>
+        <div class="roadmap-grid">
+            <div class="roadmap-item done">✅ <span><strong>Inventario</strong> — 38 insumos, alertas y órdenes de compra</span></div>
+            <div class="roadmap-item done">✅ <span><strong>Recetario digital</strong> — 36 recetas con fotos y gramajes</span></div>
+            <div class="roadmap-item done">✅ <span><strong>Reportes diarios</strong> — cierre operativo con semáforo</span></div>
+            <div class="roadmap-item done">✅ <span><strong>Saneamiento y equipos</strong> — 22 tareas, 3 turnos, 18 equipos</span></div>
+            <div class="roadmap-item done">✅ <span><strong>Control de turnos</strong> — 9 combinaciones, horarios editables</span></div>
+            <div class="roadmap-item done">✅ <span><strong>Central de personal</strong> — 5 personas, pagos, normatividad</span></div>
+            <div class="roadmap-item done">✅ <span><strong>Rentabilidad por plato</strong> — costo real, margen y semáforo</span></div>
+            <div class="roadmap-item last">🎯 <span><strong>Meta lograda</strong> — Aljavis dirige con datos, no apagando incendios</span></div>
+        </div>
+    </div>
+
+    <footer>
+        <p style="margin-bottom:4px;">© 2026 Mendy Fast Food · San Andrés Islas, Colombia</p>
+        <p>Sistema de Gestión Operativa · Desarrollado con Sandra · v3.0 · 7/7 sistemas activos 🎉</p>
+    </footer>
+
+</div>
+</body>
+</html>

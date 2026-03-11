@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equipos y Saneamiento – Mendy Fast Food</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #FF6B35;
+  --dark:    #1B2432;
+  --mid:     #2C3A50;
+  --green:   #22C55E;
+  --yellow:  #F59E0B;
+  --red:     #EF4444;
+  --blue:    #00B4D8;
+  --accent:  #FFD166;
+  --muted:   #6B7280;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Nunito',sans-serif;
+  background:var(--dark);
+  min-height:100vh;
+  color:#fff;
+}
+
+/* ══ LOGIN ══ */
+#screen-login {
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(145deg,#1B2432,#2C3A50);
+}
+.login-card {
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;
+  padding:36px 28px;
+  width:100%;
+  max-width:380px;
+  text-align:center;
+}
+.login-logo { font-size:3rem; margin-bottom:12px; }
+.login-title { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; margin-bottom:4px; }
+.login-title span { color:var(--primary); }
+.login-sub { color:rgba(255,255,255,.45); font-size:.85rem; margin-bottom:28px; }
+.user-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.user-btn {
+  background:rgba(255,255,255,.08);
+  border:2px solid rgba(255,255,255,.1);
+  border-radius:14px;
+  padding:14px 10px;
+  cursor:pointer;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  transition:.2s;
+}
+.user-btn:hover { border-color:var(--primary); background:rgba(255,107,53,.12); }
+.user-btn.selected { border-color:var(--primary); background:rgba(255,107,53,.18); }
+.user-btn .u-avatar { font-size:1.8rem; margin-bottom:6px; }
+.user-btn .u-name { font-size:.82rem; font-weight:700; }
+.user-btn .u-role { font-size:.7rem; color:rgba(255,255,255,.45); margin-top:2px; }
+.pin-label { color:rgba(255,255,255,.6); font-size:.82rem; margin-bottom:8px; text-align:left; }
+.pin-input {
+  width:100%;
+  background:rgba(255,255,255,.08);
+  border:2px solid rgba(255,255,255,.15);
+  border-radius:12px;
+  padding:13px 16px;
+  color:#fff;
+  font-size:1.4rem;
+  letter-spacing:6px;
+  text-align:center;
+  font-family:'Syne',sans-serif;
+  outline:none;
+  margin-bottom:14px;
+  transition:.2s;
+}
+.pin-input:focus { border-color:var(--primary); }
+.btn-login {
+  width:100%;
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  padding:14px;
+  font-family:'Syne',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+.btn-login:hover { background:#e85a25; }
+.login-error { color:var(--red); font-size:.8rem; margin-top:8px; min-height:18px; }
+
+/* ══ APP ══ */
+#screen-app { display:none; min-height:100vh; }
+.top-nav {
+  background:var(--mid);
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+.nav-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; }
+.nav-brand span { color:var(--primary); }
+.nav-user { display:flex; align-items:center; gap:8px; font-size:.82rem; color:rgba(255,255,255,.65); }
+.btn-logout {
+  background:rgba(255,255,255,.08);
+  border:none;
+  border-radius:8px;
+  padding:6px 12px;
+  color:rgba(255,255,255,.6);
+  cursor:pointer;
+  font-size:.78rem;
+  font-family:'Nunito',sans-serif;
+}
+.btn-logout:hover { background:rgba(255,255,255,.15); color:#fff; }
+
+.tabs {
+  display:flex;
+  background:var(--mid);
+  padding:0 20px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  overflow-x:auto;
+  gap:0;
+}
+.tab-btn {
+  background:none;
+  border:none;
+  border-bottom:3px solid transparent;
+  padding:13px 16px;
+  color:rgba(255,255,255,.5);
+  font-family:'Nunito',sans-serif;
+  font-size:.84rem;
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:.2s;
+}
+.tab-btn.active { color:#fff; border-bottom-color:var(--primary); }
+
+.tab-content { display:none; padding:20px; max-width:860px; margin:0 auto; }
+.tab-content.active { display:block; }
+
+/* ══ CARDS ══ */
+.section-title {
+  font-family:'Syne',sans-serif;
+  font-size:1rem;
+  color:var(--accent);
+  margin-bottom:14px;
+}
+
+.equipo-card {
+  background:rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:16px 18px;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  border-left:4px solid var(--green);
+  transition:.2s;
+}
+.equipo-card.warn  { border-left-color:var(--yellow); }
+.equipo-card.alert { border-left-color:var(--red); }
+
+.eq-icon { font-size:2rem; flex-shrink:0; }
+.eq-info { flex:1; }
+.eq-name { font-weight:700; font-size:.92rem; }
+.eq-area { font-size:.75rem; color:rgba(255,255,255,.45); margin-top:2px; }
+.eq-resp { font-size:.75rem; color:rgba(255,255,255,.45); margin-top:2px; }
+
+.eq-status-select {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.12);
+  border-radius:10px;
+  padding:6px 10px;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  font-size:.78rem;
+  outline:none;
+  cursor:pointer;
+}
+
+.semaforo {
+  width:11px; height:11px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.sem-ok    { background:var(--green); }
+.sem-warn  { background:var(--yellow); }
+.sem-alert { background:var(--red); box-shadow:0 0 6px rgba(239,68,68,.7); }
+
+/* ══ CHECKLIST ══ */
+.checklist-header {
+  background:rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:16px 20px;
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.checklist-header h3 { font-family:'Syne',sans-serif; font-size:1rem; }
+.checklist-header p  { font-size:.8rem; color:rgba(255,255,255,.45); margin-top:2px; }
+
+.progress-bar-wrap {
+  background:rgba(255,255,255,.1);
+  border-radius:99px;
+  height:8px;
+  overflow:hidden;
+  flex:1;
+  min-width:100px;
+}
+.progress-bar-fill {
+  height:100%;
+  border-radius:99px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  transition:.4s;
+}
+
+.turno-tabs {
+  display:flex;
+  gap:8px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+.turno-chip {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  padding:6px 16px;
+  font-size:.78rem;
+  font-weight:700;
+  color:rgba(255,255,255,.6);
+  cursor:pointer;
+  transition:.2s;
+}
+.turno-chip.active { background:var(--primary); border-color:var(--primary); color:#fff; }
+
+.check-item {
+  background:rgba(255,255,255,.04);
+  border-radius:14px;
+  padding:14px 16px;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  transition:.2s;
+  border:1.5px solid rgba(255,255,255,.06);
+}
+.check-item.done {
+  background:rgba(34,197,94,.08);
+  border-color:rgba(34,197,94,.2);
+}
+.check-item.done .ci-name { text-decoration:line-through; color:rgba(255,255,255,.4); }
+
+.check-box {
+  width:26px; height:26px;
+  border-radius:8px;
+  border:2px solid rgba(255,255,255,.2);
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:.2s;
+  font-size:1rem;
+}
+.check-box.checked { background:var(--green); border-color:var(--green); }
+
+.ci-info { flex:1; }
+.ci-name { font-size:.88rem; font-weight:600; transition:.2s; }
+.ci-area { font-size:.73rem; color:rgba(255,255,255,.4); margin-top:2px; }
+.ci-freq { font-size:.7rem; color:rgba(255,255,255,.35); margin-top:1px; }
+.ci-producto { font-size:.72rem; color:var(--blue); margin-top:2px; }
+
+.btn-save-check {
+  width:100%;
+  background:var(--green);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  font-family:'Syne',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:16px;
+  transition:.2s;
+}
+.btn-save-check:hover { background:#16a34a; }
+
+/* ══ HISTORIAL ══ */
+.hist-row {
+  background:rgba(255,255,255,.04);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.hist-row .hr-name { font-weight:700; font-size:.88rem; }
+.hist-row .hr-meta { font-size:.75rem; color:rgba(255,255,255,.4); margin-top:2px; }
+.badge-pct {
+  padding:3px 12px;
+  border-radius:20px;
+  font-size:.75rem;
+  font-weight:700;
+  flex-shrink:0;
+}
+
+/* ══ KPI ══ */
+.kpi-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;
+  margin-bottom:20px;
+}
+.kpi-card {
+  background:rgba(255,255,255,.07);
+  border-radius:16px;
+  padding:16px;
+  text-align:center;
+}
+.kpi-num { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; margin-bottom:4px; }
+.kpi-label { font-size:.73rem; color:rgba(255,255,255,.5); }
+
+/* ══ FORM ══ */
+.form-card {
+  background:rgba(255,255,255,.06);
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:16px;
+}
+.form-card h3 { font-family:'Syne',sans-serif; font-size:1rem; margin-bottom:16px; color:var(--accent); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-label { font-size:.78rem; color:rgba(255,255,255,.55); font-weight:600; }
+.form-input, .form-select {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.12);
+  border-radius:10px;
+  padding:10px 12px;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  font-size:.88rem;
+  outline:none;
+  transition:.2s;
+}
+.form-input:focus, .form-select:focus { border-color:var(--primary); }
+.form-select option { background:#2C3A50; }
+.btn-primary {
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  padding:11px 22px;
+  font-family:'Syne',sans-serif;
+  font-size:.88rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+.btn-primary:hover { background:#e85a25; }
+.btn-del {
+  background:rgba(239,68,68,.15);
+  border:none;
+  border-radius:8px;
+  padding:6px 12px;
+  color:var(--red);
+  font-size:.75rem;
+  cursor:pointer;
+  font-family:'Nunito',sans-serif;
+  font-weight:700;
+}
+
+/* ══ ADMIN ══ */
+.admin-lock { text-align:center; padding:40px 20px; }
+.admin-lock p { color:rgba(255,255,255,.5); margin-bottom:20px; }
+.admin-section { margin-bottom:28px; }
+
+.catalog-row {
+  background:rgba(255,255,255,.05);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.cr-name { flex:1; font-size:.88rem; font-weight:600; min-width:120px; }
+.cr-tag  { font-size:.72rem; color:rgba(255,255,255,.4); background:rgba(255,255,255,.08); padding:2px 10px; border-radius:20px; }
+
+/* ══ OVERLAY ══ */
+.overlay {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  z-index:200;
+  align-items:center;
+  justify-content:center;
+}
+.overlay.open { display:flex; }
+.overlay-card {
+  background:#2C3A50;
+  border-radius:20px;
+  padding:28px 24px;
+  width:100%;
+  max-width:320px;
+  text-align:center;
+}
+.overlay-card h3 { font-family:'Syne',sans-serif; font-size:1.1rem; margin-bottom:6px; }
+.overlay-card p  { font-size:.82rem; color:rgba(255,255,255,.5); margin-bottom:18px; }
+
+/* ══ TOAST ══ */
+.toast {
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--green);
+  color:#fff;
+  padding:13px 24px;
+  border-radius:14px;
+  font-weight:700;
+  font-size:.9rem;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+  transition:.35s cubic-bezier(.34,1.56,.64,1);
+  z-index:999;
+  white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+.btn-export {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.15);
+  border-radius:10px;
+  padding:10px 18px;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  font-size:.84rem;
+  font-weight:700;
+  cursor:pointer;
+  margin-right:8px;
+  margin-top:8px;
+}
+.btn-export:hover { background:rgba(255,255,255,.15); }
+
+@media(max-width:600px){
+  .form-row { grid-template-columns:1fr; }
+  .kpi-grid { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="screen-login">
+  <div class="login-card">
+    <div class="login-logo">🧼</div>
+    <div class="login-title">Mendy <span>Fast Food</span></div>
+    <div class="login-sub">Equipos y Saneamiento · San Andrés Islas</div>
+    <div class="user-grid" id="user-grid"></div>
+    <div class="pin-label">🔐 Ingresa tu PIN</div>
+    <input type="password" class="pin-input" id="pin-input" maxlength="8" placeholder="••••" inputmode="numeric">
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="screen-app">
+  <div class="top-nav">
+    <div class="nav-brand">🧼 <span>Mendy</span> Saneamiento</div>
+    <div class="nav-user">
+      <span id="nav-user-name"></span>
+      <button class="btn-logout" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('resumen',this)">🏠 Resumen</button>
+    <button class="tab-btn" onclick="switchTab('checklist',this)">✅ Checklist</button>
+    <button class="tab-btn" onclick="switchTab('equipos',this)">🔧 Equipos</button>
+    <button class="tab-btn" onclick="switchTab('historial',this)">📅 Historial</button>
+    <button class="tab-btn" id="tab-admin-btn" style="display:none" onclick="switchTab('admin',this)">⚙️ Admin</button>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="tab-content active" id="tab-resumen">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-equipos" style="color:var(--blue)">0</div>
+        <div class="kpi-label">Total equipos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-eq-ok" style="color:var(--green)">0</div>
+        <div class="kpi-label">En buen estado ✅</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-eq-warn" style="color:var(--yellow)">0</div>
+        <div class="kpi-label">Necesita revisión ⚠️</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-eq-alert" style="color:var(--red)">0</div>
+        <div class="kpi-label">Dañado / Fuera de servicio 🔴</div>
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,.05);border-radius:16px;padding:18px;margin-bottom:14px;">
+      <p style="font-size:.84rem;color:rgba(255,255,255,.5);font-weight:600;margin-bottom:10px;">📅 Checklist de hoy</p>
+      <div id="resumen-hoy" style="font-size:.88rem;color:rgba(255,255,255,.65);">Sin registros hoy.</div>
+    </div>
+
+    <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:16px;padding:18px;" id="equipos-alert-box" style="display:none">
+      <p style="font-size:.84rem;color:var(--red);font-weight:700;margin-bottom:8px;">🔴 Equipos que necesitan atención</p>
+      <div id="equipos-alert-list"></div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="tab-content" id="tab-checklist">
+    <div class="checklist-header">
+      <div>
+        <h3>✅ Checklist de limpieza</h3>
+        <p id="check-fecha"></p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex:1;max-width:200px;">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="check-progress" style="width:0%"></div>
+        </div>
+        <span style="font-size:.8rem;font-weight:700;" id="check-pct">0%</span>
+      </div>
+    </div>
+
+    <div class="turno-tabs">
+      <span class="turno-chip active" onclick="setTurno('apertura',this)">🌅 Apertura</span>
+      <span class="turno-chip" onclick="setTurno('cierre',this)">🌙 Cierre</span>
+      <span class="turno-chip" onclick="setTurno('semanal',this)">📅 Semanal</span>
+    </div>
+
+    <div id="checklist-items"></div>
+    <button class="btn-save-check" onclick="guardarChecklist()">💾 Guardar Checklist</button>
+  </div>
+
+  <!-- EQUIPOS -->
+  <div class="tab-content" id="tab-equipos">
+    <p style="font-size:.82rem;color:rgba(255,255,255,.45);margin-bottom:14px;">
+      📋 Estado actual de equipos y utensilios. Actualiza el estado si detectas algún problema.
+    </p>
+    <div id="equipos-list"></div>
+  </div>
+
+  <!-- HISTORIAL -->
+  <div class="tab-content" id="tab-historial">
+    <p style="font-size:.82rem;color:rgba(255,255,255,.45);margin-bottom:14px;">
+      Últimos checklists completados por el equipo.
+    </p>
+    <div id="historial-list"></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="tab-content" id="tab-admin">
+    <div id="admin-locked" class="admin-lock">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
+      <p>Esta sección es solo para Aljavis</p>
+      <button class="btn-primary" onclick="openAdminPin()">Ingresar PIN de Admin</button>
+    </div>
+    <div id="admin-panel" style="display:none;">
+
+      <!-- Usuarios -->
+      <div class="admin-section">
+        <h3 class="section-title">👥 Usuarios</h3>
+        <div id="users-list"></div>
+        <div class="form-card" style="margin-top:12px;">
+          <h3>➕ Nuevo usuario</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-input" id="nu-name" placeholder="Nombre completo">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rol</label>
+              <select class="form-select" id="nu-role">
+                <option value="empleada">👩 Empleada</option>
+                <option value="supervisor">👴 Supervisor</option>
+                <option value="admin">👑 Admin</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">PIN</label>
+              <input type="text" class="form-input" id="nu-pin" placeholder="Ej: 1234" maxlength="8" inputmode="numeric">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Avatar</label>
+              <input type="text" class="form-input" id="nu-avatar" placeholder="👩" maxlength="2">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="addUser()">✅ Crear usuario</button>
+        </div>
+      </div>
+
+      <!-- Equipos catálogo -->
+      <div class="admin-section">
+        <h3 class="section-title">🔧 Catálogo de equipos</h3>
+        <div id="equipos-catalog"></div>
+        <div class="form-card" style="margin-top:12px;">
+          <h3>➕ Nuevo equipo / utensilio</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-input" id="ne-name" placeholder="Ej: Freidora doble">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Área</label>
+              <select class="form-select" id="ne-area">
+                <option>Cocina</option>
+                <option>Bar / bebidas</option>
+                <option>Caja</option>
+                <option>Zona fría</option>
+                <option>General</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Responsable</label>
+              <input type="text" class="form-input" id="ne-resp" placeholder="Quien lo usa / cuida">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Emoji</label>
+              <input type="text" class="form-input" id="ne-icon" placeholder="🍳" maxlength="2">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="addEquipo()">✅ Agregar equipo</button>
+        </div>
+      </div>
+
+      <!-- Tareas checklist -->
+      <div class="admin-section">
+        <h3 class="section-title">📋 Tareas de limpieza</h3>
+        <div id="tareas-catalog"></div>
+        <div class="form-card" style="margin-top:12px;">
+          <h3>➕ Nueva tarea</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tarea</label>
+              <input type="text" class="form-input" id="nt-tarea" placeholder="Ej: Limpiar freidora">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Área</label>
+              <input type="text" class="form-input" id="nt-area" placeholder="Ej: Cocina">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Turno</label>
+              <select class="form-select" id="nt-turno">
+                <option value="apertura">🌅 Apertura</option>
+                <option value="cierre">🌙 Cierre</option>
+                <option value="semanal">📅 Semanal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Producto de limpieza</label>
+              <input type="text" class="form-input" id="nt-prod" placeholder="Ej: Ajax, agua caliente">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="addTarea()">✅ Agregar tarea</button>
+        </div>
+      </div>
+
+      <!-- Export / Import -->
+      <div class="admin-section">
+        <h3 class="section-title">🔄 Exportar / Importar</h3>
+        <button class="btn-export" onclick="exportarJSON()">⬇ Exportar JSON</button>
+        <label class="btn-export" style="display:inline-block;cursor:pointer;">
+          ⬆ Importar JSON
+          <input type="file" accept=".json" style="display:none" onchange="importarJSON(event)">
+        </label>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY ADMIN PIN -->
+<div class="overlay" id="overlay-admin">
+  <div class="overlay-card">
+    <h3>🔐 Acceso Admin</h3>
+    <p>Ingresa el PIN de administrador</p>
+    <input type="password" class="pin-input" id="admin-pin-input" maxlength="8" placeholder="••••" inputmode="numeric">
+    <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="verifyAdminPin()">Verificar</button>
+    <div class="login-error" id="admin-pin-error"></div>
+    <button onclick="closeOverlay()" style="background:none;border:none;color:rgba(255,255,255,.4);margin-top:12px;cursor:pointer;font-size:.82rem;">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════
+//  DATOS POR DEFECTO
+// ══════════════════════════════
+const DEFAULT_USERS = [
+  { id:'u1', name:'Aljavis',     role:'admin',      pin:'1234', avatar:'👑' },
+  { id:'u2', name:'Don Alfonso', role:'supervisor',  pin:'0000', avatar:'👴' },
+];
+
+const EQUIPOS_DEFAULT = [
+  // Cocina
+  { id:'e01', name:'Freidora doble',        area:'Cocina',      icon:'🍟', resp:'Cocinera',  status:'ok' },
+  { id:'e02', name:'Plancha para carnes',   area:'Cocina',      icon:'🥩', resp:'Cocinera',  status:'ok' },
+  { id:'e03', name:'Horno microondas',      area:'Cocina',      icon:'📦', resp:'Cocinera',  status:'ok' },
+  { id:'e04', name:'Licuadora industrial',  area:'Cocina',      icon:'🥤', resp:'Cocinera',  status:'ok' },
+  { id:'e05', name:'Campana extractora',    area:'Cocina',      icon:'💨', resp:'Cocinera',  status:'ok' },
+  { id:'e06', name:'Mesón de trabajo acero',area:'Cocina',      icon:'🪨', resp:'Cocinera',  status:'ok' },
+  { id:'e07', name:'Tablas de corte',       area:'Cocina',      icon:'🟫', resp:'Cocinera',  status:'ok' },
+  { id:'e08', name:'Cuchillos de cocina',   area:'Cocina',      icon:'🔪', resp:'Cocinera',  status:'ok' },
+  { id:'e09', name:'Ollas y sartenes',      area:'Cocina',      icon:'🍳', resp:'Cocinera',  status:'ok' },
+  { id:'e10', name:'Espátulas y pinzas',    area:'Cocina',      icon:'🥄', resp:'Cocinera',  status:'ok' },
+  // Zona fría
+  { id:'e11', name:'Nevera principal',      area:'Zona fría',   icon:'🧊', resp:'Don Alfonso', status:'ok' },
+  { id:'e12', name:'Congelador',            area:'Zona fría',   icon:'❄️', resp:'Don Alfonso', status:'ok' },
+  { id:'e13', name:'Enfriador de bebidas',  area:'Zona fría',   icon:'🥶', resp:'Don Alfonso', status:'ok' },
+  // Caja
+  { id:'e14', name:'Sistema POS / caja',    area:'Caja',        icon:'💳', resp:'Cajera',   status:'ok' },
+  { id:'e15', name:'Impresora de tickets',  area:'Caja',        icon:'🖨️', resp:'Cajera',   status:'ok' },
+  // General
+  { id:'e16', name:'Tanque de gas',         area:'General',     icon:'⛽', resp:'Aljavis',  status:'ok' },
+  { id:'e17', name:'Extintor',              area:'General',     icon:'🧯', resp:'Aljavis',  status:'ok' },
+  { id:'e18', name:'Basureros por área',    area:'General',     icon:'🗑️', resp:'Todos',    status:'ok' },
+];
+
+const TAREAS_DEFAULT = [
+  // Apertura
+  { id:'t01', tarea:'Lavar y sanitizar tablas de corte',   area:'Cocina',    turno:'apertura', prod:'Hipoclorito diluido' },
+  { id:'t02', tarea:'Limpiar mesón de trabajo',             area:'Cocina',    turno:'apertura', prod:'Desengrasante + paño' },
+  { id:'t03', tarea:'Revisar aceite de freidora',           area:'Cocina',    turno:'apertura', prod:'Visual / cambio si aplica' },
+  { id:'t04', tarea:'Limpiar plancha exterior',             area:'Cocina',    turno:'apertura', prod:'Espátula + paño seco' },
+  { id:'t05', tarea:'Limpiar nevera (regueros o derrames)', area:'Zona fría', turno:'apertura', prod:'Paño húmedo + desinfectante' },
+  { id:'t06', tarea:'Barrer piso de cocina',                area:'Cocina',    turno:'apertura', prod:'Escoba + recogedor' },
+  { id:'t07', tarea:'Revisar fechas de insumos abiertos',   area:'Cocina',    turno:'apertura', prod:'Visual' },
+  { id:'t08', tarea:'Revisar estado del gas',               area:'General',   turno:'apertura', prod:'Visual / olfato' },
+  // Cierre
+  { id:'t09', tarea:'Limpiar freidora completa + canasto',  area:'Cocina',    turno:'cierre', prod:'Desengrasante + agua caliente' },
+  { id:'t10', tarea:'Desengrasado de plancha',              area:'Cocina',    turno:'cierre', prod:'Desengrasante industrial' },
+  { id:'t11', tarea:'Lavar ollas, sartenes y utensilios',   area:'Cocina',    turno:'cierre', prod:'Jabón loza + esponja' },
+  { id:'t12', tarea:'Limpiar y desinfectar mesón',          area:'Cocina',    turno:'cierre', prod:'Hipoclorito' },
+  { id:'t13', tarea:'Barrer y trapear piso de cocina',      area:'Cocina',    turno:'cierre', prod:'Trapero + desinfectante piso' },
+  { id:'t14', tarea:'Sacar basura y cambiar bolsas',        area:'General',   turno:'cierre', prod:'Bolsas de basura' },
+  { id:'t15', tarea:'Limpiar superficie de caja y POS',     area:'Caja',      turno:'cierre', prod:'Paño húmedo suave' },
+  { id:'t16', tarea:'Desinfectar baño del personal',        area:'General',   turno:'cierre', prod:'Desinfectante baño' },
+  // Semanal
+  { id:'t17', tarea:'Limpieza profunda de nevera',          area:'Zona fría', turno:'semanal', prod:'Agua caliente + vinagre' },
+  { id:'t18', tarea:'Cambio de aceite de freidora',         area:'Cocina',    turno:'semanal', prod:'Aceite nuevo' },
+  { id:'t19', tarea:'Limpiar campana extractora (filtros)',  area:'Cocina',    turno:'semanal', prod:'Desengrasante fuerte' },
+  { id:'t20', tarea:'Desinfección profunda de tablas',      area:'Cocina',    turno:'semanal', prod:'Hipoclorito concentrado' },
+  { id:'t21', tarea:'Limpiar paredes y azulejos de cocina', area:'Cocina',    turno:'semanal', prod:'Desengrasante + esponja' },
+  { id:'t22', tarea:'Revisar y limpiar extintor (visual)',  area:'General',   turno:'semanal', prod:'Visual + paño seco' },
+];
+
+// ══════════════════════════════
+//  ESTADO
+// ══════════════════════════════
+let state = {
+  users: [],
+  equipos: [],
+  tareas: [],
+  historial: [],
+  currentUser: null,
+  adminUnlocked: false,
+  turnoActivo: 'apertura',
+  checkToday: {},   // { fecha: { turno: { tareaId: bool } } }
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('mendy_sanea_v1');
+    if (s) {
+      const p = JSON.parse(s);
+      state.users     = p.users     || DEFAULT_USERS;
+      state.equipos   = p.equipos   || EQUIPOS_DEFAULT;
+      state.tareas    = p.tareas    || TAREAS_DEFAULT;
+      state.historial = p.historial || [];
+      state.checkToday= p.checkToday|| {};
+    } else {
+      state.users   = DEFAULT_USERS;
+      state.equipos = EQUIPOS_DEFAULT;
+      state.tareas  = TAREAS_DEFAULT;
+    }
+  } catch {
+    state.users   = DEFAULT_USERS;
+    state.equipos = EQUIPOS_DEFAULT;
+    state.tareas  = TAREAS_DEFAULT;
+  }
+}
+
+function saveState() {
+  localStorage.setItem('mendy_sanea_v1', JSON.stringify({
+    users: state.users, equipos: state.equipos,
+    tareas: state.tareas, historial: state.historial,
+    checkToday: state.checkToday,
+  }));
+}
+
+function todayKey() {
+  return new Date().toLocaleDateString('es-CO');
+}
+
+// ══════════════════════════════
+//  LOGIN
+// ══════════════════════════════
+let selectedUserId = null;
+
+function renderUserGrid() {
+  const grid = document.getElementById('user-grid');
+  grid.innerHTML = '';
+  state.users.forEach(u => {
+    const btn = document.createElement('button');
+    btn.className = 'user-btn' + (u.id === selectedUserId ? ' selected' : '');
+    btn.innerHTML = `<div class="u-avatar">${u.avatar}</div>
+      <div class="u-name">${u.name}</div>
+      <div class="u-role">${roleLabel(u.role)}</div>`;
+    btn.onclick = () => {
+      selectedUserId = u.id;
+      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('pin-input').focus();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function roleLabel(r) {
+  return r === 'admin' ? '👑 Admin' : r === 'supervisor' ? '👴 Supervisor' : '👩 Empleada';
+}
+
+function doLogin() {
+  const pin = document.getElementById('pin-input').value.trim();
+  if (!selectedUserId) { document.getElementById('login-error').textContent = 'Selecciona tu nombre primero.'; return; }
+  const user = state.users.find(u => u.id === selectedUserId && u.pin === pin);
+  if (!user) { document.getElementById('login-error').textContent = 'PIN incorrecto.'; return; }
+  state.currentUser = user;
+  state.adminUnlocked = false;
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-app').style.display = 'block';
+  document.getElementById('nav-user-name').innerHTML = `${user.avatar} <strong>${user.name}</strong>`;
+  document.getElementById('tab-admin-btn').style.display = user.role === 'admin' ? 'inline-block' : 'none';
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-locked').style.display = 'block';
+  switchTab('resumen', document.querySelector('.tab-btn'));
+}
+
+function doLogout() {
+  state.currentUser = null; selectedUserId = null;
+  document.getElementById('screen-app').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('pin-input').value = '';
+  document.getElementById('login-error').textContent = '';
+  renderUserGrid();
+}
+
+document.getElementById('pin-input').addEventListener('keyup', e => { if(e.key==='Enter') doLogin(); });
+
+// ══════════════════════════════
+//  TABS
+// ══════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id==='resumen')   renderResumen();
+  if (id==='checklist') renderChecklist();
+  if (id==='equipos')   renderEquipos();
+  if (id==='historial') renderHistorial();
+  if (id==='admin' && state.adminUnlocked) renderAdmin();
+}
+
+// ══════════════════════════════
+//  RESUMEN
+// ══════════════════════════════
+function renderResumen() {
+  const eq = state.equipos;
+  document.getElementById('kpi-equipos').textContent  = eq.length;
+  document.getElementById('kpi-eq-ok').textContent    = eq.filter(e=>e.status==='ok').length;
+  document.getElementById('kpi-eq-warn').textContent  = eq.filter(e=>e.status==='warn').length;
+  document.getElementById('kpi-eq-alert').textContent = eq.filter(e=>e.status==='alert').length;
+
+  // Equipos con problemas
+  const problemas = eq.filter(e => e.status !== 'ok');
+  const box = document.getElementById('equipos-alert-box');
+  if (problemas.length) {
+    box.style.display = 'block';
+    document.getElementById('equipos-alert-list').innerHTML = problemas.map(e =>
+      `<div style="font-size:.84rem;padding:3px 0;display:flex;gap:8px;align-items:center;">
+        <span>${e.status==='alert'?'🔴':'🟡'}</span>
+        <span><strong>${e.name}</strong> — ${e.area}</span>
+      </div>`
+    ).join('');
+  } else { box.style.display = 'none'; }
+
+  // Checklist hoy
+  const hoy = todayKey();
+  const div = document.getElementById('resumen-hoy');
+  const turnos = ['apertura','cierre','semanal'];
+  const checks = state.checkToday[hoy] || {};
+  const resumen = turnos.map(t => {
+    const tareasTurno = state.tareas.filter(x=>x.turno===t);
+    if (!tareasTurno.length) return null;
+    const hechas = tareasTurno.filter(x => checks[t] && checks[t][x.id]).length;
+    const pct = Math.round(hechas/tareasTurno.length*100);
+    const etiqueta = t==='apertura'?'🌅 Apertura':t==='cierre'?'🌙 Cierre':'📅 Semanal';
+    return `<div style="display:flex;justify-content:space-between;font-size:.84rem;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);">
+      <span>${etiqueta}</span>
+      <span style="color:${pct===100?'var(--green)':pct>0?'var(--yellow)':'rgba(255,255,255,.4)'}">
+        ${hechas}/${tareasTurno.length} · ${pct}%</span>
+    </div>`;
+  }).filter(Boolean).join('');
+  div.innerHTML = resumen || 'Sin tareas registradas hoy.';
+}
+
+// ══════════════════════════════
+//  CHECKLIST
+// ══════════════════════════════
+function setTurno(t, el) {
+  state.turnoActivo = t;
+  document.querySelectorAll('.turno-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderChecklist();
+}
+
+function renderChecklist() {
+  const hoy = todayKey();
+  document.getElementById('check-fecha').textContent = '📅 ' + hoy + ' · ' + state.currentUser.name;
+  const turno = state.turnoActivo;
+  const tareas = state.tareas.filter(t => t.turno === turno);
+  const checks = (state.checkToday[hoy] && state.checkToday[hoy][turno]) || {};
+
+  const list = document.getElementById('checklist-items');
+  list.innerHTML = tareas.map(t => {
+    const done = !!checks[t.id];
+    return `<div class="check-item ${done?'done':''}" id="ci-${t.id}">
+      <div class="check-box ${done?'checked':''}" onclick="toggleCheck('${t.id}')">
+        ${done?'✓':''}
+      </div>
+      <div class="ci-info">
+        <div class="ci-name">${t.tarea}</div>
+        <div class="ci-area">${t.area}</div>
+        ${t.prod?`<div class="ci-producto">🧴 ${t.prod}</div>`:''}
+      </div>
+    </div>`;
+  }).join('') || '<p style="color:rgba(255,255,255,.35);font-size:.84rem;">No hay tareas para este turno.</p>';
+
+  updateProgressBar();
+}
+
+function toggleCheck(id) {
+  const hoy = todayKey();
+  const turno = state.turnoActivo;
+  if (!state.checkToday[hoy]) state.checkToday[hoy] = {};
+  if (!state.checkToday[hoy][turno]) state.checkToday[hoy][turno] = {};
+  const val = !state.checkToday[hoy][turno][id];
+  state.checkToday[hoy][turno][id] = val;
+
+  const item = document.getElementById('ci-'+id);
+  const box  = item.querySelector('.check-box');
+  item.classList.toggle('done', val);
+  box.classList.toggle('checked', val);
+  box.textContent = val ? '✓' : '';
+  updateProgressBar();
+}
+
+function updateProgressBar() {
+  const hoy = todayKey();
+  const turno = state.turnoActivo;
+  const tareas = state.tareas.filter(t => t.turno === turno);
+  const checks = (state.checkToday[hoy] && state.checkToday[hoy][turno]) || {};
+  const hechas = tareas.filter(t => checks[t.id]).length;
+  const pct = tareas.length ? Math.round(hechas/tareas.length*100) : 0;
+  document.getElementById('check-progress').style.width = pct + '%';
+  document.getElementById('check-pct').textContent = pct + '%';
+}
+
+function guardarChecklist() {
+  const hoy = todayKey();
+  const turno = state.turnoActivo;
+  const tareas = state.tareas.filter(t => t.turno === turno);
+  const checks = (state.checkToday[hoy] && state.checkToday[hoy][turno]) || {};
+  const hechas = tareas.filter(t => checks[t.id]).length;
+  const pct = tareas.length ? Math.round(hechas/tareas.length*100) : 0;
+  const etiqueta = turno==='apertura'?'Apertura':turno==='cierre'?'Cierre':'Semanal';
+
+  state.historial.unshift({
+    id: Date.now(),
+    fecha: hoy,
+    hora: new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
+    user: state.currentUser.name,
+    turno: etiqueta,
+    hechas,
+    total: tareas.length,
+    pct,
+  });
+  saveState();
+  showToast(`✅ Checklist ${etiqueta} guardado · ${pct}%`);
+  renderResumen();
+}
+
+// ══════════════════════════════
+//  EQUIPOS
+// ══════════════════════════════
+function renderEquipos() {
+  const list = document.getElementById('equipos-list');
+  const areas = [...new Set(state.equipos.map(e=>e.area))];
+  list.innerHTML = areas.map(area => {
+    const eqs = state.equipos.filter(e=>e.area===area);
+    return `<div style="margin-bottom:20px;">
+      <p class="section-title">📍 ${area}</p>
+      ${eqs.map(eq => {
+        const cls = eq.status==='ok' ? '' : eq.status==='warn' ? ' warn' : ' alert';
+        return `<div class="equipo-card${cls}" id="eq-${eq.id}">
+          <span class="eq-icon">${eq.icon||'🔧'}</span>
+          <div class="eq-info">
+            <div class="eq-name">${eq.name}</div>
+            <div class="eq-area">📍 ${eq.area}</div>
+            <div class="eq-resp">👤 ${eq.resp}</div>
+          </div>
+          <select class="eq-status-select" onchange="updateEquipoStatus('${eq.id}',this.value)">
+            <option value="ok"    ${eq.status==='ok'   ?'selected':''}>✅ Bueno</option>
+            <option value="warn"  ${eq.status==='warn' ?'selected':''}>⚠️ Revisar</option>
+            <option value="alert" ${eq.status==='alert'?'selected':''}>🔴 Dañado</option>
+          </select>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+function updateEquipoStatus(id, status) {
+  const eq = state.equipos.find(e=>e.id===id);
+  if (!eq) return;
+  eq.status = status;
+  const card = document.getElementById('eq-'+id);
+  card.className = 'equipo-card' + (status==='ok'?'':status==='warn'?' warn':' alert');
+  saveState();
+  showToast(status==='ok'?'✅ Estado actualizado':status==='warn'?'⚠️ Marcado para revisión':'🔴 Marcado como dañado');
+  renderResumen();
+}
+
+// ══════════════════════════════
+//  HISTORIAL
+// ══════════════════════════════
+function renderHistorial() {
+  const list = document.getElementById('historial-list');
+  if (!state.historial.length) {
+    list.innerHTML = '<p style="color:rgba(255,255,255,.35);font-size:.84rem;">Aún no hay registros.</p>';
+    return;
+  }
+  list.innerHTML = state.historial.slice(0,20).map(h => {
+    const color = h.pct===100?'var(--green)':h.pct>=70?'var(--yellow)':'var(--red)';
+    return `<div class="hist-row">
+      <div>
+        <div class="hr-name">${h.turno} · ${h.fecha} ${h.hora}</div>
+        <div class="hr-meta">👤 ${h.user} · ${h.hechas} de ${h.total} tareas completadas</div>
+      </div>
+      <span class="badge-pct" style="background:${color}20;color:${color}">${h.pct}%</span>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════
+//  ADMIN
+// ══════════════════════════════
+function openAdminPin() {
+  document.getElementById('overlay-admin').classList.add('open');
+  document.getElementById('admin-pin-input').value = '';
+  document.getElementById('admin-pin-error').textContent = '';
+  setTimeout(() => document.getElementById('admin-pin-input').focus(), 100);
+}
+function closeOverlay() { document.getElementById('overlay-admin').classList.remove('open'); }
+function verifyAdminPin() {
+  const pin = document.getElementById('admin-pin-input').value.trim();
+  const user = state.users.find(u => u.id === state.currentUser.id);
+  if (pin === user.pin && user.role === 'admin') {
+    state.adminUnlocked = true;
+    closeOverlay();
+    document.getElementById('admin-locked').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    renderAdmin();
+  } else {
+    document.getElementById('admin-pin-error').textContent = 'PIN incorrecto.';
+  }
+}
+
+function renderAdmin() {
+  // Usuarios
+  document.getElementById('users-list').innerHTML = state.users.map(u =>
+    `<div class="catalog-row">
+      <span class="cr-name">${u.avatar} ${u.name}</span>
+      <span class="cr-tag">${roleLabel(u.role)}</span>
+      <span class="cr-tag">PIN: ${'•'.repeat(u.pin.length)}</span>
+      ${u.id!=='u1'?`<button class="btn-del" onclick="deleteUser('${u.id}')">✕</button>`:''}
+    </div>`
+  ).join('');
+
+  // Equipos
+  document.getElementById('equipos-catalog').innerHTML = state.equipos.map(e =>
+    `<div class="catalog-row">
+      <span class="cr-name">${e.icon||'🔧'} ${e.name}</span>
+      <span class="cr-tag">${e.area}</span>
+      <span class="cr-tag">${e.resp}</span>
+      <button class="btn-del" onclick="deleteEquipo('${e.id}')">✕</button>
+    </div>`
+  ).join('');
+
+  // Tareas
+  document.getElementById('tareas-catalog').innerHTML = state.tareas.map(t =>
+    `<div class="catalog-row">
+      <span class="cr-name">${t.tarea}</span>
+      <span class="cr-tag">${t.turno==='apertura'?'🌅':t.turno==='cierre'?'🌙':'📅'} ${t.turno}</span>
+      <span class="cr-tag">${t.area}</span>
+      <button class="btn-del" onclick="deleteTarea('${t.id}')">✕</button>
+    </div>`
+  ).join('');
+}
+
+function addUser() {
+  const name=document.getElementById('nu-name').value.trim();
+  const role=document.getElementById('nu-role').value;
+  const pin=document.getElementById('nu-pin').value.trim();
+  const avatar=document.getElementById('nu-avatar').value.trim()||'👩';
+  if(!name||!pin){showToast('⚠️ Completa nombre y PIN','warn');return;}
+  state.users.push({id:'u'+Date.now(),name,role,pin,avatar});
+  saveState(); renderAdmin(); renderUserGrid();
+  ['nu-name','nu-pin','nu-avatar'].forEach(id=>document.getElementById(id).value='');
+  showToast('✅ Usuario creado: '+name);
+}
+function deleteUser(id){
+  if(!confirm('¿Eliminar usuario?'))return;
+  state.users=state.users.filter(u=>u.id!==id);
+  saveState();renderAdmin();renderUserGrid();
+}
+function addEquipo(){
+  const name=document.getElementById('ne-name').value.trim();
+  const area=document.getElementById('ne-area').value;
+  const resp=document.getElementById('ne-resp').value.trim();
+  const icon=document.getElementById('ne-icon').value.trim()||'🔧';
+  if(!name){showToast('⚠️ Ingresa el nombre','warn');return;}
+  state.equipos.push({id:'e'+Date.now(),name,area,icon,resp,status:'ok'});
+  saveState();renderAdmin();
+  ['ne-name','ne-resp','ne-icon'].forEach(id=>document.getElementById(id).value='');
+  showToast('✅ Equipo agregado: '+name);
+}
+function deleteEquipo(id){
+  if(!confirm('¿Eliminar este equipo?'))return;
+  state.equipos=state.equipos.filter(e=>e.id!==id);
+  saveState();renderAdmin();
+}
+function addTarea(){
+  const tarea=document.getElementById('nt-tarea').value.trim();
+  const area=document.getElementById('nt-area').value.trim();
+  const turno=document.getElementById('nt-turno').value;
+  const prod=document.getElementById('nt-prod').value.trim();
+  if(!tarea){showToast('⚠️ Ingresa la tarea','warn');return;}
+  state.tareas.push({id:'t'+Date.now(),tarea,area,turno,prod});
+  saveState();renderAdmin();
+  ['nt-tarea','nt-area','nt-prod'].forEach(id=>document.getElementById(id).value='');
+  showToast('✅ Tarea agregada');
+}
+function deleteTarea(id){
+  if(!confirm('¿Eliminar esta tarea?'))return;
+  state.tareas=state.tareas.filter(t=>t.id!==id);
+  saveState();renderAdmin();
+}
+
+// ══════════════════════════════
+//  EXPORT / IMPORT
+// ══════════════════════════════
+function exportarJSON(){
+  const data=JSON.stringify({users:state.users,equipos:state.equipos,tareas:state.tareas,historial:state.historial,checkToday:state.checkToday},null,2);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
+  a.download='mendy-sanea-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  showToast('⬇ JSON exportado');
+}
+function importarJSON(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(d.users)   state.users=d.users;
+      if(d.equipos) state.equipos=d.equipos;
+      if(d.tareas)  state.tareas=d.tareas;
+      if(d.historial) state.historial=d.historial;
+      if(d.checkToday) state.checkToday=d.checkToday;
+      saveState();renderResumen();
+      showToast('✅ Datos importados');
+    }catch{showToast('❌ Error al leer archivo','error');}
+  };
+  r.readAsText(file);
+}
+
+// ══════════════════════════════
+//  TOAST
+// ══════════════════════════════
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=type==='ok'?'var(--green)':type==='warn'?'var(--yellow)':'var(--red)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ══════════════════════════════
+//  INIT
+// ══════════════════════════════
+loadState();
+renderUserGrid();
+</script>
+</body>
+</html>

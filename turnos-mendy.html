@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turnos – Mendy Fast Food</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #FF6B35;
+  --dark:    #1B2432;
+  --mid:     #2C3A50;
+  --green:   #22C55E;
+  --yellow:  #F59E0B;
+  --red:     #EF4444;
+  --blue:    #00B4D8;
+  --purple:  #8B5CF6;
+  --accent:  #FFD166;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Nunito',sans-serif; background:var(--dark); min-height:100vh; color:#fff; }
+
+/* ══ LOGIN ══ */
+#screen-login {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:24px;
+  background:linear-gradient(145deg,#1B2432,#2C3A50);
+}
+.login-card {
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+  border-radius:24px; padding:36px 28px; width:100%; max-width:380px; text-align:center;
+}
+.login-logo { font-size:3rem; margin-bottom:12px; }
+.login-title { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; margin-bottom:4px; }
+.login-title span { color:var(--primary); }
+.login-sub { color:rgba(255,255,255,.45); font-size:.85rem; margin-bottom:28px; }
+.user-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.user-btn {
+  background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.1);
+  border-radius:14px; padding:14px 10px; cursor:pointer; color:#fff;
+  font-family:'Nunito',sans-serif; transition:.2s;
+}
+.user-btn:hover { border-color:var(--primary); background:rgba(255,107,53,.12); }
+.user-btn.selected { border-color:var(--primary); background:rgba(255,107,53,.18); }
+.user-btn .u-avatar { font-size:1.8rem; margin-bottom:6px; }
+.user-btn .u-name { font-size:.82rem; font-weight:700; }
+.user-btn .u-role { font-size:.7rem; color:rgba(255,255,255,.45); margin-top:2px; }
+.pin-label { color:rgba(255,255,255,.6); font-size:.82rem; margin-bottom:8px; text-align:left; }
+.pin-input {
+  width:100%; background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.15);
+  border-radius:12px; padding:13px 16px; color:#fff; font-size:1.4rem;
+  letter-spacing:6px; text-align:center; font-family:'Syne',sans-serif;
+  outline:none; margin-bottom:14px; transition:.2s;
+}
+.pin-input:focus { border-color:var(--primary); }
+.btn-login {
+  width:100%; background:var(--primary); color:#fff; border:none;
+  border-radius:12px; padding:14px; font-family:'Syne',sans-serif;
+  font-size:1rem; font-weight:700; cursor:pointer; transition:.2s;
+}
+.btn-login:hover { background:#e85a25; }
+.login-error { color:var(--red); font-size:.8rem; margin-top:8px; min-height:18px; }
+
+/* ══ APP ══ */
+#screen-app { display:none; min-height:100vh; }
+.top-nav {
+  background:var(--mid); padding:14px 20px; display:flex;
+  align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  position:sticky; top:0; z-index:100;
+}
+.nav-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; }
+.nav-brand span { color:var(--primary); }
+.nav-user { display:flex; align-items:center; gap:8px; font-size:.82rem; color:rgba(255,255,255,.65); }
+.btn-logout {
+  background:rgba(255,255,255,.08); border:none; border-radius:8px;
+  padding:6px 12px; color:rgba(255,255,255,.6); cursor:pointer;
+  font-size:.78rem; font-family:'Nunito',sans-serif; transition:.2s;
+}
+.btn-logout:hover { background:rgba(255,255,255,.15); color:#fff; }
+
+/* ══ TABS PRINCIPALES ══ */
+.tabs {
+  display:flex; background:var(--mid); padding:0 20px;
+  border-bottom:1px solid rgba(255,255,255,.08); overflow-x:auto;
+}
+.tab-btn {
+  background:none; border:none; border-bottom:3px solid transparent;
+  padding:13px 16px; color:rgba(255,255,255,.5); font-family:'Nunito',sans-serif;
+  font-size:.84rem; font-weight:600; cursor:pointer; white-space:nowrap; transition:.2s;
+}
+.tab-btn.active { color:#fff; border-bottom-color:var(--primary); }
+
+.tab-content { display:none; padding:20px; max-width:860px; margin:0 auto; }
+.tab-content.active { display:block; }
+
+/* ══ SELECTOR ÁREA + MOMENTO ══ */
+.selector-wrap {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;
+}
+.selector-group { display:flex; flex-direction:column; gap:6px; }
+.selector-label { font-size:.75rem; color:rgba(255,255,255,.45); font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+.chip-row { display:flex; gap:8px; flex-wrap:wrap; }
+.area-chip, .momento-chip {
+  background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.1);
+  border-radius:20px; padding:6px 14px; font-size:.78rem; font-weight:700;
+  color:rgba(255,255,255,.6); cursor:pointer; transition:.2s; white-space:nowrap;
+}
+.area-chip.active   { color:#fff; }
+.momento-chip.active { color:#1B2432; }
+
+.area-cocina.active    { background:#FF6B35; border-color:#FF6B35; }
+.area-caja.active      { background:#00B4D8; border-color:#00B4D8; }
+.area-servicio.active  { background:#8B5CF6; border-color:#8B5CF6; }
+
+.momento-apertura.active { background:#FFD166; border-color:#FFD166; }
+.momento-prep.active     { background:#22C55E; border-color:#22C55E; }
+.momento-cierre.active   { background:#8B5CF6; border-color:#8B5CF6; color:#fff !important; }
+
+/* ══ BARRA PROGRESO ══ */
+.progress-wrap {
+  background:rgba(255,255,255,.06); border-radius:14px; padding:14px 18px; margin-bottom:16px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+}
+.progress-info h4 { font-family:'Syne',sans-serif; font-size:.95rem; }
+.progress-info p  { font-size:.75rem; color:rgba(255,255,255,.4); margin-top:2px; }
+.progress-track {
+  flex:1; min-width:100px; background:rgba(255,255,255,.1);
+  border-radius:99px; height:8px; overflow:hidden;
+}
+.progress-fill {
+  height:100%; border-radius:99px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  transition:.4s;
+}
+.pct-label { font-family:'Syne',sans-serif; font-weight:800; font-size:1rem; color:var(--accent); }
+
+/* ══ CHECKLIST ITEMS ══ */
+.check-item {
+  background:rgba(255,255,255,.04); border-radius:14px; padding:14px 16px;
+  margin-bottom:10px; display:flex; align-items:flex-start; gap:14px;
+  border:1.5px solid rgba(255,255,255,.06); transition:.2s;
+}
+.check-item.done {
+  background:rgba(34,197,94,.07); border-color:rgba(34,197,94,.2);
+}
+.check-box {
+  width:26px; height:26px; border-radius:8px; border:2px solid rgba(255,255,255,.2);
+  background:transparent; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; flex-shrink:0; transition:.2s; font-size:1rem; margin-top:2px;
+}
+.check-box.checked { background:var(--green); border-color:var(--green); }
+.ci-info { flex:1; }
+.ci-name { font-size:.9rem; font-weight:600; transition:.2s; }
+.check-item.done .ci-name { text-decoration:line-through; color:rgba(255,255,255,.4); }
+.ci-tip { font-size:.75rem; color:rgba(255,255,255,.4); margin-top:3px; line-height:1.5; }
+.ci-nota-wrap { margin-top:8px; }
+.ci-nota {
+  width:100%; background:rgba(255,255,255,.06); border:1.5px solid rgba(255,255,255,.1);
+  border-radius:8px; padding:7px 10px; color:#fff; font-family:'Nunito',sans-serif;
+  font-size:.78rem; outline:none; resize:none; transition:.2s;
+}
+.ci-nota:focus { border-color:var(--primary); }
+.ci-nota::placeholder { color:rgba(255,255,255,.25); }
+
+.btn-save {
+  width:100%; background:var(--green); color:#fff; border:none;
+  border-radius:14px; padding:16px; font-family:'Syne',sans-serif;
+  font-size:1rem; font-weight:700; cursor:pointer; margin-top:16px; transition:.2s;
+}
+.btn-save:hover { background:#16a34a; }
+
+/* ══ RESUMEN ══ */
+.kpi-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px; margin-bottom:20px;
+}
+.kpi-card { background:rgba(255,255,255,.07); border-radius:16px; padding:16px; text-align:center; }
+.kpi-num { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; margin-bottom:4px; }
+.kpi-label { font-size:.73rem; color:rgba(255,255,255,.5); }
+
+.area-resumen-card {
+  background:rgba(255,255,255,.05); border-radius:16px; padding:16px 18px;
+  margin-bottom:12px; border-left:4px solid rgba(255,255,255,.1);
+}
+.area-resumen-card.cocina    { border-left-color:var(--primary); }
+.area-resumen-card.caja      { border-left-color:var(--blue); }
+.area-resumen-card.servicio  { border-left-color:var(--purple); }
+.arc-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.arc-name { font-family:'Syne',sans-serif; font-size:.95rem; font-weight:700; }
+.arc-momentos { display:flex; gap:8px; flex-wrap:wrap; }
+.momento-badge {
+  padding:4px 12px; border-radius:20px; font-size:.73rem; font-weight:700;
+}
+.mb-ok     { background:rgba(34,197,94,.15);  color:var(--green); }
+.mb-partial{ background:rgba(245,158,11,.15); color:var(--yellow); }
+.mb-empty  { background:rgba(255,255,255,.08); color:rgba(255,255,255,.35); }
+
+/* ══ HISTORIAL ══ */
+.hist-row {
+  background:rgba(255,255,255,.04); border-radius:12px; padding:12px 14px;
+  margin-bottom:8px; display:flex; align-items:center;
+  justify-content:space-between; gap:10px; flex-wrap:wrap;
+}
+.hist-row .hr-title { font-weight:700; font-size:.88rem; }
+.hist-row .hr-meta  { font-size:.75rem; color:rgba(255,255,255,.4); margin-top:2px; }
+.pct-badge {
+  padding:3px 12px; border-radius:20px; font-size:.75rem; font-weight:700; flex-shrink:0;
+}
+
+/* ══ ADMIN ══ */
+.admin-lock { text-align:center; padding:40px 20px; }
+.admin-lock p { color:rgba(255,255,255,.5); margin-bottom:20px; }
+.admin-section { margin-bottom:28px; }
+.section-title { font-family:'Syne',sans-serif; font-size:1rem; color:var(--accent); margin-bottom:14px; }
+.form-card { background:rgba(255,255,255,.06); border-radius:18px; padding:22px; margin-bottom:16px; }
+.form-card h3 { font-family:'Syne',sans-serif; font-size:1rem; margin-bottom:16px; color:var(--accent); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-label { font-size:.78rem; color:rgba(255,255,255,.55); font-weight:600; }
+.form-input, .form-select {
+  background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.12);
+  border-radius:10px; padding:10px 12px; color:#fff; font-family:'Nunito',sans-serif;
+  font-size:.88rem; outline:none; transition:.2s;
+}
+.form-input:focus, .form-select:focus { border-color:var(--primary); }
+.form-select option { background:#2C3A50; }
+.btn-primary {
+  background:var(--primary); color:#fff; border:none; border-radius:10px;
+  padding:11px 22px; font-family:'Syne',sans-serif; font-size:.88rem;
+  font-weight:700; cursor:pointer; transition:.2s;
+}
+.btn-primary:hover { background:#e85a25; }
+.catalog-row {
+  background:rgba(255,255,255,.05); border-radius:12px; padding:12px 14px;
+  margin-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+}
+.cr-name { flex:1; font-size:.88rem; font-weight:600; min-width:140px; }
+.cr-tag  { font-size:.72rem; color:rgba(255,255,255,.4); background:rgba(255,255,255,.08); padding:2px 10px; border-radius:20px; }
+.btn-del {
+  background:rgba(239,68,68,.15); border:none; border-radius:8px;
+  padding:6px 12px; color:var(--red); font-size:.75rem;
+  cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700;
+}
+.btn-export {
+  background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.15);
+  border-radius:10px; padding:10px 18px; color:#fff; font-family:'Nunito',sans-serif;
+  font-size:.84rem; font-weight:700; cursor:pointer; margin-right:8px; margin-top:8px;
+}
+.btn-export:hover { background:rgba(255,255,255,.15); }
+
+/* ══ OVERLAY ══ */
+.overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,.75);
+  z-index:200; align-items:center; justify-content:center;
+}
+.overlay.open { display:flex; }
+.overlay-card {
+  background:#2C3A50; border-radius:20px; padding:28px 24px;
+  width:100%; max-width:320px; text-align:center;
+}
+.overlay-card h3 { font-family:'Syne',sans-serif; font-size:1.1rem; margin-bottom:6px; }
+.overlay-card p  { font-size:.82rem; color:rgba(255,255,255,.5); margin-bottom:18px; }
+
+/* ══ TOAST ══ */
+.toast {
+  position:fixed; bottom:24px; left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--green); color:#fff; padding:13px 24px;
+  border-radius:14px; font-weight:700; font-size:.9rem;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+  transition:.35s cubic-bezier(.34,1.56,.64,1);
+  z-index:999; white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+@media(max-width:600px){
+  .form-row { grid-template-columns:1fr; }
+  .selector-wrap { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="screen-login">
+  <div class="login-card">
+    <div class="login-logo">⏰</div>
+    <div class="login-title">Mendy <span>Fast Food</span></div>
+    <div class="login-sub">Control de Turnos · San Andrés Islas</div>
+    <div class="user-grid" id="user-grid"></div>
+    <div class="pin-label">🔐 Ingresa tu PIN</div>
+    <input type="password" class="pin-input" id="pin-input" maxlength="8" placeholder="••••" inputmode="numeric">
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="screen-app">
+  <div class="top-nav">
+    <div class="nav-brand">⏰ <span>Mendy</span> Turnos</div>
+    <div class="nav-user">
+      <span id="nav-user-name"></span>
+      <button class="btn-logout" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('resumen',this)">🏠 Resumen</button>
+    <button class="tab-btn" onclick="switchTab('checklist',this)">✅ Mi turno</button>
+    <button class="tab-btn" onclick="switchTab('historial',this)">📅 Historial</button>
+    <button class="tab-btn" id="tab-admin-btn" style="display:none" onclick="switchTab('admin',this)">⚙️ Admin</button>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="tab-content active" id="tab-resumen">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-total" style="color:var(--blue)">0</div>
+        <div class="kpi-label">Tareas totales hoy</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-hechas" style="color:var(--green)">0</div>
+        <div class="kpi-label">Completadas ✅</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-pct" style="color:var(--accent)">0%</div>
+        <div class="kpi-label">Cumplimiento del día</div>
+      </div>
+    </div>
+
+    <p style="font-family:'Syne',sans-serif;font-size:.85rem;color:rgba(255,255,255,.45);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;">Estado por área</p>
+    <div id="resumen-areas"></div>
+  </div>
+
+  <!-- CHECKLIST MI TURNO -->
+  <div class="tab-content" id="tab-checklist">
+
+    <div class="selector-wrap">
+      <div class="selector-group">
+        <div class="selector-label">📍 Área</div>
+        <div class="chip-row">
+          <span class="area-chip area-cocina active"   onclick="setArea('cocina',this)">🍳 Cocina</span>
+          <span class="area-chip area-caja"            onclick="setArea('caja',this)">💳 Caja</span>
+          <span class="area-chip area-servicio"        onclick="setArea('servicio',this)">🛎 Servicio</span>
+        </div>
+      </div>
+      <div class="selector-group">
+        <div class="selector-label">⏰ Momento</div>
+        <div class="chip-row" id="momento-chips"></div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <h4 id="prog-titulo">Cocina · Apertura</h4>
+        <p id="prog-fecha"></p>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <div class="pct-label" id="pct-label">0%</div>
+    </div>
+
+    <div id="checklist-items"></div>
+    <button class="btn-save" onclick="guardarChecklist()">💾 Guardar este checklist</button>
+  </div>
+
+  <!-- HISTORIAL -->
+  <div class="tab-content" id="tab-historial">
+    <p style="font-size:.82rem;color:rgba(255,255,255,.45);margin-bottom:14px;">Últimos checklists guardados por el equipo.</p>
+    <div id="historial-list"></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="tab-content" id="tab-admin">
+    <div id="admin-locked" class="admin-lock">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
+      <p>Esta sección es solo para Aljavis</p>
+      <button class="btn-primary" onclick="openAdminPin()">Ingresar PIN de Admin</button>
+    </div>
+    <div id="admin-panel" style="display:none;">
+
+      <div class="admin-section">
+        <h3 class="section-title">⏰ Configurar nombres de turnos</h3>
+        <p style="font-size:.78rem;color:rgba(255,255,255,.4);margin-bottom:12px;">
+          Cambia el nombre, emoji y hora de cada momento según el horario real de Mendy.
+        </p>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.3);margin-bottom:8px;display:grid;grid-template-columns:2rem 80px 1fr 60px 90px;gap:10px;padding:0 14px;">
+          <span></span><span>Clave</span><span>Nombre</span><span>Emoji</span><span>Hora</span>
+        </div>
+        <div id="momentos-config"></div>
+      </div>
+
+      <div class="admin-section">
+        <h3 class="section-title">👥 Usuarios</h3>
+        <div id="users-list"></div>
+        <div class="form-card" style="margin-top:12px;">
+          <h3>➕ Nuevo usuario</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-input" id="nu-name" placeholder="Nombre completo">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rol</label>
+              <select class="form-select" id="nu-role">
+                <option value="empleada">👩 Empleada</option>
+                <option value="supervisor">👴 Supervisor</option>
+                <option value="admin">👑 Admin</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">PIN</label>
+              <input type="text" class="form-input" id="nu-pin" placeholder="Ej: 1234" maxlength="8" inputmode="numeric">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Avatar</label>
+              <input type="text" class="form-input" id="nu-avatar" placeholder="👩" maxlength="2">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="addUser()">✅ Crear usuario</button>
+        </div>
+      </div>
+
+      <div class="admin-section">
+        <h3 class="section-title">📋 Tareas por área y momento</h3>
+        <div style="margin-bottom:10px;">
+          <select class="form-select" style="margin-bottom:8px;" id="admin-filter-area" onchange="renderTareasCatalog()">
+            <option value="">Todas las áreas</option>
+            <option value="cocina">🍳 Cocina</option>
+            <option value="caja">💳 Caja</option>
+            <option value="servicio">🛎 Servicio</option>
+          </select>
+          <select class="form-select" id="admin-filter-momento" onchange="renderTareasCatalog()">
+            <option value="">Todos los momentos</option>
+            <option value="apertura">🌅 Apertura</option>
+            <option value="prep">🔄 Preparación</option>
+            <option value="cierre">🌙 Cierre</option>
+          </select>
+        </div>
+        <div id="tareas-catalog"></div>
+        <div class="form-card" style="margin-top:12px;">
+          <h3>➕ Nueva tarea</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Área</label>
+              <select class="form-select" id="nt-area">
+                <option value="cocina">🍳 Cocina</option>
+                <option value="caja">💳 Caja</option>
+                <option value="servicio">🛎 Servicio</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Momento</label>
+              <select class="form-select" id="nt-momento">
+                <option value="apertura">🌅 Apertura</option>
+                <option value="prep">🔄 Preparación de turno</option>
+                <option value="cierre">🌙 Cierre</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">Tarea</label>
+            <input type="text" class="form-input" id="nt-tarea" placeholder="Ej: Encender freidora y verificar nivel de aceite">
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">Tip / instrucción (opcional)</label>
+            <input type="text" class="form-input" id="nt-tip" placeholder="Ej: Esperar 5 min antes de usarla">
+          </div>
+          <div class="form-group" style="margin-bottom:12px;">
+            <label class="form-label">¿Requiere nota? (la empleada escribe algo)</label>
+            <select class="form-select" id="nt-nota">
+              <option value="no">No</option>
+              <option value="si">Sí</option>
+            </select>
+          </div>
+          <button class="btn-primary" onclick="addTarea()">✅ Agregar tarea</button>
+        </div>
+      </div>
+
+      <div class="admin-section">
+        <h3 class="section-title">🔄 Exportar / Importar</h3>
+        <button class="btn-export" onclick="exportarJSON()">⬇ Exportar JSON</button>
+        <label class="btn-export" style="display:inline-block;cursor:pointer;">
+          ⬆ Importar JSON
+          <input type="file" accept=".json" style="display:none" onchange="importarJSON(event)">
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY ADMIN -->
+<div class="overlay" id="overlay-admin">
+  <div class="overlay-card">
+    <h3>🔐 Acceso Admin</h3>
+    <p>Ingresa el PIN de administrador</p>
+    <input type="password" class="pin-input" id="admin-pin-input" maxlength="8" placeholder="••••" inputmode="numeric">
+    <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="verifyAdminPin()">Verificar</button>
+    <div class="login-error" id="admin-pin-error"></div>
+    <button onclick="closeOverlay()" style="background:none;border:none;color:rgba(255,255,255,.4);margin-top:12px;cursor:pointer;font-size:.82rem;">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════
+//  DATOS POR DEFECTO
+// ══════════════════════════════
+const DEFAULT_USERS = [
+  { id:'u1', name:'Aljavis',     role:'admin',      pin:'1234', avatar:'👑' },
+  { id:'u2', name:'Don Alfonso', role:'supervisor',  pin:'0000', avatar:'👴' },
+];
+
+const TAREAS_DEFAULT = [
+  // ─── COCINA APERTURA ───
+  { id:'c-a-01', area:'cocina', momento:'apertura', tarea:'Encender freidora y verificar nivel de aceite', tip:'Esperar 10 min a temperatura antes de usarla', nota:'no' },
+  { id:'c-a-02', area:'cocina', momento:'apertura', tarea:'Encender plancha y limpiar superficie', tip:'Paño seco cuando está caliente, no fría', nota:'no' },
+  { id:'c-a-03', area:'cocina', momento:'apertura', tarea:'Revisar stock de insumos vs lo que hay en inventario', tip:'Si falta algo urgente, avisar a Aljavis de inmediato', nota:'si' },
+  { id:'c-a-04', area:'cocina', momento:'apertura', tarea:'Preparar mise en place: salsas en sus recipientes', tip:'Tomate, rosada, ajo, BBQ, especial, tartara', nota:'no' },
+  { id:'c-a-05', area:'cocina', momento:'apertura', tarea:'Sacar carnes del congelador a la nevera (descongelar)', tip:'Nunca descongelar a temperatura ambiente', nota:'no' },
+  { id:'c-a-06', area:'cocina', momento:'apertura', tarea:'Preparar mise en place: quesos, tocineta y vegetales', tip:'Tablas limpias, cuchillos sanitizados', nota:'no' },
+  { id:'c-a-07', area:'cocina', momento:'apertura', tarea:'Verificar gas encendido y válvulas en buen estado', tip:'Revisar que no haya olor a gas antes de encender', nota:'no' },
+  { id:'c-a-08', area:'cocina', momento:'apertura', tarea:'Lavarse las manos y colocarse uniforme completo', tip:'Delantal, gorro o malla, sin accesorios en manos', nota:'no' },
+
+  // ─── COCINA PREP ───
+  { id:'c-p-01', area:'cocina', momento:'prep', tarea:'Reponer salsas que se estén agotando', tip:'No esperar a que se acaben, reponer cuando quede 1/4', nota:'no' },
+  { id:'c-p-02', area:'cocina', momento:'prep', tarea:'Revisar nivel de aceite de freidora', tip:'Cambiar si está oscuro o con olor diferente', nota:'si' },
+  { id:'c-p-03', area:'cocina', momento:'prep', tarea:'Descongelar siguiente tanda de carnes si es necesario', tip:'Pasar de congelador a nevera con anticipación', nota:'no' },
+  { id:'c-p-04', area:'cocina', momento:'prep', tarea:'Limpiar mesón de trabajo entre pedidos grandes', tip:'Paño húmedo + desinfectante rápido', nota:'no' },
+  { id:'c-p-05', area:'cocina', momento:'prep', tarea:'Reponer mise en place de quesos y vegetales', tip:'Verificar fechas y estado de frescura', nota:'no' },
+
+  // ─── COCINA CIERRE ───
+  { id:'c-c-01', area:'cocina', momento:'cierre', tarea:'Apagar freidora y dejar enfriar antes de limpiar', tip:'Nunca limpiar con aceite caliente, esperar al menos 30 min', nota:'no' },
+  { id:'c-c-02', area:'cocina', momento:'cierre', tarea:'Apagar plancha y limpiar con espátula + paño', tip:'Aceite fino para proteger la superficie después', nota:'no' },
+  { id:'c-c-03', area:'cocina', momento:'cierre', tarea:'Guardar insumos sobrantes tapados en nevera', tip:'Etiquetar con fecha si es producto abierto', nota:'no' },
+  { id:'c-c-04', area:'cocina', momento:'cierre', tarea:'Lavar ollas, utensilios y tablas de corte', tip:'Hipoclorito en tablas para desinfección', nota:'no' },
+  { id:'c-c-05', area:'cocina', momento:'cierre', tarea:'Limpiar y desinfectar mesón de trabajo', tip:'Desengrasante + hipoclorito diluido', nota:'no' },
+  { id:'c-c-06', area:'cocina', momento:'cierre', tarea:'Cerrar válvula de gas principal', tip:'Verificar que no quede ningún quemador encendido', nota:'no' },
+  { id:'c-c-07', area:'cocina', momento:'cierre', tarea:'Reportar en el sistema el estado del inventario', tip:'Especialmente si algo quedó bajo o se dañó', nota:'si' },
+
+  // ─── CAJA APERTURA ───
+  { id:'ca-a-01', area:'caja', momento:'apertura', tarea:'Encender sistema POS y verificar que funcione', tip:'Si hay error, avisar a Aljavis antes de abrir', nota:'no' },
+  { id:'ca-a-02', area:'caja', momento:'apertura', tarea:'Contar el efectivo base de la caja', tip:'Debe coincidir con lo que dejó el turno anterior', nota:'si' },
+  { id:'ca-a-03', area:'caja', momento:'apertura', tarea:'Verificar que haya papel en impresora de tickets', tip:'Cambiar el rollo si queda menos de 20% ', nota:'no' },
+  { id:'ca-a-04', area:'caja', momento:'apertura', tarea:'Revisar que los precios en POS estén actualizados', tip:'Si hay promoción del día, configurarla antes de abrir', nota:'no' },
+  { id:'ca-a-05', area:'caja', momento:'apertura', tarea:'Tener monedas y billetes pequeños disponibles para vueltos', tip:'Pedir al supervisor si faltan denominaciones', nota:'no' },
+
+  // ─── CAJA PREP ───
+  { id:'ca-p-01', area:'caja', momento:'prep', tarea:'Verificar que el POS no tenga pedidos pendientes sin cerrar', tip:'Revisar tabla de órdenes abiertas', nota:'no' },
+  { id:'ca-p-02', area:'caja', momento:'prep', tarea:'Reponer papel de impresora si está bajo', tip:'Cambiar antes de que se acabe completamente', nota:'no' },
+  { id:'ca-p-03', area:'caja', momento:'prep', tarea:'Cuadre parcial: verificar efectivo vs ventas del POS', tip:'Hacer esto cada 3-4 horas para detectar diferencias', nota:'si' },
+
+  // ─── CAJA CIERRE ───
+  { id:'ca-c-01', area:'caja', momento:'cierre', tarea:'Cuadre final: contar todo el efectivo de caja', tip:'Separar el base, el resto es la venta del día', nota:'si' },
+  { id:'ca-c-02', area:'caja', momento:'cierre', tarea:'Comparar efectivo con total de ventas en POS', tip:'Anotar si hay diferencia y el motivo', nota:'si' },
+  { id:'ca-c-03', area:'caja', momento:'cierre', tarea:'Cerrar sesión del POS y apagar pantalla', tip:'Nunca dejar el POS abierto sin nadie en caja', nota:'no' },
+  { id:'ca-c-04', area:'caja', momento:'cierre', tarea:'Entregar resumen de ventas del día a Aljavis', tip:'Monto total, efectivo, y si hay diferencias', nota:'no' },
+  { id:'ca-c-05', area:'caja', momento:'cierre', tarea:'Guardar el efectivo del día en lugar seguro', tip:'Solo Aljavis o Don Alfonso hacen esto', nota:'no' },
+
+  // ─── SERVICIO APERTURA ───
+  { id:'s-a-01', area:'servicio', momento:'apertura', tarea:'Limpiar y organizar zona de atención al cliente', tip:'Mostrador, área de espera, y si hay mesas', nota:'no' },
+  { id:'s-a-02', area:'servicio', momento:'apertura', tarea:'Reponer servilletas, palillos y condimentos en mostrador', tip:'Verificar que los dispensadores no estén vacíos', nota:'no' },
+  { id:'s-a-03', area:'servicio', momento:'apertura', tarea:'Revisar menú visible: precios correctos y legible', tip:'Si hay un especial del día, ponerlo visible', nota:'no' },
+  { id:'s-a-04', area:'servicio', momento:'apertura', tarea:'Verificar que el área de clientes esté limpia', tip:'Pisos, paredes visibles y zona de espera sin basura', nota:'no' },
+
+  // ─── SERVICIO PREP ───
+  { id:'s-p-01', area:'servicio', momento:'prep', tarea:'Reponer servilletas y condimentos durante el servicio', tip:'No esperar a que se agoten, revisar cada hora pico', nota:'no' },
+  { id:'s-p-02', area:'servicio', momento:'prep', tarea:'Limpiar derrames en mostrador de inmediato', tip:'Paño húmedo siempre disponible', nota:'no' },
+  { id:'s-p-03', area:'servicio', momento:'prep', tarea:'Verificar tiempos de espera de los clientes', tip:'Si hay demora, informar al cliente con amabilidad', nota:'si' },
+
+  // ─── SERVICIO CIERRE ───
+  { id:'s-c-01', area:'servicio', momento:'cierre', tarea:'Limpiar completamente el mostrador y zona de clientes', tip:'Desinfectante en todas las superficies de contacto', nota:'no' },
+  { id:'s-c-02', area:'servicio', momento:'cierre', tarea:'Recoger y limpiar condimentos del mostrador', tip:'Tapar bien salsas y guardar las que deben refrigerarse', nota:'no' },
+  { id:'s-c-03', area:'servicio', momento:'cierre', tarea:'Barrer y trapear el piso del área de clientes', tip:'Empezar por el fondo y terminar en la entrada', nota:'no' },
+  { id:'s-c-04', area:'servicio', momento:'cierre', tarea:'Apagar luces, letreros y elementos decorativos', tip:'Verificar que no quede nada encendido innecesariamente', nota:'no' },
+  { id:'s-c-05', area:'servicio', momento:'cierre', tarea:'Reportar cualquier queja o novedad del día', tip:'Anotar en el campo de nota para que Aljavis sepa', nota:'si' },
+];
+
+// ══════════════════════════════
+//  CONFIGURACIÓN DE MOMENTOS
+// ══════════════════════════════
+const DEFAULT_MOMENTOS = {
+  apertura: { label: 'Apertura',       emoji: '🔑', hora: '' },
+  prep:     { label: 'Mitad de turno', emoji: '🔄', hora: '' },
+  cierre:   { label: 'Cierre',         emoji: '🔒', hora: '' },
+};
+
+// ══════════════════════════════
+//  ESTADO
+// ══════════════════════════════
+let state = {
+  users: [], tareas: [], historial: [],
+  momentos: JSON.parse(JSON.stringify(DEFAULT_MOMENTOS)),
+  checkData: {},
+  currentUser: null, adminUnlocked: false,
+  areaActiva: 'cocina', momentoActivo: 'apertura',
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('mendy_turnos_v1');
+    if (s) {
+      const p = JSON.parse(s);
+      state.users     = p.users     || DEFAULT_USERS;
+      state.tareas    = p.tareas    || TAREAS_DEFAULT;
+      state.historial = p.historial || [];
+      state.checkData = p.checkData || {};
+      state.momentos  = p.momentos  || JSON.parse(JSON.stringify(DEFAULT_MOMENTOS));
+    } else {
+      state.users    = DEFAULT_USERS;
+      state.tareas   = TAREAS_DEFAULT;
+      state.momentos = JSON.parse(JSON.stringify(DEFAULT_MOMENTOS));
+    }
+  } catch {
+    state.users    = DEFAULT_USERS;
+    state.tareas   = TAREAS_DEFAULT;
+    state.momentos = JSON.parse(JSON.stringify(DEFAULT_MOMENTOS));
+  }
+}
+function saveState() {
+  localStorage.setItem('mendy_turnos_v1', JSON.stringify({
+    users:state.users, tareas:state.tareas,
+    historial:state.historial, checkData:state.checkData,
+    momentos:state.momentos,
+  }));
+}
+function mLabel(key) {
+  const m = state.momentos[key];
+  return m ? m.emoji+' '+m.label+(m.hora?' ('+m.hora+')':'') : key;
+}
+function todayKey() { return new Date().toLocaleDateString('es-CO'); }
+function sectionKey(area, momento) { return area + '_' + momento; }
+
+// ══════════════════════════════
+//  LOGIN
+// ══════════════════════════════
+let selectedUserId = null;
+function renderUserGrid() {
+  const grid = document.getElementById('user-grid');
+  grid.innerHTML = '';
+  state.users.forEach(u => {
+    const btn = document.createElement('button');
+    btn.className = 'user-btn' + (u.id === selectedUserId ? ' selected' : '');
+    btn.innerHTML = `<div class="u-avatar">${u.avatar}</div>
+      <div class="u-name">${u.name}</div>
+      <div class="u-role">${roleLabel(u.role)}</div>`;
+    btn.onclick = () => {
+      selectedUserId = u.id;
+      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('pin-input').focus();
+    };
+    grid.appendChild(btn);
+  });
+}
+function roleLabel(r) {
+  return r==='admin'?'👑 Admin':r==='supervisor'?'👴 Supervisor':'👩 Empleada';
+}
+function doLogin() {
+  const pin = document.getElementById('pin-input').value.trim();
+  if (!selectedUserId) { document.getElementById('login-error').textContent='Selecciona tu nombre primero.'; return; }
+  const user = state.users.find(u => u.id===selectedUserId && u.pin===pin);
+  if (!user) { document.getElementById('login-error').textContent='PIN incorrecto.'; return; }
+  state.currentUser = user;
+  state.adminUnlocked = false;
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-app').style.display = 'block';
+  document.getElementById('nav-user-name').innerHTML = `${user.avatar} <strong>${user.name}</strong>`;
+  document.getElementById('tab-admin-btn').style.display = user.role==='admin' ? 'inline-block' : 'none';
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-locked').style.display = 'block';
+  switchTab('resumen', document.querySelector('.tab-btn'));
+}
+function doLogout() {
+  state.currentUser = null; selectedUserId = null;
+  document.getElementById('screen-app').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('pin-input').value = '';
+  document.getElementById('login-error').textContent = '';
+  renderUserGrid();
+}
+document.getElementById('pin-input').addEventListener('keyup', e => { if(e.key==='Enter') doLogin(); });
+
+// ══════════════════════════════
+//  TABS
+// ══════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id==='resumen')   renderResumen();
+  if (id==='checklist') { renderMomentoChips(); renderChecklist(); }
+  if (id==='historial') renderHistorial();
+  if (id==='admin' && state.adminUnlocked) renderAdmin();
+}
+
+// ══════════════════════════════
+//  SELECTOR ÁREA / MOMENTO
+// ══════════════════════════════
+function renderMomentoChips() {
+  const wrap = document.getElementById('momento-chips');
+  if (!wrap) return;
+  const keys = ['apertura','prep','cierre'];
+  const colors = { apertura:'var(--accent)', prep:'var(--green)', cierre:'var(--purple)' };
+  wrap.innerHTML = keys.map(k => {
+    const m = state.momentos[k];
+    const active = k === state.momentoActivo;
+    return `<span class="momento-chip momento-${k} ${active?'active':''}"
+      onclick="setMomento('${k}',this)"
+      style="${active?'background:'+colors[k]+';border-color:'+colors[k]+';color:'+(k==='cierre'?'#fff':'#1B2432'):''}">
+      ${m.emoji} ${m.label}${m.hora?' ('+m.hora+')':''}
+    </span>`;
+  }).join('');
+}
+function setArea(area, el) {
+  state.areaActiva = area;
+  document.querySelectorAll('.area-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderChecklist();
+}
+function setMomento(momento, el) {
+  state.momentoActivo = momento;
+  renderMomentoChips();
+  renderChecklist();
+}
+
+// ══════════════════════════════
+//  CHECKLIST
+// ══════════════════════════════
+function renderChecklist() {
+  renderMomentoChips();
+  const hoy = todayKey();
+  const key = sectionKey(state.areaActiva, state.momentoActivo);
+  const data = (state.checkData[hoy] && state.checkData[hoy][key]) || {};
+  const tareas = state.tareas.filter(t => t.area===state.areaActiva && t.momento===state.momentoActivo);
+
+  const areaLabel = state.areaActiva==='cocina'?'🍳 Cocina':state.areaActiva==='caja'?'💳 Caja':'🛎 Servicio';
+  document.getElementById('prog-titulo').textContent = `${areaLabel} · ${mLabel(state.momentoActivo)}`;
+  document.getElementById('prog-fecha').textContent  = `📅 ${hoy} · ${state.currentUser.name}`;
+
+  const list = document.getElementById('checklist-items');
+  if (!tareas.length) {
+    list.innerHTML = '<p style="color:rgba(255,255,255,.35);font-size:.84rem;padding:20px 0;">No hay tareas configuradas para esta combinación.</p>';
+    updateProgress(0, 0); return;
+  }
+
+  list.innerHTML = tareas.map(t => {
+    const item = data[t.id] || { done:false, nota:'' };
+    return `<div class="check-item ${item.done?'done':''}" id="ci-${t.id}">
+      <div class="check-box ${item.done?'checked':''}" onclick="toggleCheck('${t.id}')">${item.done?'✓':''}</div>
+      <div class="ci-info">
+        <div class="ci-name">${t.tarea}</div>
+        ${t.tip?`<div class="ci-tip">💡 ${t.tip}</div>`:''}
+        ${t.nota==='si'?`<div class="ci-nota-wrap">
+          <textarea class="ci-nota" rows="2" placeholder="Escribe una nota o novedad..."
+            id="nota-${t.id}" onchange="updateNota('${t.id}',this.value)">${item.nota||''}</textarea>
+        </div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+
+  const hechas = tareas.filter(t => data[t.id] && data[t.id].done).length;
+  updateProgress(hechas, tareas.length);
+}
+
+function toggleCheck(id) {
+  const hoy = todayKey();
+  const key = sectionKey(state.areaActiva, state.momentoActivo);
+  if (!state.checkData[hoy]) state.checkData[hoy] = {};
+  if (!state.checkData[hoy][key]) state.checkData[hoy][key] = {};
+  const prev = state.checkData[hoy][key][id] || { done:false, nota:'' };
+  state.checkData[hoy][key][id] = { ...prev, done:!prev.done };
+
+  const item = document.getElementById('ci-'+id);
+  const box  = item.querySelector('.check-box');
+  const done = state.checkData[hoy][key][id].done;
+  item.classList.toggle('done', done);
+  box.classList.toggle('checked', done);
+  box.textContent = done ? '✓' : '';
+
+  const tareas = state.tareas.filter(t => t.area===state.areaActiva && t.momento===state.momentoActivo);
+  const hechas = tareas.filter(t => state.checkData[hoy][key][t.id] && state.checkData[hoy][key][t.id].done).length;
+  updateProgress(hechas, tareas.length);
+}
+
+function updateNota(id, val) {
+  const hoy = todayKey();
+  const key = sectionKey(state.areaActiva, state.momentoActivo);
+  if (!state.checkData[hoy]) state.checkData[hoy] = {};
+  if (!state.checkData[hoy][key]) state.checkData[hoy][key] = {};
+  if (!state.checkData[hoy][key][id]) state.checkData[hoy][key][id] = { done:false, nota:'' };
+  state.checkData[hoy][key][id].nota = val;
+}
+
+function updateProgress(hechas, total) {
+  const pct = total ? Math.round(hechas/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('pct-label').textContent = pct + '%';
+}
+
+function guardarChecklist() {
+  const hoy = todayKey();
+  const key = sectionKey(state.areaActiva, state.momentoActivo);
+  const tareas = state.tareas.filter(t => t.area===state.areaActiva && t.momento===state.momentoActivo);
+  const data   = (state.checkData[hoy] && state.checkData[hoy][key]) || {};
+  const hechas = tareas.filter(t => data[t.id] && data[t.id].done).length;
+  const pct    = tareas.length ? Math.round(hechas/tareas.length*100) : 0;
+  const aLabel = state.areaActiva==='cocina'?'Cocina':state.areaActiva==='caja'?'Caja':'Servicio';
+  const mLabelStr = mLabel(state.momentoActivo);
+
+  state.historial.unshift({
+    id: Date.now(),
+    fecha: hoy,
+    hora: new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
+    user: state.currentUser.name,
+    area: aLabel, momento: mLabelStr,
+    hechas, total: tareas.length, pct,
+  });
+  saveState();
+  showToast(`✅ ${aLabel} · ${mLabelStr} guardado · ${pct}%`);
+  renderResumen();
+}
+
+// ══════════════════════════════
+//  RESUMEN
+// ══════════════════════════════
+function renderResumen() {
+  const hoy = todayKey();
+  const checks = state.checkData[hoy] || {};
+  const areas = ['cocina','caja','servicio'];
+  const momentos = ['apertura','prep','cierre'];
+
+  let totalTareas = 0, totalHechas = 0;
+  areas.forEach(a => momentos.forEach(m => {
+    const ts = state.tareas.filter(t=>t.area===a&&t.momento===m);
+    const d  = checks[sectionKey(a,m)] || {};
+    totalTareas += ts.length;
+    totalHechas += ts.filter(t=>d[t.id]&&d[t.id].done).length;
+  }));
+  const pctGlobal = totalTareas ? Math.round(totalHechas/totalTareas*100) : 0;
+  document.getElementById('kpi-total').textContent  = totalTareas;
+  document.getElementById('kpi-hechas').textContent = totalHechas;
+  document.getElementById('kpi-pct').textContent    = pctGlobal + '%';
+
+  const areaNames = { cocina:'🍳 Cocina', caja:'💳 Caja', servicio:'🛎 Servicio' };
+  const areaClass = { cocina:'cocina', caja:'caja', servicio:'servicio' };
+
+  document.getElementById('resumen-areas').innerHTML = areas.map(a => {
+    const badges = momentos.map(m => {
+      const ts = state.tareas.filter(t=>t.area===a&&t.momento===m);
+      if (!ts.length) return '';
+      const d = checks[sectionKey(a,m)] || {};
+      const h = ts.filter(t=>d[t.id]&&d[t.id].done).length;
+      const p = Math.round(h/ts.length*100);
+      const cls = p===100?'mb-ok':p>0?'mb-partial':'mb-empty';
+      return `<span class="momento-badge ${cls}">${mLabel(m)} ${p}%</span>`;
+    }).join('');
+    return `<div class="area-resumen-card ${areaClass[a]}">
+      <div class="arc-header"><span class="arc-name">${areaNames[a]}</span></div>
+      <div class="arc-momentos">${badges}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════
+//  HISTORIAL
+// ══════════════════════════════
+function renderHistorial() {
+  const list = document.getElementById('historial-list');
+  if (!state.historial.length) {
+    list.innerHTML = '<p style="color:rgba(255,255,255,.35);font-size:.84rem;">Aún no hay registros.</p>'; return;
+  }
+  list.innerHTML = state.historial.slice(0,25).map(h => {
+    const color = h.pct===100?'var(--green)':h.pct>=70?'var(--yellow)':'var(--red)';
+    return `<div class="hist-row">
+      <div>
+        <div class="hr-title">${h.area} · ${h.momento} · ${h.fecha} ${h.hora}</div>
+        <div class="hr-meta">👤 ${h.user} · ${h.hechas} de ${h.total} tareas</div>
+      </div>
+      <span class="pct-badge" style="background:${color}20;color:${color}">${h.pct}%</span>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════
+//  ADMIN
+// ══════════════════════════════
+function openAdminPin() {
+  document.getElementById('overlay-admin').classList.add('open');
+  document.getElementById('admin-pin-input').value = '';
+  document.getElementById('admin-pin-error').textContent = '';
+  setTimeout(() => document.getElementById('admin-pin-input').focus(), 100);
+}
+function closeOverlay() { document.getElementById('overlay-admin').classList.remove('open'); }
+function verifyAdminPin() {
+  const pin  = document.getElementById('admin-pin-input').value.trim();
+  const user = state.users.find(u => u.id===state.currentUser.id);
+  if (pin===user.pin && user.role==='admin') {
+    state.adminUnlocked = true;
+    closeOverlay();
+    document.getElementById('admin-locked').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    renderAdmin();
+  } else { document.getElementById('admin-pin-error').textContent = 'PIN incorrecto.'; }
+}
+
+function renderAdmin() {
+  document.getElementById('users-list').innerHTML = state.users.map(u =>
+    `<div class="catalog-row">
+      <span class="cr-name">${u.avatar} ${u.name}</span>
+      <span class="cr-tag">${roleLabel(u.role)}</span>
+      <span class="cr-tag">PIN: ${'•'.repeat(u.pin.length)}</span>
+      ${u.id!=='u1'?`<button class="btn-del" onclick="deleteUser('${u.id}')">✕</button>`:''}
+    </div>`
+  ).join('');
+
+  // Momentos editables
+  const keys = ['apertura','prep','cierre'];
+  document.getElementById('momentos-config').innerHTML = keys.map(k => {
+    const m = state.momentos[k];
+    return `<div class="catalog-row" style="flex-wrap:wrap;gap:10px;align-items:center;">
+      <span class="cr-tag" style="font-size:.9rem;">${m.emoji}</span>
+      <span class="cr-name" style="min-width:80px;font-size:.82rem;color:rgba(255,255,255,.5);">${k}</span>
+      <input class="form-input" style="flex:1;min-width:120px;padding:7px 10px;" value="${m.label}"
+        placeholder="Nombre" onchange="updateMomento('${k}','label',this.value)">
+      <input class="form-input" style="width:60px;padding:7px 8px;text-align:center;" value="${m.emoji}"
+        maxlength="2" placeholder="🔑" onchange="updateMomento('${k}','emoji',this.value)">
+      <input class="form-input" style="width:90px;padding:7px 8px;" value="${m.hora}"
+        placeholder="Ej: 3pm" onchange="updateMomento('${k}','hora',this.value)">
+    </div>`;
+  }).join('');
+
+  renderTareasCatalog();
+}
+
+function updateMomento(key, field, value) {
+  state.momentos[key][field] = value.trim();
+  saveState();
+  renderMomentoChips();
+  showToast('✅ Turno actualizado');
+}
+
+function renderTareasCatalog() {
+  const fa = document.getElementById('admin-filter-area').value;
+  const fm = document.getElementById('admin-filter-momento').value;
+  const tareas = state.tareas.filter(t =>
+    (!fa || t.area===fa) && (!fm || t.momento===fm)
+  );
+  const aLabel = {cocina:'🍳 Cocina', caja:'💳 Caja', servicio:'🛎 Servicio'};
+  const mLabel = {apertura:'🌅 Apertura', prep:'🔄 Prep', cierre:'🌙 Cierre'};
+  document.getElementById('tareas-catalog').innerHTML = tareas.map(t =>
+    `<div class="catalog-row">
+      <span class="cr-name">${t.tarea}</span>
+      <span class="cr-tag">${aLabel[t.area]||t.area}</span>
+      <span class="cr-tag">${mLabel[t.momento]||t.momento}</span>
+      ${t.nota==='si'?'<span class="cr-tag">📝 nota</span>':''}
+      <button class="btn-del" onclick="deleteTarea('${t.id}')">✕</button>
+    </div>`
+  ).join('') || '<p style="color:rgba(255,255,255,.35);font-size:.82rem;">Sin tareas con ese filtro.</p>';
+}
+
+function addUser() {
+  const name=document.getElementById('nu-name').value.trim();
+  const role=document.getElementById('nu-role').value;
+  const pin=document.getElementById('nu-pin').value.trim();
+  const avatar=document.getElementById('nu-avatar').value.trim()||'👩';
+  if(!name||!pin){showToast('⚠️ Completa nombre y PIN','warn');return;}
+  state.users.push({id:'u'+Date.now(),name,role,pin,avatar});
+  saveState();renderAdmin();renderUserGrid();
+  ['nu-name','nu-pin','nu-avatar'].forEach(id=>document.getElementById(id).value='');
+  showToast('✅ Usuario creado: '+name);
+}
+function deleteUser(id){
+  if(!confirm('¿Eliminar usuario?'))return;
+  state.users=state.users.filter(u=>u.id!==id);
+  saveState();renderAdmin();renderUserGrid();
+}
+function addTarea(){
+  const area=document.getElementById('nt-area').value;
+  const momento=document.getElementById('nt-momento').value;
+  const tarea=document.getElementById('nt-tarea').value.trim();
+  const tip=document.getElementById('nt-tip').value.trim();
+  const nota=document.getElementById('nt-nota').value;
+  if(!tarea){showToast('⚠️ Escribe la tarea','warn');return;}
+  state.tareas.push({id:'t'+Date.now(),area,momento,tarea,tip,nota});
+  saveState();renderAdmin();
+  ['nt-tarea','nt-tip'].forEach(id=>document.getElementById(id).value='');
+  showToast('✅ Tarea agregada');
+}
+function deleteTarea(id){
+  if(!confirm('¿Eliminar esta tarea?'))return;
+  state.tareas=state.tareas.filter(t=>t.id!==id);
+  saveState();renderAdmin();
+}
+
+// ══════════════════════════════
+//  EXPORT / IMPORT
+// ══════════════════════════════
+function exportarJSON(){
+  const data=JSON.stringify({users:state.users,tareas:state.tareas,historial:state.historial,checkData:state.checkData},null,2);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
+  a.download='mendy-turnos-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();showToast('⬇ JSON exportado');
+}
+function importarJSON(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(d.users)     state.users=d.users;
+      if(d.tareas)    state.tareas=d.tareas;
+      if(d.historial) state.historial=d.historial;
+      if(d.checkData) state.checkData=d.checkData;
+      saveState();renderResumen();renderUserGrid();
+      showToast('✅ Datos importados');
+    }catch{showToast('❌ Error al leer archivo','error');}
+  };
+  r.readAsText(file);
+}
+
+// ══════════════════════════════
+//  TOAST
+// ══════════════════════════════
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=type==='ok'?'var(--green)':type==='warn'?'var(--yellow)':'var(--red)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ══════════════════════════════
+//  INIT
+// ══════════════════════════════
+loadState();
+renderUserGrid();
+</script>
+</body>
+</html>

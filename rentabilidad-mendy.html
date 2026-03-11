@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rentabilidad – Mendy Fast Food</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:#FF6B35; --dark:#1B2432; --mid:#2C3A50;
+  --green:#22C55E; --yellow:#F59E0B; --red:#EF4444;
+  --blue:#00B4D8; --purple:#8B5CF6; --accent:#FFD166;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--dark);min-height:100vh;color:#fff;}
+
+/* LOGIN */
+#screen-login{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(145deg,#1B2432,#2C3A50);}
+.login-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:36px 28px;width:100%;max-width:400px;text-align:center;}
+.login-logo{font-size:3rem;margin-bottom:12px;}
+.login-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:4px;}
+.login-title span{color:var(--primary);}
+.login-sub{color:rgba(255,255,255,.45);font-size:.85rem;margin-bottom:28px;}
+.user-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.user-btn{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 10px;cursor:pointer;color:#fff;font-family:'Nunito',sans-serif;transition:.2s;}
+.user-btn:hover{border-color:var(--primary);background:rgba(255,107,53,.12);}
+.user-btn.selected{border-color:var(--primary);background:rgba(255,107,53,.18);}
+.u-avatar{font-size:1.8rem;margin-bottom:6px;}
+.u-name{font-size:.78rem;font-weight:700;}
+.u-role{font-size:.68rem;color:rgba(255,255,255,.45);margin-top:2px;}
+.pin-label{color:rgba(255,255,255,.6);font-size:.82rem;margin-bottom:8px;text-align:left;}
+.pin-input{width:100%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);border-radius:12px;padding:13px 16px;color:#fff;font-size:1.4rem;letter-spacing:6px;text-align:center;font-family:'Syne',sans-serif;outline:none;margin-bottom:14px;transition:.2s;}
+.pin-input:focus{border-color:var(--primary);}
+.btn-login{width:100%;background:var(--primary);color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;}
+.btn-login:hover{background:#e85a25;}
+.login-error{color:var(--red);font-size:.8rem;margin-top:8px;min-height:18px;}
+
+/* APP */
+#screen-app{display:none;min-height:100vh;}
+.top-nav{background:var(--mid);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:100;}
+.nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;}
+.nav-brand span{color:var(--primary);}
+.nav-user{display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(255,255,255,.65);}
+.btn-logout{background:rgba(255,255,255,.08);border:none;border-radius:8px;padding:6px 12px;color:rgba(255,255,255,.6);cursor:pointer;font-size:.78rem;font-family:'Nunito',sans-serif;}
+.btn-logout:hover{background:rgba(255,255,255,.15);color:#fff;}
+
+.tabs{display:flex;background:var(--mid);padding:0 16px;border-bottom:1px solid rgba(255,255,255,.08);overflow-x:auto;}
+.tab-btn{background:none;border:none;border-bottom:3px solid transparent;padding:13px 14px;color:rgba(255,255,255,.5);font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:.2s;}
+.tab-btn.active{color:#fff;border-bottom-color:var(--primary);}
+
+.tab-content{display:none;padding:20px;max-width:1000px;margin:0 auto;}
+.tab-content.active{display:block;}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px;}
+.kpi-card{background:rgba(255,255,255,.07);border-radius:16px;padding:16px;text-align:center;}
+.kpi-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:4px;}
+.kpi-label{font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.4;}
+
+/* SEMÁFORO BADGES */
+.badge-verde    {background:rgba(34,197,94,.18);color:var(--green);padding:3px 12px;border-radius:20px;font-size:.72rem;font-weight:700;}
+.badge-amarillo {background:rgba(245,158,11,.18);color:var(--yellow);padding:3px 12px;border-radius:20px;font-size:.72rem;font-weight:700;}
+.badge-rojo     {background:rgba(239,68,68,.18);color:var(--red);padding:3px 12px;border-radius:20px;font-size:.72rem;font-weight:700;}
+.badge-gris     {background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);padding:3px 12px;border-radius:20px;font-size:.72rem;font-weight:700;}
+
+/* TABLA PLATOS */
+.plato-row{background:rgba(255,255,255,.04);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;cursor:pointer;transition:.15s;border:1.5px solid transparent;}
+.plato-row:hover{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.07);}
+.pr-nombre{font-weight:700;font-size:.9rem;flex:1;min-width:120px;}
+.pr-familia{font-size:.72rem;color:rgba(255,255,255,.4);margin-top:2px;}
+.pr-nums{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.pr-num{text-align:center;}
+.pr-num .n{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;}
+.pr-num .l{font-size:.65rem;color:rgba(255,255,255,.4);margin-top:1px;}
+
+/* BARRA DE MARGEN */
+.margen-bar-wrap{width:80px;height:8px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;}
+.margen-bar{height:100%;border-radius:99px;transition:.4s;}
+
+/* DETALLE PLATO */
+.detalle-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;overflow-y:auto;padding:20px;}
+.detalle-overlay.open{display:block;}
+.detalle-card{background:var(--mid);border-radius:24px;padding:28px;max-width:600px;margin:0 auto;position:relative;}
+.det-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.1);border:none;border-radius:10px;padding:8px 14px;color:#fff;cursor:pointer;font-size:.85rem;font-family:'Nunito',sans-serif;font-weight:700;}
+.det-header{margin-bottom:20px;}
+.det-titulo{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:4px;}
+.det-familia{font-size:.8rem;color:rgba(255,255,255,.45);}
+
+.ing-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.83rem;}
+.ing-row:last-child{border-bottom:none;}
+.ing-nombre{flex:1;}
+.ing-gramos{color:rgba(255,255,255,.5);width:60px;text-align:right;}
+.ing-costo{color:var(--green);width:80px;text-align:right;font-weight:700;}
+
+.resumen-box{background:rgba(255,255,255,.06);border-radius:14px;padding:16px;margin-top:16px;}
+.resumen-row{display:flex;justify-content:space-between;padding:6px 0;font-size:.85rem;border-bottom:1px solid rgba(255,255,255,.06);}
+.resumen-row:last-child{border-bottom:none;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;}
+.resumen-row .rv{color:var(--green);font-weight:700;}
+
+/* FORMS */
+.form-card{background:rgba(255,255,255,.06);border-radius:18px;padding:22px;margin-bottom:16px;}
+.form-card h3{font-family:'Syne',sans-serif;font-size:1rem;margin-bottom:16px;color:var(--accent);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.form-label{font-size:.78rem;color:rgba(255,255,255,.55);font-weight:600;}
+.form-input,.form-select{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;color:#fff;font-family:'Nunito',sans-serif;font-size:.88rem;outline:none;transition:.2s;}
+.form-input:focus,.form-select:focus{border-color:var(--primary);}
+.form-select option{background:#2C3A50;}
+.btn-primary{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:.2s;}
+.btn-primary:hover{background:#e85a25;}
+.btn-secondary{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:10px 18px;color:#fff;font-family:'Nunito',sans-serif;font-size:.84rem;font-weight:700;cursor:pointer;transition:.2s;margin-right:8px;margin-top:8px;}
+.btn-secondary:hover{background:rgba(255,255,255,.15);}
+.section-title{font-family:'Syne',sans-serif;font-size:1rem;color:var(--accent);margin-bottom:14px;}
+.info-tip{background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.2);border-radius:12px;padding:12px 16px;font-size:.8rem;color:rgba(255,255,255,.65);margin-bottom:18px;line-height:1.55;}
+
+/* INSUMOS TABLE */
+.insumo-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,.04);border-radius:12px;margin-bottom:8px;flex-wrap:wrap;}
+.ins-nombre{flex:1;font-size:.85rem;font-weight:600;min-width:120px;}
+.ins-unidad{font-size:.75rem;color:rgba(255,255,255,.4);width:50px;}
+.ins-precio{font-family:'Syne',sans-serif;font-size:.9rem;color:var(--green);font-weight:700;width:90px;text-align:right;}
+.ins-edit{background:none;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 10px;color:rgba(255,255,255,.6);font-size:.75rem;cursor:pointer;font-family:'Nunito',sans-serif;}
+.ins-edit:hover{border-color:var(--primary);color:var(--primary);}
+
+/* FILTROS */
+.filtros-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center;}
+.filtro-chip{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);border-radius:20px;padding:6px 14px;font-size:.78rem;cursor:pointer;color:rgba(255,255,255,.6);font-family:'Nunito',sans-serif;font-weight:600;transition:.15s;}
+.filtro-chip:hover,.filtro-chip.active{background:rgba(255,107,53,.18);border-color:var(--primary);color:#fff;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);color:#fff;padding:13px 24px;border-radius:14px;font-weight:700;font-size:.9rem;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:.35s cubic-bezier(.34,1.56,.64,1);z-index:999;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* OVERLAY PIN */
+.ov-pin{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;align-items:center;justify-content:center;}
+.ov-pin-box{background:#2C3A50;border-radius:20px;padding:28px 24px;width:100%;max-width:320px;text-align:center;}
+
+@media(max-width:600px){
+  .form-row{grid-template-columns:1fr;}
+  .pr-nums{gap:10px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="screen-login">
+  <div class="login-card">
+    <div class="login-logo">💰</div>
+    <div class="login-title">Mendy <span>Fast Food</span></div>
+    <div class="login-sub">Rentabilidad por Plato · San Andrés Islas</div>
+    <div class="user-grid" id="user-grid"></div>
+    <div class="pin-label">🔐 Ingresa tu PIN</div>
+    <input type="password" class="pin-input" id="pin-input" maxlength="8" placeholder="••••" inputmode="numeric">
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="screen-app">
+  <div class="top-nav">
+    <div class="nav-brand">💰 <span>Mendy</span> Rentabilidad</div>
+    <div class="nav-user">
+      <span id="nav-user-name"></span>
+      <button class="btn-logout" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('platos',this)">🍟 Platos</button>
+    <button class="tab-btn" onclick="switchTab('ranking',this)">📊 Ranking</button>
+    <button class="tab-btn" id="tab-insumos-btn" onclick="switchTab('insumos',this)">🧂 Insumos</button>
+    <button class="tab-btn" id="tab-admin-btn" style="display:none" onclick="switchTab('admin',this)">⚙️ Admin</button>
+  </div>
+
+  <!-- PLATOS -->
+  <div class="tab-content active" id="tab-platos">
+    <div class="kpi-grid" id="kpi-wrap"></div>
+    <div class="info-tip">
+      💡 <strong>Cómo funciona:</strong> ingresa el precio de compra de cada insumo (pestaña 🧂 Insumos) y el precio de venta de cada plato. El sistema calcula el costo, margen y semáforo automáticamente.<br>
+      🟢 Excelente ≥65% · 🟡 Aceptable 50–64% · 🔴 Revisar &lt;50%
+    </div>
+    <div class="filtros-wrap" id="filtros-familia"></div>
+    <div id="platos-list"></div>
+  </div>
+
+  <!-- RANKING -->
+  <div class="tab-content" id="tab-ranking">
+    <div class="kpi-grid" id="kpi-ranking"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex-wrap:wrap;" id="ranking-cols">
+      <div>
+        <h3 class="section-title">🏆 Top 5 más rentables</h3>
+        <div id="ranking-top"></div>
+      </div>
+      <div>
+        <h3 class="section-title">⚠️ Top 5 menos rentables</h3>
+        <div id="ranking-bot"></div>
+      </div>
+    </div>
+    <div style="margin-top:24px;">
+      <h3 class="section-title">📊 Todos los platos por margen</h3>
+      <div id="ranking-all"></div>
+    </div>
+  </div>
+
+  <!-- INSUMOS -->
+  <div class="tab-content" id="tab-insumos">
+    <div class="info-tip">
+      💡 Ingresa el precio de compra de cada insumo. Puedes poner el precio del paquete completo (ej: $15.000 el kg) y la unidad. El sistema convierte gramos a costo automáticamente.
+    </div>
+    <div class="filtros-wrap" id="filtros-cat"></div>
+    <div id="insumos-list"></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="tab-content" id="tab-admin">
+    <div id="admin-locked" style="text-align:center;padding:40px 20px;">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
+      <p style="color:rgba(255,255,255,.5);margin-bottom:20px;">Solo Aljavis puede editar precios de venta</p>
+      <button class="btn-primary" onclick="openAdminPin()">Ingresar PIN de Admin</button>
+    </div>
+    <div id="admin-panel" style="display:none;">
+      <div class="info-tip">Aquí puedes actualizar los precios de venta de cada plato. Los márgenes se recalculan automáticamente.</div>
+      <div class="filtros-wrap" id="admin-filtros"></div>
+      <div id="admin-precios-list"></div>
+      <div style="margin-top:24px;">
+        <h3 class="section-title">🔄 Exportar / Importar</h3>
+        <button class="btn-secondary" onclick="exportarJSON()">⬇ Exportar JSON</button>
+        <label class="btn-secondary" style="display:inline-block;cursor:pointer;">⬆ Importar JSON
+          <input type="file" accept=".json" style="display:none" onchange="importarJSON(event)">
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETALLE PLATO -->
+<div class="detalle-overlay" id="detalle-overlay">
+  <div class="detalle-card">
+    <button class="det-close" onclick="closeDetalle()">✕ Cerrar</button>
+    <div id="detalle-content"></div>
+  </div>
+</div>
+
+<!-- OVERLAY INSUMO EDITAR -->
+<div class="ov-pin" id="ov-insumo">
+  <div class="ov-pin-box">
+    <h3 style="font-family:'Syne',sans-serif;margin-bottom:6px;" id="ov-ins-titulo">Precio insumo</h3>
+    <p style="font-size:.8rem;color:rgba(255,255,255,.5);margin-bottom:4px;" id="ov-ins-unidad"></p>
+    <p style="font-size:.75rem;color:rgba(255,255,255,.35);margin-bottom:16px;">Precio por kg / litro / unidad según corresponda</p>
+    <input type="number" class="form-input" id="ov-ins-precio" placeholder="Precio en COP" style="width:100%;margin-bottom:12px;text-align:center;font-size:1.1rem;">
+    <button class="btn-primary" style="width:100%;" onclick="guardarPrecioInsumo()">✅ Guardar</button>
+    <button onclick="document.getElementById('ov-insumo').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.4);margin-top:12px;cursor:pointer;font-size:.82rem;width:100%;">Cancelar</button>
+  </div>
+</div>
+
+<!-- OVERLAY ADMIN PIN -->
+<div class="ov-pin" id="overlay-admin">
+  <div class="ov-pin-box">
+    <h3 style="font-family:'Syne',sans-serif;margin-bottom:6px;">🔐 Acceso Admin</h3>
+    <p style="font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:18px;">PIN de Aljavis</p>
+    <input type="password" class="pin-input" id="admin-pin-input" maxlength="8" placeholder="••••" inputmode="numeric">
+    <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="verifyAdminPin()">Verificar</button>
+    <div class="login-error" id="admin-pin-error"></div>
+    <button onclick="document.getElementById('overlay-admin').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.4);margin-top:12px;cursor:pointer;font-size:.82rem;">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════
+//  USUARIOS
+// ═══════════════════════════
+const DEFAULT_USERS = [
+  {id:'u1',name:'Aljavis',  role:'admin',     avatar:'👑', pin:'1234'},
+  {id:'u2',name:'Don Alfonso',role:'supervisor',avatar:'👴', pin:'0000'},
+  {id:'u3',name:'Alicia',   role:'empleada',  avatar:'👩', pin:''},
+  {id:'u4',name:'Yamileth', role:'empleada',  avatar:'👩', pin:''},
+  {id:'u5',name:'Beatriz',  role:'empleada',  avatar:'👩', pin:''},
+];
+
+// ═══════════════════════════
+//  INSUMOS BASE (38 ingredientes)
+//  precio: COP por kg o por litro o por unidad (según unidad)
+//  unidad: 'kg' | 'L' | 'un'
+// ═══════════════════════════
+const INSUMOS_DEFAULT = [
+  // Carnes y embutidos
+  {id:'i01',cat:'Carnes y embutidos',    nombre:'Salchicha americana',    unidad:'kg', precio:0},
+  {id:'i02',cat:'Carnes y embutidos',    nombre:'Salchicha especial',     unidad:'kg', precio:0},
+  {id:'i03',cat:'Carnes y embutidos',    nombre:'Chorizo mexicano',       unidad:'kg', precio:0},
+  {id:'i04',cat:'Carnes y embutidos',    nombre:'Chorizo carne',          unidad:'kg', precio:0},
+  {id:'i05',cat:'Carnes y embutidos',    nombre:'Chorizo cerdo',          unidad:'kg', precio:0},
+  {id:'i06',cat:'Carnes y embutidos',    nombre:'Tocineta',               unidad:'kg', precio:0},
+  {id:'i07',cat:'Carnes y embutidos',    nombre:'Carne artesanal',        unidad:'kg', precio:0},
+  {id:'i08',cat:'Carnes y embutidos',    nombre:'Carne desmechada',       unidad:'kg', precio:0},
+  {id:'i09',cat:'Carnes y embutidos',    nombre:'Pollo desmechado',       unidad:'kg', precio:0},
+  {id:'i10',cat:'Carnes y embutidos',    nombre:'Butifarra',              unidad:'kg', precio:0},
+  {id:'i11',cat:'Carnes y embutidos',    nombre:'Pepperoni',              unidad:'kg', precio:0},
+  // Papas y vegetales
+  {id:'i12',cat:'Papas y vegetales',     nombre:'Papas fritas',           unidad:'kg', precio:0},
+  {id:'i13',cat:'Papas y vegetales',     nombre:'Papa ripio',             unidad:'kg', precio:0},
+  {id:'i14',cat:'Papas y vegetales',     nombre:'Papa cocida',            unidad:'kg', precio:0},
+  {id:'i15',cat:'Papas y vegetales',     nombre:'Maíz',                   unidad:'kg', precio:0},
+  {id:'i16',cat:'Papas y vegetales',     nombre:'Lechuga',                unidad:'kg', precio:0},
+  {id:'i17',cat:'Papas y vegetales',     nombre:'Tomate',                 unidad:'kg', precio:0},
+  {id:'i18',cat:'Papas y vegetales',     nombre:'Cebolla blanca',         unidad:'kg', precio:0},
+  {id:'i19',cat:'Papas y vegetales',     nombre:'Cebolla roja',           unidad:'kg', precio:0},
+  // Lácteos
+  {id:'i20',cat:'Lácteos',              nombre:'Queso rallado',           unidad:'kg', precio:0},
+  {id:'i21',cat:'Lácteos',              nombre:'Mozzarella',              unidad:'kg', precio:0},
+  {id:'i22',cat:'Lácteos',              nombre:'Queso cheddar',           unidad:'kg', precio:0},
+  // Panes
+  {id:'i23',cat:'Panes',               nombre:'Pan 50g (perro sencillo)', unidad:'un', precio:0},
+  {id:'i24',cat:'Panes',               nombre:'Pan 60g (perro/burger)',   unidad:'un', precio:0},
+  {id:'i25',cat:'Panes',               nombre:'Pan 90g (mega)',           unidad:'un', precio:0},
+  {id:'i26',cat:'Panes',               nombre:'Pan brioche 60g',          unidad:'un', precio:0},
+  // Salsas
+  {id:'i27',cat:'Salsas',              nombre:'Salsa de tomate',          unidad:'kg', precio:0},
+  {id:'i28',cat:'Salsas',              nombre:'Salsa rosada',             unidad:'kg', precio:0},
+  {id:'i29',cat:'Salsas',              nombre:'Salsa de ajo',             unidad:'kg', precio:0},
+  {id:'i30',cat:'Salsas',              nombre:'Salsa especial',           unidad:'kg', precio:0},
+  {id:'i31',cat:'Salsas',              nombre:'Salsa tártara',            unidad:'kg', precio:0},
+  {id:'i32',cat:'Salsas',              nombre:'Salsa BBQ',                unidad:'kg', precio:0},
+  {id:'i33',cat:'Salsas',              nombre:'Mostaza',                  unidad:'kg', precio:0},
+  {id:'i34',cat:'Salsas',              nombre:'Mayonesa',                 unidad:'kg', precio:0},
+  {id:'i35',cat:'Salsas',              nombre:'Salsa de maíz',            unidad:'kg', precio:0},
+  {id:'i36',cat:'Salsas',              nombre:'Salsa de piña',            unidad:'kg', precio:0},
+  {id:'i37',cat:'Salsas',              nombre:'Vinagreta',                unidad:'kg', precio:0},
+  {id:'i38',cat:'Salsas',              nombre:'Picante casero',           unidad:'kg', precio:0},
+];
+
+// ═══════════════════════════
+//  RECETAS (gramajes por plato)
+//  ingredientes: [{insumoId, gramos}]
+//  gramos = 0 para ingredientes "al gusto" de salsas → usar 30g por defecto
+// ═══════════════════════════
+const RECETAS_DEFAULT = [
+  // ── SALCHIPAPAS ──
+  {id:'r01', familia:'Salchipapas', nombre:'Salchipapa Sencilla',
+   ingredientes:[{id:'i12',g:200},{id:'i02',g:60},{id:'i27',g:30},{id:'i34',g:20}], precio:26000},
+  {id:'r02', familia:'Salchipapas', nombre:'Salchipapa Especial',
+   ingredientes:[{id:'i12',g:200},{id:'i02',g:80},{id:'i20',g:40},{id:'i27',g:30},{id:'i34',g:20},{id:'i28',g:20}], precio:31000},
+  {id:'r03', familia:'Salchipapas', nombre:'Salchipapa Ranchera',
+   ingredientes:[{id:'i12',g:200},{id:'i02',g:80},{id:'i08',g:60},{id:'i20',g:40},{id:'i27',g:30},{id:'i32',g:20}], precio:32000},
+  {id:'r04', familia:'Salchipapas', nombre:'Salchi-Quesuda',
+   ingredientes:[{id:'i12',g:200},{id:'i02',g:80},{id:'i21',g:60},{id:'i20',g:30},{id:'i27',g:30}], precio:32000},
+  {id:'r05', familia:'Salchipapas', nombre:'Salchi-Carne',
+   ingredientes:[{id:'i12',g:200},{id:'i02',g:60},{id:'i07',g:80},{id:'i20',g:30},{id:'i27',g:30},{id:'i34',g:20}], precio:38000},
+  {id:'r06', familia:'Salchipapas', nombre:'Salchi-Pollo',
+   ingredientes:[{id:'i12',g:200},{id:'i02',g:60},{id:'i09',g:80},{id:'i20',g:30},{id:'i27',g:30},{id:'i34',g:20}], precio:38000},
+
+  // ── PICADAS ──
+  {id:'r07', familia:'Picadas', nombre:'Picada #1',
+   ingredientes:[{id:'i12',g:250},{id:'i01',g:80},{id:'i07',g:80},{id:'i20',g:50},{id:'i27',g:30},{id:'i34',g:30}], precio:25000},
+  {id:'r08', familia:'Picadas', nombre:'Picada #2',
+   ingredientes:[{id:'i12',g:250},{id:'i01',g:80},{id:'i07',g:80},{id:'i09',g:80},{id:'i21',g:50},{id:'i27',g:30},{id:'i28',g:30}], precio:39000},
+  {id:'r09', familia:'Picadas', nombre:'Picada para 4',
+   ingredientes:[{id:'i12',g:500},{id:'i01',g:160},{id:'i07',g:160},{id:'i09',g:120},{id:'i21',g:80},{id:'i27',g:50},{id:'i28',g:50},{id:'i34',g:50}], precio:85000},
+  {id:'r10', familia:'Picadas', nombre:'Picada para 6',
+   ingredientes:[{id:'i12',g:700},{id:'i01',g:200},{id:'i07',g:200},{id:'i09',g:160},{id:'i21',g:100},{id:'i27',g:60},{id:'i28',g:60},{id:'i34',g:60}], precio:98000},
+  {id:'r11', familia:'Picadas', nombre:'Maíz Gratinado',
+   ingredientes:[{id:'i15',g:250},{id:'i21',g:80},{id:'i20',g:40},{id:'i27',g:30}], precio:22000},
+  {id:'r12', familia:'Picadas', nombre:'Gratinado Especial',
+   ingredientes:[{id:'i15',g:250},{id:'i07',g:80},{id:'i21',g:80},{id:'i20',g:40},{id:'i27',g:30}], precio:37000},
+  {id:'r13', familia:'Picadas', nombre:'Maíz Desgranado',
+   ingredientes:[{id:'i15',g:300},{id:'i27',g:20},{id:'i34',g:20}], precio:27000},
+
+  // ── PERROS ──
+  {id:'r14', familia:'Perros', nombre:'Perro Sencillo',
+   ingredientes:[{id:'i23',g:1},{id:'i01',g:60},{id:'i27',g:20},{id:'i33',g:15},{id:'i34',g:15}], precio:10000},
+  {id:'r15', familia:'Perros', nombre:'Super Perro',
+   ingredientes:[{id:'i24',g:1},{id:'i02',g:80},{id:'i20',g:30},{id:'i17',g:20},{id:'i27',g:20},{id:'i34',g:20},{id:'i28',g:20}], precio:15000},
+  {id:'r16', familia:'Perros', nombre:'Choriperro',
+   ingredientes:[{id:'i24',g:1},{id:'i03',g:80},{id:'i20',g:30},{id:'i27',g:20},{id:'i34',g:20}], precio:15000},
+  {id:'r17', familia:'Perros', nombre:'Mega Choriperro',
+   ingredientes:[{id:'i25',g:1},{id:'i03',g:120},{id:'i21',g:50},{id:'i20',g:30},{id:'i27',g:25},{id:'i34',g:25}], precio:22000},
+  {id:'r18', familia:'Perros', nombre:'Mega Perro',
+   ingredientes:[{id:'i25',g:1},{id:'i02',g:120},{id:'i21',g:50},{id:'i17',g:30},{id:'i18',g:20},{id:'i27',g:25},{id:'i34',g:25}], precio:22000},
+  {id:'r19', familia:'Perros', nombre:'Mega Mexicano',
+   ingredientes:[{id:'i25',g:1},{id:'i03',g:120},{id:'i04',g:80},{id:'i21',g:50},{id:'i29',g:25},{id:'i27',g:25}], precio:28000},
+  {id:'r20', familia:'Perros', nombre:'Mega Ranchero',
+   ingredientes:[{id:'i25',g:1},{id:'i02',g:120},{id:'i08',g:80},{id:'i21',g:50},{id:'i32',g:25},{id:'i27',g:25}], precio:28000},
+  {id:'r21', familia:'Perros', nombre:'Perro Ranchero',
+   ingredientes:[{id:'i24',g:1},{id:'i02',g:80},{id:'i08',g:60},{id:'i20',g:30},{id:'i32',g:20},{id:'i27',g:20}], precio:25000},
+  {id:'r22', familia:'Perros', nombre:'Perro Mexicano',
+   ingredientes:[{id:'i24',g:1},{id:'i03',g:80},{id:'i04',g:60},{id:'i20',g:30},{id:'i29',g:20},{id:'i27',g:20}], precio:25000},
+
+  // ── HAMBURGUESAS ──
+  {id:'r23', familia:'Hamburguesas', nombre:'Hamburguesa Sencilla Pollo',
+   ingredientes:[{id:'i26',g:1},{id:'i09',g:120},{id:'i16',g:20},{id:'i17',g:30},{id:'i22',g:30},{id:'i34',g:20}], precio:24000},
+  {id:'r24', familia:'Hamburguesas', nombre:'Hamburguesa Sencilla Carne',
+   ingredientes:[{id:'i26',g:1},{id:'i07',g:120},{id:'i16',g:20},{id:'i17',g:30},{id:'i22',g:30},{id:'i34',g:20}], precio:24000},
+  {id:'r25', familia:'Hamburguesas', nombre:'Doble Carne',
+   ingredientes:[{id:'i26',g:1},{id:'i07',g:200},{id:'i16',g:20},{id:'i17',g:30},{id:'i22',g:40},{id:'i34',g:20},{id:'i33',g:15}], precio:30000},
+  {id:'r26', familia:'Hamburguesas', nombre:'Hamburguesa Ranchera',
+   ingredientes:[{id:'i26',g:1},{id:'i07',g:140},{id:'i08',g:60},{id:'i22',g:40},{id:'i16',g:20},{id:'i32',g:20},{id:'i34',g:20}], precio:32000},
+  {id:'r27', familia:'Hamburguesas', nombre:'Hamburguesa Especial',
+   ingredientes:[{id:'i26',g:1},{id:'i07',g:140},{id:'i09',g:60},{id:'i22',g:40},{id:'i21',g:30},{id:'i16',g:20},{id:'i28',g:20},{id:'i34',g:20}], precio:33000},
+  {id:'r28', familia:'Hamburguesas', nombre:'Chori-Burger',
+   ingredientes:[{id:'i26',g:1},{id:'i03',g:100},{id:'i07',g:80},{id:'i22',g:40},{id:'i16',g:20},{id:'i29',g:20},{id:'i34',g:20}], precio:32000},
+];
+
+// ═══════════════════════════
+//  ESTADO
+// ═══════════════════════════
+let state = {
+  users: [], insumos: [], recetas: [],
+  currentUser: null, adminUnlocked: false,
+};
+let editingInsumoId = null;
+let filtroFamilia = 'Todos';
+let filtroCat = 'Todos';
+let filtroAdmin = 'Todos';
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('mendy_rentabilidad_v1');
+    if (s) {
+      const p = JSON.parse(s);
+      state.users   = p.users   || DEFAULT_USERS;
+      state.insumos = p.insumos || INSUMOS_DEFAULT;
+      state.recetas = p.recetas || RECETAS_DEFAULT;
+    } else {
+      state.users   = DEFAULT_USERS;
+      state.insumos = INSUMOS_DEFAULT;
+      state.recetas = RECETAS_DEFAULT;
+    }
+  } catch {
+    state.users=DEFAULT_USERS; state.insumos=INSUMOS_DEFAULT; state.recetas=RECETAS_DEFAULT;
+  }
+}
+function saveState() {
+  localStorage.setItem('mendy_rentabilidad_v1', JSON.stringify({
+    users:state.users, insumos:state.insumos, recetas:state.recetas,
+  }));
+}
+
+// ═══════════════════════════
+//  CÁLCULOS
+// ═══════════════════════════
+function costoReceta(r) {
+  return r.ingredientes.reduce((total, ing) => {
+    const ins = state.insumos.find(i => i.id === ing.id);
+    if (!ins || !ins.precio) return total;
+    let costoPorGramo;
+    if (ins.unidad === 'kg') costoPorGramo = ins.precio / 1000;
+    else if (ins.unidad === 'L') costoPorGramo = ins.precio / 1000;
+    else costoPorGramo = ins.precio; // unidad = 'un', g=1
+    return total + (costoPorGramo * ing.g);
+  }, 0);
+}
+
+function margen(receta) {
+  const costo = costoReceta(receta);
+  if (!receta.precio || !costo) return null;
+  return ((receta.precio - costo) / receta.precio) * 100;
+}
+
+function semaforo(pct) {
+  if (pct === null) return 'gris';
+  if (pct >= 65) return 'verde';
+  if (pct >= 50) return 'amarillo';
+  return 'rojo';
+}
+function semaforoLabel(pct) {
+  if (pct === null) return 'Sin datos';
+  if (pct >= 65) return '🟢 Excelente';
+  if (pct >= 50) return '🟡 Aceptable';
+  return '🔴 Revisar';
+}
+function badgeClass(sem) {
+  return 'badge-' + sem;
+}
+
+// ═══════════════════════════
+//  LOGIN
+// ═══════════════════════════
+let selectedUserId = null;
+function renderUserGrid() {
+  const g = document.getElementById('user-grid');
+  g.innerHTML = '';
+  state.users.filter(u => u.pin).forEach(u => {
+    const b = document.createElement('button');
+    b.className = 'user-btn' + (u.id===selectedUserId?' selected':'');
+    b.innerHTML = `<div class="u-avatar">${u.avatar}</div><div class="u-name">${u.name.split(' ')[0]}</div><div class="u-role">${u.role==='admin'?'👑 Admin':u.role==='supervisor'?'👴 Supervisor':'👩 Empleada'}</div>`;
+    b.onclick = () => { selectedUserId=u.id; document.querySelectorAll('.user-btn').forEach(x=>x.classList.remove('selected')); b.classList.add('selected'); document.getElementById('pin-input').focus(); };
+    g.appendChild(b);
+  });
+}
+function doLogin() {
+  const pin = document.getElementById('pin-input').value.trim();
+  if (!selectedUserId) { document.getElementById('login-error').textContent='Selecciona tu nombre.'; return; }
+  const user = state.users.find(u=>u.id===selectedUserId && u.pin===pin);
+  if (!user) { document.getElementById('login-error').textContent='PIN incorrecto.'; return; }
+  state.currentUser = user;
+  state.adminUnlocked = false;
+  document.getElementById('screen-login').style.display='none';
+  document.getElementById('screen-app').style.display='block';
+  document.getElementById('nav-user-name').innerHTML=`${user.avatar} <strong>${user.name.split(' ')[0]}</strong>`;
+  const isAdmin = user.role==='admin';
+  const canEdit = user.role==='admin'||user.role==='supervisor';
+  document.getElementById('tab-admin-btn').style.display = isAdmin?'inline-block':'none';
+  document.getElementById('tab-insumos-btn').style.display = canEdit?'inline-block':'none';
+  switchTab('platos', document.querySelector('.tab-btn'));
+}
+function doLogout() {
+  state.currentUser=null; selectedUserId=null;
+  document.getElementById('screen-app').style.display='none';
+  document.getElementById('screen-login').style.display='flex';
+  document.getElementById('pin-input').value='';
+  document.getElementById('login-error').textContent='';
+  renderUserGrid();
+}
+document.getElementById('pin-input').addEventListener('keyup',e=>{if(e.key==='Enter')doLogin();});
+
+// ═══════════════════════════
+//  TABS
+// ═══════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id==='platos')  renderPlatos();
+  if (id==='ranking') renderRanking();
+  if (id==='insumos') renderInsumos();
+  if (id==='admin' && state.adminUnlocked) renderAdminPrecios();
+}
+
+// ═══════════════════════════
+//  PLATOS
+// ═══════════════════════════
+function renderPlatos() {
+  // KPIs
+  const todas = state.recetas;
+  const conDatos = todas.filter(r => r.precio && costoReceta(r));
+  const verdes  = conDatos.filter(r => margen(r)>=65).length;
+  const amarillos = conDatos.filter(r => margen(r)>=50&&margen(r)<65).length;
+  const rojos   = conDatos.filter(r => margen(r)<50).length;
+  const avgMargen = conDatos.length ? conDatos.reduce((s,r)=>s+(margen(r)||0),0)/conDatos.length : 0;
+
+  document.getElementById('kpi-wrap').innerHTML = `
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--blue)">${todas.length}</div><div class="kpi-label">Platos en menú</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--green)">${verdes}</div><div class="kpi-label">🟢 Excelente<br>≥65% margen</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--yellow)">${amarillos}</div><div class="kpi-label">🟡 Aceptable<br>50–64% margen</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--red)">${rojos}</div><div class="kpi-label">🔴 Revisar<br>&lt;50% margen</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--accent)">${conDatos.length?avgMargen.toFixed(1)+'%':'—'}</div><div class="kpi-label">Margen promedio</div></div>`;
+
+  // Filtros familia
+  const familias = ['Todos', ...new Set(state.recetas.map(r=>r.familia))];
+  document.getElementById('filtros-familia').innerHTML = familias.map(f =>
+    `<span class="filtro-chip ${filtroFamilia===f?'active':''}" onclick="setFiltroFamilia('${f}')">${f}</span>`
+  ).join('');
+
+  // Lista
+  const filtradas = filtroFamilia==='Todos' ? state.recetas : state.recetas.filter(r=>r.familia===filtroFamilia);
+  document.getElementById('platos-list').innerHTML = filtradas.map(r => {
+    const costo = costoReceta(r);
+    const mg = margen(r);
+    const sem = semaforo(mg);
+    const barW = mg!==null ? Math.min(100,Math.max(0,mg)) : 0;
+    const barColor = sem==='verde'?'var(--green)':sem==='amarillo'?'var(--yellow)':sem==='rojo'?'var(--red)':'rgba(255,255,255,.2)';
+    return `<div class="plato-row" onclick="openDetalle('${r.id}')">
+      <div style="flex:1;min-width:140px;">
+        <div class="pr-nombre">${r.nombre}</div>
+        <div class="pr-familia">${r.familia}</div>
+      </div>
+      <div class="pr-nums">
+        <div class="pr-num"><div class="n">${costo?'$'+Math.round(costo).toLocaleString('es-CO'):'—'}</div><div class="l">Costo</div></div>
+        <div class="pr-num"><div class="n">${r.precio?'$'+r.precio.toLocaleString('es-CO'):'—'}</div><div class="l">Venta</div></div>
+        <div class="pr-num"><div class="n" style="color:${barColor}">${mg!==null?mg.toFixed(1)+'%':'—'}</div><div class="l">Margen</div></div>
+        <div>
+          <div class="margen-bar-wrap"><div class="margen-bar" style="width:${barW}%;background:${barColor};"></div></div>
+          <div style="margin-top:6px;"><span class="${badgeClass(sem)}">${semaforoLabel(mg)}</span></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setFiltroFamilia(f) { filtroFamilia=f; renderPlatos(); }
+
+// ═══════════════════════════
+//  DETALLE PLATO
+// ═══════════════════════════
+function openDetalle(id) {
+  const r = state.recetas.find(x=>x.id===id);
+  if (!r) return;
+  const costo = costoReceta(r);
+  const mg = margen(r);
+  const sem = semaforo(mg);
+  const isAdmin = state.currentUser.role==='admin';
+
+  const ingsHtml = r.ingredientes.map(ing => {
+    const ins = state.insumos.find(i=>i.id===ing.id);
+    if (!ins) return '';
+    let costoIng = 0;
+    if (ins.precio) {
+      costoIng = ins.unidad==='un' ? ins.precio*ing.g : (ins.precio/1000)*ing.g;
+    }
+    return `<div class="ing-row">
+      <span class="ing-nombre">${ins.nombre}</span>
+      <span class="ing-gramos">${ins.unidad==='un'?ing.g+' un':ing.g+'g'}</span>
+      <span class="ing-costo">${costoIng?'$'+Math.round(costoIng).toLocaleString('es-CO'):'$0'}</span>
+    </div>`;
+  }).join('');
+
+  const precioVentaEdit = isAdmin ? `
+    <div style="margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <label style="font-size:.8rem;color:rgba(255,255,255,.5);">Precio de venta:</label>
+      <input type="number" id="det-precio-input" value="${r.precio||''}" placeholder="0"
+        style="background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:8px 12px;color:#fff;width:130px;font-size:.95rem;outline:none;">
+      <button class="btn-primary" style="padding:9px 18px;" onclick="guardarPrecioVenta('${r.id}')">💾 Guardar</button>
+    </div>` : `<div style="margin-top:14px;font-size:.8rem;color:rgba(255,255,255,.4);">Solo Aljavis puede editar el precio de venta.</div>`;
+
+  document.getElementById('detalle-content').innerHTML = `
+    <div class="det-header">
+      <div class="det-titulo">${r.nombre}</div>
+      <div class="det-familia">${r.familia} · <span class="${badgeClass(sem)}">${semaforoLabel(mg)}</span></div>
+    </div>
+    <h3 style="font-family:'Syne',sans-serif;font-size:.85rem;color:var(--accent);margin-bottom:10px;">📋 Ingredientes y costos</h3>
+    <div style="display:flex;justify-content:space-between;font-size:.72rem;color:rgba(255,255,255,.3);padding:0 0 6px;border-bottom:1px solid rgba(255,255,255,.08);">
+      <span>Ingrediente</span><span>Cantidad</span><span>Costo</span>
+    </div>
+    ${ingsHtml}
+    <div class="resumen-box">
+      <div class="resumen-row"><span>Costo total del plato</span><span class="rv">${costo?'$'+Math.round(costo).toLocaleString('es-CO'):'Sin precios'}</span></div>
+      <div class="resumen-row"><span>Precio de venta</span><span class="rv">${r.precio?'$'+r.precio.toLocaleString('es-CO'):'No definido'}</span></div>
+      <div class="resumen-row"><span>Ganancia por plato</span><span class="rv" style="color:${mg>=50?'var(--green)':'var(--red)'}">${r.precio&&costo?'$'+Math.round(r.precio-costo).toLocaleString('es-CO'):'—'}</span></div>
+      <div class="resumen-row"><span>Margen bruto</span><span class="rv" style="color:${sem==='verde'?'var(--green)':sem==='amarillo'?'var(--yellow)':'var(--red)'}">${mg!==null?mg.toFixed(1)+'%':'—'}</span></div>
+    </div>
+    ${precioVentaEdit}`;
+
+  document.getElementById('detalle-overlay').classList.add('open');
+}
+function closeDetalle() { document.getElementById('detalle-overlay').classList.remove('open'); }
+
+function guardarPrecioVenta(id) {
+  const val = Number(document.getElementById('det-precio-input').value);
+  if (!val || val<=0) { showToast('⚠️ Precio inválido','warn'); return; }
+  const r = state.recetas.find(x=>x.id===id);
+  if (r) { r.precio=val; saveState(); showToast('✅ Precio guardado'); renderPlatos(); openDetalle(id); }
+}
+
+// ═══════════════════════════
+//  RANKING
+// ═══════════════════════════
+function renderRanking() {
+  const conDatos = state.recetas.filter(r=>r.precio&&costoReceta(r)).map(r=>({...r,mg:margen(r)})).sort((a,b)=>b.mg-a.mg);
+  const sinDatos = state.recetas.filter(r=>!r.precio||!costoReceta(r)).length;
+
+  const totalNomina = conDatos.reduce((s,r)=>s+(r.precio-costoReceta(r)),0);
+  const avgMg = conDatos.length ? conDatos.reduce((s,r)=>s+r.mg,0)/conDatos.length : 0;
+
+  document.getElementById('kpi-ranking').innerHTML = `
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--green)">${conDatos.filter(r=>r.mg>=65).length}</div><div class="kpi-label">Platos estrella<br>≥65% margen</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--yellow)">${conDatos.filter(r=>r.mg>=50&&r.mg<65).length}</div><div class="kpi-label">Platos aceptables<br>50–64%</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--red)">${conDatos.filter(r=>r.mg<50).length}</div><div class="kpi-label">Platos a revisar<br>&lt;50%</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--accent)">${avgMg.toFixed(1)}%</div><div class="kpi-label">Margen promedio</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:rgba(255,255,255,.3);font-size:1.2rem;">${sinDatos}</div><div class="kpi-label">Sin precios<br>cargados</div></div>`;
+
+  const rowRanking = r => {
+    const sem = semaforo(r.mg);
+    const col = sem==='verde'?'var(--green)':sem==='amarillo'?'var(--yellow)':'var(--red)';
+    return `<div class="plato-row" onclick="openDetalle('${r.id}')" style="margin-bottom:8px;">
+      <div style="flex:1"><div class="pr-nombre">${r.nombre}</div><div class="pr-familia">${r.familia}</div></div>
+      <div style="text-align:right">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:${col}">${r.mg.toFixed(1)}%</div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.4);">$${Math.round(r.precio-costoReceta(r)).toLocaleString('es-CO')} ganancia</div>
+      </div>
+    </div>`;
+  };
+
+  document.getElementById('ranking-top').innerHTML = conDatos.length ? conDatos.slice(0,5).map(rowRanking).join('') : '<p style="color:rgba(255,255,255,.3);font-size:.82rem;">Sin datos suficientes.</p>';
+  document.getElementById('ranking-bot').innerHTML = conDatos.length ? [...conDatos].reverse().slice(0,5).map(rowRanking).join('') : '<p style="color:rgba(255,255,255,.3);font-size:.82rem;">Sin datos suficientes.</p>';
+  document.getElementById('ranking-all').innerHTML = conDatos.length ? conDatos.map(rowRanking).join('') : '<p style="color:rgba(255,255,255,.3);font-size:.82rem;">Ingresa precios de insumos y ventas para ver el ranking.</p>';
+}
+
+// ═══════════════════════════
+//  INSUMOS
+// ═══════════════════════════
+function renderInsumos() {
+  const cats = ['Todos', ...new Set(state.insumos.map(i=>i.cat))];
+  document.getElementById('filtros-cat').innerHTML = cats.map(c =>
+    `<span class="filtro-chip ${filtroCat===c?'active':''}" onclick="setFiltroCat('${c}')">${c}</span>`
+  ).join('');
+
+  const filtrados = filtroCat==='Todos' ? state.insumos : state.insumos.filter(i=>i.cat===filtroCat);
+  const canEdit = state.currentUser.role==='admin'||state.currentUser.role==='supervisor';
+
+  document.getElementById('insumos-list').innerHTML = filtrados.map(ins =>
+    `<div class="insumo-row">
+      <span class="ins-nombre">${ins.nombre}</span>
+      <span class="ins-unidad">/${ins.unidad}</span>
+      <span class="ins-precio">${ins.precio?'$'+ins.precio.toLocaleString('es-CO'):'Sin precio'}</span>
+      ${canEdit?`<button class="ins-edit" onclick="abrirEditarInsumo('${ins.id}')">✏️ Editar</button>`:''}
+    </div>`
+  ).join('');
+}
+function setFiltroCat(c) { filtroCat=c; renderInsumos(); }
+
+function abrirEditarInsumo(id) {
+  const ins = state.insumos.find(i=>i.id===id);
+  if (!ins) return;
+  editingInsumoId = id;
+  document.getElementById('ov-ins-titulo').textContent = ins.nombre;
+  document.getElementById('ov-ins-unidad').textContent = `Precio por ${ins.unidad==='kg'?'kilogramo (kg)':ins.unidad==='L'?'litro (L)':'unidad'}`;
+  document.getElementById('ov-ins-precio').value = ins.precio||'';
+  document.getElementById('ov-insumo').style.display='flex';
+  setTimeout(()=>document.getElementById('ov-ins-precio').focus(),100);
+}
+function guardarPrecioInsumo() {
+  const val = Number(document.getElementById('ov-ins-precio').value);
+  if (!val||val<=0) { showToast('⚠️ Precio inválido','warn'); return; }
+  const ins = state.insumos.find(i=>i.id===editingInsumoId);
+  if (ins) { ins.precio=val; saveState(); showToast('✅ '+ins.nombre+' actualizado'); }
+  document.getElementById('ov-insumo').style.display='none';
+  renderInsumos();
+}
+
+// ═══════════════════════════
+//  ADMIN PRECIOS VENTA
+// ═══════════════════════════
+function openAdminPin() {
+  document.getElementById('overlay-admin').style.display='flex';
+  document.getElementById('admin-pin-input').value='';
+  document.getElementById('admin-pin-error').textContent='';
+  setTimeout(()=>document.getElementById('admin-pin-input').focus(),100);
+}
+function verifyAdminPin() {
+  const pin = document.getElementById('admin-pin-input').value.trim();
+  if (pin===state.currentUser.pin && state.currentUser.role==='admin') {
+    state.adminUnlocked=true;
+    document.getElementById('overlay-admin').style.display='none';
+    document.getElementById('admin-locked').style.display='none';
+    document.getElementById('admin-panel').style.display='block';
+    renderAdminPrecios();
+  } else { document.getElementById('admin-pin-error').textContent='PIN incorrecto.'; }
+}
+
+function renderAdminPrecios() {
+  const familias = ['Todos', ...new Set(state.recetas.map(r=>r.familia))];
+  document.getElementById('admin-filtros').innerHTML = familias.map(f =>
+    `<span class="filtro-chip ${filtroAdmin===f?'active':''}" onclick="setFiltroAdmin('${f}')">${f}</span>`
+  ).join('');
+
+  const filtradas = filtroAdmin==='Todos' ? state.recetas : state.recetas.filter(r=>r.familia===filtroAdmin);
+  document.getElementById('admin-precios-list').innerHTML = filtradas.map(r => {
+    const costo = costoReceta(r);
+    const mg = margen(r);
+    const sem = semaforo(mg);
+    return `<div class="insumo-row" style="gap:12px;">
+      <div style="flex:1;min-width:140px;">
+        <div style="font-weight:700;font-size:.88rem;">${r.nombre}</div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.4);">${r.familia} · Costo: ${costo?'$'+Math.round(costo).toLocaleString('es-CO'):'Sin datos'}</div>
+      </div>
+      <input type="number" value="${r.precio||''}" placeholder="Precio venta"
+        style="background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:8px 10px;color:#fff;width:130px;font-size:.85rem;outline:none;"
+        onchange="setPrecioVenta('${r.id}',this.value)">
+      <span class="${badgeClass(sem)}">${mg!==null?mg.toFixed(1)+'%':'—'}</span>
+    </div>`;
+  }).join('');
+}
+function setFiltroAdmin(f) { filtroAdmin=f; renderAdminPrecios(); }
+function setPrecioVenta(id, val) {
+  const r = state.recetas.find(x=>x.id===id);
+  if (r) { r.precio=Number(val)||0; saveState(); renderAdminPrecios(); }
+}
+
+// ═══════════════════════════
+//  EXPORT / IMPORT
+// ═══════════════════════════
+function exportarJSON() {
+  const data = JSON.stringify({insumos:state.insumos, recetas:state.recetas}, null, 2);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([data],{type:'application/json'}));
+  a.download = 'mendy-rentabilidad-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); showToast('⬇ JSON exportado');
+}
+function importarJSON(e) {
+  const file = e.target.files[0]; if(!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      const d = JSON.parse(ev.target.result);
+      if (d.insumos) state.insumos = d.insumos;
+      if (d.recetas) state.recetas = d.recetas;
+      saveState(); renderPlatos(); renderInsumos();
+      showToast('✅ Datos importados');
+    } catch { showToast('❌ Error al leer archivo','error'); }
+  };
+  r.readAsText(file);
+}
+
+// ═══════════════════════════
+//  TOAST
+// ═══════════════════════════
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=type==='ok'?'var(--green)':type==='warn'?'var(--yellow)':'var(--red)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ═══════════════════════════
+//  INIT
+// ═══════════════════════════
+loadState();
+renderUserGrid();
+</script>
+</body>
+</html>
