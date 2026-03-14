@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes Diarios - Mendy Fast Food</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FF6B00 0%, #ff8533 100%);
+            color: white;
+            padding: 25px 20px;
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-bottom: 3px solid #FF6B00;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 15px 10px;
+            background: white;
+            border: none;
+            color: #666;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: #FF6B00;
+            border-bottom-color: #FF6B00;
+            background: #fff8f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #FF6B00;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        select, input[type="text"], input[type="number"], input[type="date"], input[type="time"], textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            color: #333;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #FF6B00;
+            background: #fffbf7;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .semaforo-group {
+            margin: 15px 0;
+        }
+
+        .semaforo-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .semaforo-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .semaforo-btn {
+            padding: 15px;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .semaforo-btn:hover {
+            border-color: #bbb;
+            transform: scale(1.02);
+        }
+
+        .semaforo-btn.active.verde {
+            background: #4CAF50;
+            border-color: #4CAF50;
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .semaforo-btn.active.amarillo {
+            background: #FFC107;
+            border-color: #FFC107;
+            color: #333;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+        }
+
+        .semaforo-btn.active.rojo {
+            background: #F44336;
+            border-color: #F44336;
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+        }
+
+        .observacion-box {
+            display: none;
+            margin-top: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .observacion-box.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .photo-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #FF6B00 0%, #ff8533 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .photo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.3);
+        }
+
+        .photo-preview {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #FF6B00;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #FF6B00 0%, #ff8533 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.2);
+        }
+
+        .stat-card.green { background: linear-gradient(135deg, #4CAF50 0%, #66bb6a 100%); }
+        .stat-card.blue { background: linear-gradient(135deg, #2196F3 0%, #42a5f5 100%); }
+        .stat-card.purple { background: linear-gradient(135deg, #9C27B0 0%, #ba68c8 100%); }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.95;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4CAF50 0%, #66bb6a 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .config-btn {
+            background: linear-gradient(135deg, #FF6B00 0%, #ff8533 100%);
+        }
+
+        .alert-box {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+        }
+
+        .alert-box.success {
+            background: #e8f5e9;
+            border-color: #4CAF50;
+            color: #2e7d32;
+        }
+
+        .alert-box.warning {
+            background: #fff8e1;
+            border-color: #FFC107;
+            color: #f57c00;
+        }
+
+        .alert-box.danger {
+            background: #ffebee;
+            border-color: #F44336;
+            color: #c62828;
+        }
+
+        .report-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border-left: 4px solid #FF6B00;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .report-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .report-date {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .report-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .report-badge.success { background: #4CAF50; color: white; }
+        .report-badge.warning { background: #FFC107; color: #333; }
+        .report-badge.danger { background: #F44336; color: white; }
+
+        .report-meta {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+
+        .checkbox-label:hover {
+            background: #f0f0f0;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-label span {
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .list-item button {
+            padding: 5px 12px;
+            background: #F44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .hidden { display: none !important; }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #1565c0;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 22px; }
+            .section-card { padding: 15px; }
+            .semaforo-buttons { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header" style="position:relative;">
+        <a href="index.html" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.25);color:#fff;border-radius:10px;padding:7px 14px;font-size:.82rem;font-weight:700;text-decoration:none;font-family:sans-serif;">🏠 Inicio</a>
+        <h1>🍔 Mendy Fast Food</h1>
+        <div class="subtitle">Sistema de Reportes Diarios</div>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('nuevo')">📝 Nuevo</button>
+        <button class="tab-btn" onclick="switchTab('dashboard')">📊 Dashboard</button>
+        <button class="tab-btn" onclick="switchTab('historial')">📅 Historial</button>
+        <button class="tab-btn" onclick="switchTab('config')">⚙️ Configurar</button>
+    </div>
+
+    <div class="container">
+        <!-- TAB: CONFIGURACIÓN -->
+        <div id="tab-config" class="tab-content">
+            <div class="section-card">
+                <div class="section-title">⚙️ Configuración General</div>
+                
+                <div class="info-box">
+                    ℹ️ Configura aquí los turnos, horarios y encargados. Esta configuración se guardará y aparecerá en los reportes.
+                </div>
+
+                <h3 style="color: #FF6B00; margin: 20px 0 10px;">Turnos y Horarios</h3>
+                
+                <div class="form-group">
+                    <label>Nombre Turno 1</label>
+                    <input type="text" id="config-turno1-nombre" placeholder="Ej: Mañana, Apertura, Turno A">
+                </div>
+
+                <div class="form-group">
+                    <label>Horario Turno 1</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <input type="time" id="config-turno1-inicio">
+                        <input type="time" id="config-turno1-fin">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nombre Turno 2</label>
+                    <input type="text" id="config-turno2-nombre" placeholder="Ej: Tarde, Cierre, Turno B">
+                </div>
+
+                <div class="form-group">
+                    <label>Horario Turno 2</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <input type="time" id="config-turno2-inicio">
+                        <input type="time" id="config-turno2-fin">
+                    </div>
+                </div>
+
+                <h3 style="color: #FF6B00; margin: 30px 0 10px;">Encargados</h3>
+                
+                <div class="form-group">
+                    <label>Agregar Encargado</label>
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px;">
+                        <input type="text" id="nuevo-encargado" placeholder="Nombre del encargado">
+                        <button class="submit-btn config-btn" onclick="agregarEncargado()" style="padding: 12px 20px; width: auto;">Agregar</button>
+                    </div>
+                </div>
+
+                <div id="lista-encargados"></div>
+
+                <button class="submit-btn" onclick="guardarConfiguracion()" style="margin-top: 20px;">
+                    ✅ Guardar Configuración
+                </button>
+            </div>
+        </div>
+
+        <!-- TAB: NUEVO REPORTE -->
+        <div id="tab-nuevo" class="tab-content active">
+            <form id="reportForm">
+                <div class="section-card">
+                    <div class="section-title">👤 Información del Turno</div>
+                    
+                    <div class="form-group">
+                        <label>Turno</label>
+                        <select id="turno" required onchange="mostrarSeccionesSegunTurno()">
+                            <option value="">Seleccionar...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Encargado del Turno</label>
+                        <select id="encargado" required>
+                            <option value="">Seleccionar...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" id="fecha" required>
+                    </div>
+                </div>
+
+                <!-- APERTURA (Solo turno 1) -->
+                <div class="section-card hidden" id="seccion-apertura">
+                    <div class="section-title">🔓 Apertura del Local</div>
+                    
+                    <div class="semaforo-group">
+                        <span class="semaforo-label">Equipos Encendidos</span>
+                        <div class="semaforo-buttons">
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'equipos', 'verde')">🟢 OK</button>
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'equipos', 'amarillo')">🟡 Obs</button>
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'equipos', 'rojo')">🔴 Problema</button>
+                        </div>
+                        <div class="observacion-box" id="obs-equipos">
+                            <textarea placeholder="¿Qué equipo tiene problema?"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="semaforo-group">
+                        <span class="semaforo-label">Inventario Crítico OK</span>
+                        <div class="semaforo-buttons">
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'inventario', 'verde')">🟢 OK</button>
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'inventario', 'amarillo')">🟡 Obs</button>
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'inventario', 'rojo')">🔴 Problema</button>
+                        </div>
+                        <div class="observacion-box" id="obs-inventario">
+                            <textarea placeholder="¿Qué producto falta?"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="semaforo-group">
+                        <span class="semaforo-label">Limpieza Visible</span>
+                        <div class="semaforo-buttons">
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'limpieza', 'verde')">🟢 OK</button>
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'limpieza', 'amarillo')">🟡 Obs</button>
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'limpieza', 'rojo')">🔴 Problema</button>
+                        </div>
+                        <div class="observacion-box" id="obs-limpieza">
+                            <textarea placeholder="¿Qué área necesita limpieza?"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>📸 Foto: Estación de Trabajo Lista</label>
+                        <button type="button" class="photo-btn" onclick="document.getElementById('fotoApertura').click()">
+                            📎 Pegar/Subir Foto
+                        </button>
+                        <input type="file" id="fotoApertura" accept="image/*" style="display:none" onchange="previewPhoto(this, 'previewApertura')">
+                        <div id="previewApertura" class="photo-preview"></div>
+                    </div>
+                </div>
+
+                <!-- VENTAS -->
+                <div class="section-card">
+                    <div class="section-title">💰 Ventas del Día</div>
+                    
+                    <div class="form-group">
+                        <label>Meta de Venta ($)</label>
+                        <input type="number" id="metaVenta" placeholder="Ej: 500" required value="500">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Venta Real ($)</label>
+                        <input type="number" id="ventaReal" placeholder="Ej: 480" required oninput="calcularCumplimiento()">
+                        <div id="cumplimiento" style="margin-top: 8px; font-weight: 600;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Producto Más Vendido</label>
+                        <select id="productoMasVendido" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="Hamburguesa Especial">🍔 Hamburguesa Especial</option>
+                            <option value="Perros">🌭 Perros</option>
+                            <option value="Chuzos">🍢 Chuzos</option>
+                            <option value="Picada">🍖 Picada</option>
+                            <option value="Salchipapa">🍟 Salchipapa</option>
+                            <option value="Alitas BBQ">🍗 Alitas BBQ</option>
+                            <option value="Maíz Tierno">🌽 Maíz Tierno</option>
+                            <option value="Bebidas">🥤 Bebidas</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Producto Agotado (si aplica)</label>
+                        <input type="text" id="productoAgotado" placeholder="Ej: Pan, Carne de hamburguesa, Coca-Cola">
+                        <small style="color: #666; font-size: 12px;">Deja en blanco si no se agotó nada</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quejas de Clientes</label>
+                        <select id="quejas" required onchange="toggleQuejasDetalle()">
+                            <option value="0">0 - Ninguna</option>
+                            <option value="1-2">1-2 quejas</option>
+                            <option value="3+">3 o más quejas</option>
+                        </select>
+                        <div class="observacion-box" id="box-quejas-detalle">
+                            <textarea id="quejas-detalle" placeholder="Describe las quejas recibidas..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Felicitaciones de Clientes</label>
+                        <select id="felicitaciones" required onchange="toggleFelicitacionesDetalle()">
+                            <option value="0">0 - Ninguna</option>
+                            <option value="1-2">1-2 felicitaciones</option>
+                            <option value="3+">3 o más felicitaciones ✨</option>
+                        </select>
+                        <div class="observacion-box" id="box-felicitaciones-detalle">
+                            <textarea id="felicitaciones-detalle" placeholder="Describe las felicitaciones recibidas..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Desperdicio Estimado ($) - Opcional</label>
+                        <input type="number" id="desperdicio" placeholder="Ej: 15 (deja en blanco si no sabes)">
+                        <small style="color: #666; font-size: 12px;">Si no tienes el dato exacto, déjalo en blanco</small>
+                    </div>
+                </div>
+
+                <!-- ALERTAS -->
+                <div class="section-card">
+                    <div class="section-title">🚨 Alertas Urgentes</div>
+                    
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="todoNormal" onchange="toggleAlertas()">
+                        <span>✅ Todo normal, sin novedades</span>
+                    </label>
+
+                    <div id="alertasContainer">
+                        <div class="form-group">
+                            <label>Falta Producto</label>
+                            <input type="text" id="faltaProducto" placeholder="Ej: Pan, Coca-Cola">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Equipo Dañado</label>
+                            <input type="text" id="equipoDañado" placeholder="Ej: Freidora no enciende">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Otra Alerta</label>
+                            <textarea id="otraAlerta" placeholder="Describe la situación..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CIERRE (Solo turno 2) -->
+                <div class="section-card hidden" id="seccion-cierre">
+                    <div class="section-title">🔒 Cierre del Local</div>
+                    
+                    <div class="semaforo-group">
+                        <span class="semaforo-label">Caja Cuadrada</span>
+                        <div class="semaforo-buttons">
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'caja-cuadrada', 'verde')">✅ SÍ</button>
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'caja-cuadrada', 'rojo')">❌ NO</button>
+                        </div>
+                        <div class="observacion-box" id="obs-caja-cuadrada">
+                            <input type="text" placeholder="Diferencia en $ (ej: -15)">
+                        </div>
+                    </div>
+
+                    <div class="semaforo-group">
+                        <span class="semaforo-label">Limpieza Profunda</span>
+                        <div class="semaforo-buttons">
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'limpieza-cierre', 'verde')">🟢 OK</button>
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'limpieza-cierre', 'amarillo')">🟡 Obs</button>
+                            <button type="button" class="semaforo-btn" onclick="selectSemaforo(this, 'limpieza-cierre', 'rojo')">🔴 Problema</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>📸 Foto: Cocina Limpia + Caja Cerrada</label>
+                        <button type="button" class="photo-btn" onclick="document.getElementById('fotoCierre').click()">
+                            📎 Pegar/Subir Foto
+                        </button>
+                        <input type="file" id="fotoCierre" accept="image/*" style="display:none" onchange="previewPhoto(this, 'previewCierre')">
+                        <div id="previewCierre" class="photo-preview"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">✅ ENVIAR REPORTE</button>
+            </form>
+        </div>
+
+        <!-- TAB: DASHBOARD -->
+        <div id="tab-dashboard" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-venta">$0</div>
+                    <div class="stat-label">Venta de Hoy</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-value" id="stat-cumplimiento">0%</div>
+                    <div class="stat-label">Cumplimiento</div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-value" id="stat-quejas">0</div>
+                    <div class="stat-label">Quejas</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-value" id="stat-felicitaciones">0</div>
+                    <div class="stat-label">Felicitaciones</div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title">🚨 Alertas Activas</div>
+                <div id="alertas-activas"></div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title">🔥 Top Productos (Última Semana)</div>
+                <div id="top-productos"></div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title">⚠️ Productos Agotados (Últimos 7 días)</div>
+                <div id="productos-agotados"></div>
+            </div>
+        </div>
+
+        <!-- TAB: HISTORIAL -->
+        <div id="tab-historial" class="tab-content">
+            <div class="section-card">
+                <div class="section-title">📅 Reportes Históricos</div>
+                <div id="lista-reportes"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración inicial
+        let config = JSON.parse(localStorage.getItem('mendy_config') || '{}');
+        let reportes = JSON.parse(localStorage.getItem('mendy_reportes') || '[]');
+        let reporteActual = {};
+
+        // Configuración por defecto
+        if (!config.turnos) {
+            config = {
+                turnos: [
+                    { nombre: 'Mañana', inicio: '07:00', fin: '14:00' },
+                    { nombre: 'Tarde', inicio: '14:00', fin: '21:00' }
+                ],
+                encargados: ['Yamileth Murguietio', 'Beatriz Vitula', 'Alicia James', 'Don Alfonso Murillo', 'Aljavis Murillo']
+            };
+            localStorage.setItem('mendy_config', JSON.stringify(config));
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('fecha').valueAsDate = new Date();
+            cargarConfiguracion();
+            actualizarSelectsTurnos();
+            actualizarSelectsEncargados();
+        });
+
+        // CONFIGURACIÓN
+        function cargarConfiguracion() {
+            document.getElementById('config-turno1-nombre').value = config.turnos[0].nombre;
+            document.getElementById('config-turno1-inicio').value = config.turnos[0].inicio;
+            document.getElementById('config-turno1-fin').value = config.turnos[0].fin;
+            document.getElementById('config-turno2-nombre').value = config.turnos[1].nombre;
+            document.getElementById('config-turno2-inicio').value = config.turnos[1].inicio;
+            document.getElementById('config-turno2-fin').value = config.turnos[1].fin;
+            
+            mostrarEncargados();
+        }
+
+        function mostrarEncargados() {
+            const lista = document.getElementById('lista-encargados');
+            lista.innerHTML = config.encargados.map((enc, i) => `
+                <div class="list-item">
+                    <span>${enc}</span>
+                    <button onclick="eliminarEncargado(${i})">Eliminar</button>
+                </div>
+            `).join('');
+        }
+
+        function agregarEncargado() {
+            const nombre = document.getElementById('nuevo-encargado').value.trim();
+            if (nombre) {
+                config.encargados.push(nombre);
+                document.getElementById('nuevo-encargado').value = '';
+                mostrarEncargados();
+            }
+        }
+
+        function eliminarEncargado(index) {
+            if (confirm('¿Eliminar este encargado?')) {
+                config.encargados.splice(index, 1);
+                mostrarEncargados();
+            }
+        }
+
+        function guardarConfiguracion() {
+            config.turnos[0].nombre = document.getElementById('config-turno1-nombre').value;
+            config.turnos[0].inicio = document.getElementById('config-turno1-inicio').value;
+            config.turnos[0].fin = document.getElementById('config-turno1-fin').value;
+            config.turnos[1].nombre = document.getElementById('config-turno2-nombre').value;
+            config.turnos[1].inicio = document.getElementById('config-turno2-inicio').value;
+            config.turnos[1].fin = document.getElementById('config-turno2-fin').value;
+            
+            localStorage.setItem('mendy_config', JSON.stringify(config));
+            
+            actualizarSelectsTurnos();
+            actualizarSelectsEncargados();
+            
+            alert('✅ Configuración guardada exitosamente');
+        }
+
+        function actualizarSelectsTurnos() {
+            const select = document.getElementById('turno');
+            select.innerHTML = '<option value="">Seleccionar...</option>' +
+                config.turnos.map((t, i) => `
+                    <option value="${i}">${t.nombre} (${t.inicio} - ${t.fin})</option>
+                `).join('');
+        }
+
+        function actualizarSelectsEncargados() {
+            const select = document.getElementById('encargado');
+            select.innerHTML = '<option value="">Seleccionar...</option>' +
+                config.encargados.map(e => `<option value="${e}">${e}</option>`).join('');
+        }
+
+        // TABS
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tab).classList.add('active');
+            
+            if (tab === 'dashboard') cargarDashboard();
+            else if (tab === 'historial') cargarHistorial();
+            else if (tab === 'config') cargarConfiguracion();
+        }
+
+        // MOSTRAR SECCIONES SEGÚN TURNO
+        function mostrarSeccionesSegunTurno() {
+            const turnoIndex = document.getElementById('turno').value;
+            const apertura = document.getElementById('seccion-apertura');
+            const cierre = document.getElementById('seccion-cierre');
+            
+            if (turnoIndex === '0') {
+                apertura.classList.remove('hidden');
+                cierre.classList.add('hidden');
+            } else if (turnoIndex === '1') {
+                apertura.classList.add('hidden');
+                cierre.classList.remove('hidden');
+            }
+        }
+
+        // SEMÁFORO
+        function selectSemaforo(button, field, color) {
+            const grupo = button.parentElement;
+            grupo.querySelectorAll('.semaforo-btn').forEach(btn => {
+                btn.classList.remove('active', 'verde', 'amarillo', 'rojo');
+            });
+            
+            button.classList.add('active', color);
+            reporteActual[field] = color;
+            
+            const obsBox = document.getElementById('obs-' + field);
+            if (obsBox) {
+                if (color === 'amarillo' || color === 'rojo') {
+                    obsBox.classList.add('show');
+                } else {
+                    obsBox.classList.remove('show');
+                }
+            }
+        }
+
+        // CUMPLIMIENTO
+        function calcularCumplimiento() {
+            const meta = parseFloat(document.getElementById('metaVenta').value) || 0;
+            const real = parseFloat(document.getElementById('ventaReal').value) || 0;
+            
+            if (meta > 0) {
+                const pct = Math.round((real / meta) * 100);
+                let color = '#F44336';
+                let emoji = '😞';
+                
+                if (pct >= 100) {
+                    color = '#4CAF50';
+                    emoji = '🎉';
+                } else if (pct >= 90) {
+                    color = '#FFC107';
+                    emoji = '😊';
+                }
+                
+                document.getElementById('cumplimiento').innerHTML = 
+                    `<span style="color: ${color};">${emoji} ${pct}% de cumplimiento</span>`;
+            }
+        }
+
+        // QUEJAS/FELICITACIONES DETALLE
+        function toggleQuejasDetalle() {
+            const val = document.getElementById('quejas').value;
+            const box = document.getElementById('box-quejas-detalle');
+            if (val !== '0') {
+                box.classList.add('show');
+            } else {
+                box.classList.remove('show');
+            }
+        }
+
+        function toggleFelicitacionesDetalle() {
+            const val = document.getElementById('felicitaciones').value;
+            const box = document.getElementById('box-felicitaciones-detalle');
+            if (val !== '0') {
+                box.classList.add('show');
+            } else {
+                box.classList.remove('show');
+            }
+        }
+
+        // ALERTAS
+        function toggleAlertas() {
+            const todoNormal = document.getElementById('todoNormal').checked;
+            const container = document.getElementById('alertasContainer');
+            
+            if (todoNormal) {
+                container.style.opacity = '0.3';
+                container.style.pointerEvents = 'none';
+            } else {
+                container.style.opacity = '1';
+                container.style.pointerEvents = 'auto';
+            }
+        }
+
+        // FOTO
+        function previewPhoto(input, previewId) {
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = '';
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                    
+                    reporteActual[input.id] = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // ENVIAR REPORTE
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const turnoIndex = document.getElementById('turno').value;
+            
+            reporteActual.fecha = document.getElementById('fecha').value;
+            reporteActual.turno = config.turnos[turnoIndex].nombre;
+            reporteActual.encargado = document.getElementById('encargado').value;
+            reporteActual.metaVenta = parseFloat(document.getElementById('metaVenta').value);
+            reporteActual.ventaReal = parseFloat(document.getElementById('ventaReal').value);
+            reporteActual.productoMasVendido = document.getElementById('productoMasVendido').value;
+            reporteActual.productoAgotado = document.getElementById('productoAgotado').value;
+            reporteActual.quejas = document.getElementById('quejas').value;
+            reporteActual.quejasDetalle = document.getElementById('quejas-detalle').value;
+            reporteActual.felicitaciones = document.getElementById('felicitaciones').value;
+            reporteActual.felicitacionesDetalle = document.getElementById('felicitaciones-detalle').value;
+            reporteActual.desperdicio = document.getElementById('desperdicio').value;
+            reporteActual.todoNormal = document.getElementById('todoNormal').checked;
+            reporteActual.faltaProducto = document.getElementById('faltaProducto').value;
+            reporteActual.equipoDañado = document.getElementById('equipoDañado').value;
+            reporteActual.otraAlerta = document.getElementById('otraAlerta').value;
+            reporteActual.timestamp = Date.now();
+            
+            reportes.push(reporteActual);
+            localStorage.setItem('mendy_reportes', JSON.stringify(reportes));
+            
+            const cumplimiento = Math.round((reporteActual.ventaReal / reporteActual.metaVenta) * 100);
+            
+            alert(`✅ Reporte enviado exitosamente!\n\nVenta: $${reporteActual.ventaReal} / $${reporteActual.metaVenta}\nCumplimiento: ${cumplimiento}%\nEncargado: ${reporteActual.encargado}`);
+            
+            this.reset();
+            document.getElementById('fecha').valueAsDate = new Date();
+            reporteActual = {};
+            
+            document.querySelectorAll('.tab-btn')[1].click();
+        });
+
+        // DASHBOARD
+        function cargarDashboard() {
+            const hoy = new Date().toISOString().split('T')[0];
+            const reportesHoy = reportes.filter(r => r.fecha === hoy);
+            
+            let ventaTotal = 0;
+            let metaTotal = 0;
+            let quejasTotal = 0;
+            let felicitTotal = 0;
+            
+            reportesHoy.forEach(r => {
+                ventaTotal += r.ventaReal || 0;
+                metaTotal += r.metaVenta || 0;
+                if (r.quejas !== '0') quejasTotal++;
+                if (r.felicitaciones !== '0') felicitTotal++;
+            });
+            
+            document.getElementById('stat-venta').textContent = '$' + ventaTotal;
+            document.getElementById('stat-cumplimiento').textContent = 
+                metaTotal > 0 ? Math.round((ventaTotal / metaTotal) * 100) + '%' : '0%';
+            document.getElementById('stat-quejas').textContent = quejasTotal;
+            document.getElementById('stat-felicitaciones').textContent = felicitTotal;
+            
+            // Alertas
+            const alertasDiv = document.getElementById('alertas-activas');
+            const alertasActivas = reportesHoy.filter(r => !r.todoNormal);
+            
+            if (alertasActivas.length > 0) {
+                alertasDiv.innerHTML = alertasActivas.map(r => {
+                    let texto = [];
+                    if (r.faltaProducto) texto.push('Falta: ' + r.faltaProducto);
+                    if (r.equipoDañado) texto.push('Equipo: ' + r.equipoDañado);
+                    if (r.otraAlerta) texto.push(r.otraAlerta);
+                    
+                    return `<div class="alert-box danger">
+                        <strong>⚠️ ${r.turno} - ${r.encargado}</strong>
+                        <p>${texto.join(' | ')}</p>
+                    </div>`;
+                }).join('');
+            } else {
+                alertasDiv.innerHTML = '<p style="text-align: center; color: #4CAF50; padding: 20px;">✅ No hay alertas activas</p>';
+            }
+            
+            // Top productos
+            const productosCount = {};
+            reportes.slice(-7).forEach(r => {
+                if (r.productoMasVendido) {
+                    productosCount[r.productoMasVendido] = (productosCount[r.productoMasVendido] || 0) + 1;
+                }
+            });
+            
+            const topHTML = Object.entries(productosCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([prod, count], i) => `
+                    <div style="padding: 12px; border-bottom: 1px solid #f0f0f0;">
+                        <strong>${i + 1}.</strong> ${prod} <span style="color: #FF6B00; font-weight: 600;">(${count} veces)</span>
+                    </div>
+                `).join('');
+            
+            document.getElementById('top-productos').innerHTML = topHTML || '<p style="text-align: center; color: #999; padding: 20px;">No hay datos</p>';
+            
+            // Productos agotados
+            const agotados = {};
+            reportes.slice(-7).forEach(r => {
+                if (r.productoAgotado && r.productoAgotado.trim()) {
+                    agotados[r.productoAgotado] = (agotados[r.productoAgotado] || 0) + 1;
+                }
+            });
+            
+            const agotadosHTML = Object.entries(agotados)
+                .sort((a, b) => b[1] - a[1])
+                .map(([prod, count]) => `
+                    <div class="alert-box warning">
+                        ⚠️ ${prod} (${count} veces) ${count >= 3 ? '<strong>← ¡ATENCIÓN!</strong>' : ''}
+                    </div>
+                `).join('');
+            
+            document.getElementById('productos-agotados').innerHTML = agotadosHTML || '<p style="text-align: center; color: #4CAF50; padding: 20px;">✅ No hay productos agotados</p>';
+        }
+
+        // HISTORIAL
+        function cargarHistorial() {
+            const listaDiv = document.getElementById('lista-reportes');
+            
+            if (reportes.length === 0) {
+                listaDiv.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No hay reportes guardados</p>';
+                return;
+            }
+            
+            const sortedReportes = [...reportes].sort((a, b) => b.timestamp - a.timestamp);
+            
+            listaDiv.innerHTML = sortedReportes.slice(0, 30).map(r => {
+                const cumplimiento = Math.round((r.ventaReal / r.metaVenta) * 100);
+                let badgeClass = 'success';
+                
+                if (cumplimiento < 70) {
+                    badgeClass = 'danger';
+                } else if (cumplimiento < 90) {
+                    badgeClass = 'warning';
+                }
+                
+                return `
+                    <div class="report-item">
+                        <div class="report-header">
+                            <span class="report-date">${r.fecha} - ${r.turno}</span>
+                            <span class="report-badge ${badgeClass}">${cumplimiento}%</span>
+                        </div>
+                        <div class="report-meta">
+                            <span>💰 $${r.ventaReal} / $${r.metaVenta}</span>
+                            <span>👤 ${r.encargado}</span>
+                            <span>${r.todoNormal ? '✅ Normal' : '🚨 Alertas'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
