@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal – Mendy Fast Food</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #FF6B35;
+  --dark:    #1B2432;
+  --mid:     #2C3A50;
+  --green:   #22C55E;
+  --yellow:  #F59E0B;
+  --red:     #EF4444;
+  --blue:    #00B4D8;
+  --purple:  #8B5CF6;
+  --accent:  #FFD166;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Nunito',sans-serif; background:var(--dark); min-height:100vh; color:#fff; }
+
+/* ══ LOGIN ══ */
+#screen-login {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:24px;
+  background:linear-gradient(145deg,#1B2432,#2C3A50);
+}
+.login-card {
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+  border-radius:24px; padding:36px 28px; width:100%; max-width:400px; text-align:center;
+}
+.login-logo { font-size:3rem; margin-bottom:12px; }
+.login-title { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; margin-bottom:4px; }
+.login-title span { color:var(--primary); }
+.login-sub { color:rgba(255,255,255,.45); font-size:.85rem; margin-bottom:28px; }
+.user-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.user-btn {
+  background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.1);
+  border-radius:14px; padding:14px 10px; cursor:pointer; color:#fff;
+  font-family:'Nunito',sans-serif; transition:.2s;
+}
+.user-btn:hover { border-color:var(--primary); background:rgba(255,107,53,.12); }
+.user-btn.selected { border-color:var(--primary); background:rgba(255,107,53,.18); }
+.user-btn .u-avatar { font-size:1.8rem; margin-bottom:6px; }
+.user-btn .u-name { font-size:.78rem; font-weight:700; }
+.user-btn .u-role { font-size:.68rem; color:rgba(255,255,255,.45); margin-top:2px; }
+.pin-label { color:rgba(255,255,255,.6); font-size:.82rem; margin-bottom:8px; text-align:left; }
+.pin-input {
+  width:100%; background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.15);
+  border-radius:12px; padding:13px 16px; color:#fff; font-size:1.4rem;
+  letter-spacing:6px; text-align:center; font-family:'Syne',sans-serif;
+  outline:none; margin-bottom:14px; transition:.2s;
+}
+.pin-input:focus { border-color:var(--primary); }
+.btn-login {
+  width:100%; background:var(--primary); color:#fff; border:none;
+  border-radius:12px; padding:14px; font-family:'Syne',sans-serif;
+  font-size:1rem; font-weight:700; cursor:pointer; transition:.2s;
+}
+.btn-login:hover { background:#e85a25; }
+.login-error { color:var(--red); font-size:.8rem; margin-top:8px; min-height:18px; }
+
+/* ══ APP ══ */
+#screen-app { display:none; min-height:100vh; }
+.top-nav {
+  background:var(--mid); padding:14px 20px; display:flex;
+  align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  position:sticky; top:0; z-index:100;
+}
+.nav-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; }
+.nav-brand span { color:var(--primary); }
+.nav-user { display:flex; align-items:center; gap:8px; font-size:.82rem; color:rgba(255,255,255,.65); }
+.btn-logout {
+  background:rgba(255,255,255,.08); border:none; border-radius:8px;
+  padding:6px 12px; color:rgba(255,255,255,.6); cursor:pointer;
+  font-size:.78rem; font-family:'Nunito',sans-serif; transition:.2s;
+}
+.btn-logout:hover { background:rgba(255,255,255,.15); color:#fff; }
+
+.tabs {
+  display:flex; background:var(--mid); padding:0 16px;
+  border-bottom:1px solid rgba(255,255,255,.08); overflow-x:auto;
+}
+.tab-btn {
+  background:none; border:none; border-bottom:3px solid transparent;
+  padding:13px 14px; color:rgba(255,255,255,.5); font-family:'Nunito',sans-serif;
+  font-size:.82rem; font-weight:600; cursor:pointer; white-space:nowrap; transition:.2s;
+}
+.tab-btn.active { color:#fff; border-bottom-color:var(--primary); }
+
+.tab-content { display:none; padding:20px; max-width:900px; margin:0 auto; }
+.tab-content.active { display:block; }
+
+/* ══ EQUIPO GRID ══ */
+.equipo-grid {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-bottom:24px;
+}
+.persona-card {
+  border-radius:20px; padding:22px; cursor:pointer; transition:.25s;
+  position:relative; overflow:hidden; border:2px solid transparent;
+}
+.persona-card:hover { transform:translateY(-4px); border-color:rgba(255,255,255,.15); }
+.pc-empleada  { background:linear-gradient(135deg,rgba(0,180,216,.12),rgba(0,180,216,.06)); }
+.pc-dueño     { background:linear-gradient(135deg,rgba(255,107,53,.15),rgba(255,107,53,.06)); }
+.pc-fundador  { background:linear-gradient(135deg,rgba(255,209,102,.15),rgba(255,209,102,.06)); }
+
+.pc-avatar { font-size:2.8rem; margin-bottom:10px; }
+.pc-nombre { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:800; margin-bottom:3px; }
+.pc-cargo  { font-size:.78rem; color:rgba(255,255,255,.55); margin-bottom:10px; }
+.pc-tipo-badge {
+  display:inline-block; padding:3px 12px; border-radius:20px;
+  font-size:.68rem; font-weight:700; margin-bottom:10px;
+}
+.badge-empleada { background:rgba(0,180,216,.2); color:var(--blue); }
+.badge-dueño    { background:rgba(255,107,53,.2); color:var(--primary); }
+.badge-fundador { background:rgba(255,209,102,.2); color:var(--accent); }
+
+.pc-pago {
+  background:rgba(255,255,255,.07); border-radius:10px;
+  padding:8px 12px; font-size:.8rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.pc-pago .monto { font-family:'Syne',sans-serif; font-weight:800; color:var(--green); }
+
+/* ══ FICHA PERSONA (overlay) ══ */
+.ficha-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,.8);
+  z-index:200; overflow-y:auto; padding:20px;
+}
+.ficha-overlay.open { display:block; }
+.ficha-card {
+  background:#2C3A50; border-radius:24px; padding:28px;
+  max-width:640px; margin:0 auto; position:relative;
+}
+.ficha-close {
+  position:sticky; top:12px; float:right; margin-bottom:8px;
+  background:var(--red); border:none; border-radius:10px;
+  padding:10px 18px; color:#fff; cursor:pointer; font-size:.88rem;
+  font-family:'Nunito',sans-serif; font-weight:800; z-index:10;
+  box-shadow:0 4px 12px rgba(239,68,68,.4);
+}
+.ficha-header { display:flex; align-items:center; gap:16px; margin-bottom:24px; }
+.ficha-avatar { font-size:3.5rem; }
+.ficha-titulo h2 { font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:800; }
+.ficha-titulo p  { color:rgba(255,255,255,.5); font-size:.85rem; margin-top:4px; }
+
+.ficha-section { margin-bottom:22px; }
+.ficha-section h3 {
+  font-family:'Syne',sans-serif; font-size:.88rem; color:var(--accent);
+  text-transform:uppercase; letter-spacing:.8px; margin-bottom:12px;
+}
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.info-item { background:rgba(255,255,255,.06); border-radius:12px; padding:12px 14px; }
+.info-item .il { font-size:.72rem; color:rgba(255,255,255,.4); margin-bottom:3px; }
+.info-item .iv { font-size:.88rem; font-weight:600; }
+.info-item.full { grid-column:1/-1; }
+
+.funciones-list { list-style:none; }
+.funciones-list li {
+  padding:8px 0; border-bottom:1px solid rgba(255,255,255,.06);
+  font-size:.85rem; display:flex; gap:8px; align-items:flex-start;
+}
+.funciones-list li:last-child { border-bottom:none; }
+
+/* ══ PAGOS ══ */
+.pago-row {
+  background:rgba(255,255,255,.04); border-radius:14px; padding:14px 16px;
+  margin-bottom:10px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.pr-persona { font-weight:700; font-size:.9rem; flex:1; min-width:120px; }
+.pr-meta    { font-size:.75rem; color:rgba(255,255,255,.4); margin-top:2px; }
+.pr-monto   { font-family:'Syne',sans-serif; font-weight:800; color:var(--green); font-size:1rem; }
+.badge-pagado   { background:rgba(34,197,94,.15);  color:var(--green);  padding:3px 12px; border-radius:20px; font-size:.72rem; font-weight:700; }
+.badge-pendiente{ background:rgba(245,158,11,.15); color:var(--yellow); padding:3px 12px; border-radius:20px; font-size:.72rem; font-weight:700; }
+
+/* ══ CAPACITACIONES ══ */
+.cap-row {
+  background:rgba(255,255,255,.04); border-radius:14px; padding:14px 16px;
+  margin-bottom:10px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.cap-row .cr-titulo { font-weight:700; font-size:.9rem; flex:1; }
+.cap-row .cr-meta   { font-size:.75rem; color:rgba(255,255,255,.4); margin-top:2px; }
+
+/* ══ FORMS ══ */
+.form-card { background:rgba(255,255,255,.06); border-radius:18px; padding:22px; margin-bottom:16px; }
+.form-card h3 { font-family:'Syne',sans-serif; font-size:1rem; margin-bottom:16px; color:var(--accent); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.form-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px; }
+.form-group { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+.form-label { font-size:.78rem; color:rgba(255,255,255,.55); font-weight:600; }
+.form-input, .form-select, .form-textarea {
+  background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.12);
+  border-radius:10px; padding:10px 12px; color:#fff; font-family:'Nunito',sans-serif;
+  font-size:.88rem; outline:none; transition:.2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--primary); }
+.form-select option { background:#2C3A50; }
+.form-textarea { resize:vertical; min-height:80px; }
+.btn-primary {
+  background:var(--primary); color:#fff; border:none; border-radius:10px;
+  padding:11px 22px; font-family:'Syne',sans-serif; font-size:.88rem;
+  font-weight:700; cursor:pointer; transition:.2s;
+}
+.btn-primary:hover { background:#e85a25; }
+.btn-secondary {
+  background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.15);
+  border-radius:10px; padding:10px 18px; color:#fff; font-family:'Nunito',sans-serif;
+  font-size:.84rem; font-weight:700; cursor:pointer; transition:.2s; margin-right:8px; margin-top:8px;
+}
+.btn-secondary:hover { background:rgba(255,255,255,.15); }
+.btn-del { background:rgba(239,68,68,.15); border:none; border-radius:8px; padding:6px 12px; color:var(--red); font-size:.75rem; cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700; }
+
+/* ══ KPI ══ */
+.kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; margin-bottom:20px; }
+.kpi-card { background:rgba(255,255,255,.07); border-radius:16px; padding:16px; text-align:center; }
+.kpi-num { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; margin-bottom:4px; }
+.kpi-label { font-size:.72rem; color:rgba(255,255,255,.5); }
+
+.section-title { font-family:'Syne',sans-serif; font-size:1rem; color:var(--accent); margin-bottom:14px; }
+
+/* ══ DESPRENDIBLE ══ */
+.desprendible {
+  background:#fff; color:#1B2432; border-radius:16px; padding:24px;
+  margin-bottom:12px; font-family:'Nunito',sans-serif;
+}
+.desp-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; border-bottom:2px solid #eee; padding-bottom:12px; }
+.desp-empresa { font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:800; color:var(--primary); }
+.desp-titulo  { font-size:.8rem; color:#666; margin-top:2px; }
+.desp-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+.desp-item .dl { font-size:.7rem; color:#999; }
+.desp-item .dv { font-size:.85rem; font-weight:700; color:#1B2432; }
+.desp-total { background:#f5f5f5; border-radius:10px; padding:12px; text-align:center; }
+.desp-total .dt-label { font-size:.78rem; color:#666; }
+.desp-total .dt-monto { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; color:var(--green); }
+.desp-firma { border-top:2px dashed #ddd; margin-top:14px; padding-top:12px; display:flex; justify-content:space-between; }
+.firma-box { text-align:center; }
+.firma-linea { border-bottom:1px solid #999; width:120px; margin:0 auto 4px; height:24px; }
+.firma-label { font-size:.7rem; color:#999; }
+
+/* ══ NORMATIVIDAD ══ */
+.norm-bloque {
+  background:rgba(255,255,255,.05); border-radius:16px; padding:16px 18px;
+  margin-bottom:14px; border-left:4px solid rgba(255,255,255,.15);
+}
+.norm-bloque-titulo {
+  font-family:'Syne',sans-serif; font-size:.9rem; font-weight:700;
+  color:var(--accent); margin-bottom:10px;
+}
+.norm-item {
+  font-size:.82rem; color:rgba(255,255,255,.75); padding:5px 0;
+  border-bottom:1px solid rgba(255,255,255,.05); line-height:1.55;
+}
+.norm-item:last-child { border-bottom:none; }
+.norm-alerta { color:var(--yellow) !important; font-weight:600; }
+
+.norm-emp-card {
+  background:rgba(255,255,255,.05); border-radius:16px; padding:16px 18px;
+  margin-bottom:14px;
+}
+.norm-emp-header {
+  display:flex; align-items:center; gap:10px; margin-bottom:14px;
+  padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,.08);
+}
+.norm-emp-name { font-family:'Syne',sans-serif; font-size:.95rem; font-weight:700; }
+.norm-emp-cargo { font-size:.75rem; color:rgba(255,255,255,.45); margin-top:2px; }
+.norm-check-item {
+  display:flex; align-items:center; gap:10px; padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.05); font-size:.83rem;
+}
+.norm-check-item:last-child { border-bottom:none; }
+.norm-check-box {
+  width:22px; height:22px; border-radius:6px; border:2px solid rgba(255,255,255,.2);
+  flex-shrink:0; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:.2s; font-size:.85rem;
+}
+.norm-check-box.checked { background:var(--green); border-color:var(--green); }
+.norm-check-vence { font-size:.72rem; color:var(--yellow); margin-top:2px; }
+.pct-norm { font-size:.75rem; font-weight:700; padding:3px 10px; border-radius:20px; }
+
+/* ══ TOAST ══ */
+.toast {
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
+  background:var(--green); color:#fff; padding:13px 24px; border-radius:14px;
+  font-weight:700; font-size:.9rem; box-shadow:0 8px 24px rgba(0,0,0,.4);
+  transition:.35s cubic-bezier(.34,1.56,.64,1); z-index:999; white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+@media(max-width:600px){
+  .form-row,.form-row-3 { grid-template-columns:1fr; }
+  .info-grid { grid-template-columns:1fr; }
+  .kpi-grid  { grid-template-columns:1fr 1fr; }
+  @media print { body { background:#fff; } }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="screen-login">
+  <div class="login-card">
+    <div class="login-logo">👥</div>
+    <div class="login-title">Mendy <span>Fast Food</span></div>
+    <div class="login-sub">Central de Personal · San Andrés Islas</div>
+    <div class="user-grid" id="user-grid"></div>
+    <div class="pin-label">🔐 Ingresa tu PIN</div>
+    <input type="password" class="pin-input" id="pin-input" maxlength="8" placeholder="••••" inputmode="numeric">
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="screen-app">
+  <div class="top-nav"><a href="index.html" style="background:rgba(255,255,255,.1);border:none;border-radius:8px;padding:6px 12px;color:rgba(255,255,255,.85);font-size:.78rem;font-weight:700;text-decoration:none;font-family:Nunito,sans-serif;white-space:nowrap;">🏠 Inicio</a>
+    <div class="nav-brand">👥 <span>Mendy</span> Personal</div>
+    <div class="nav-user">
+      <span id="nav-user-name"></span>
+      <button class="btn-logout" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('equipo',this)">👥 Equipo</button>
+    <button class="tab-btn" onclick="switchTab('pagos',this)">💰 Pagos</button>
+    <button class="tab-btn" onclick="switchTab('capacitaciones',this)">📚 Capacitaciones</button>
+    <button class="tab-btn" onclick="switchTab('normatividad',this)">⚖️ Normatividad</button>
+    <button class="tab-btn" id="tab-admin-btn" style="display:none" onclick="switchTab('admin',this)">⚙️ Admin</button>
+  </div>
+
+  <!-- EQUIPO -->
+  <div class="tab-content active" id="tab-equipo">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-num" style="color:var(--blue)" id="kpi-total">5</div>
+        <div class="kpi-label">Personas en el equipo</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" style="color:var(--green)" id="kpi-nomina">$0</div>
+        <div class="kpi-label">Nómina mensual total</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" style="color:var(--yellow)" id="kpi-caps">0</div>
+        <div class="kpi-label">Capacitaciones este mes</div>
+      </div>
+    </div>
+    <div class="equipo-grid" id="equipo-grid"></div>
+  </div>
+
+  <!-- PAGOS -->
+  <div class="tab-content" id="tab-pagos">
+    <div id="pagos-restringido" style="text-align:center;padding:40px 20px;display:none;">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
+      <p style="color:rgba(255,255,255,.5);">Los pagos solo los puede ver Aljavis o Don Alfonso.</p>
+    </div>
+    <div id="pagos-panel">
+      <div class="form-card">
+        <h3>💰 Registrar pago</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Persona</label>
+            <select class="form-select" id="pago-persona"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Período</label>
+            <input type="text" class="form-input" id="pago-periodo" placeholder="Ej: 16 de marzo de 2026">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Monto (COP $)</label>
+            <input type="number" class="form-input" id="pago-monto" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo de pago</label>
+            <select class="form-select" id="pago-tipo">
+              <option value="Salario / Quincena">Salario / Quincena</option>
+              <option value="Retiro de utilidades">Retiro de utilidades</option>
+              <option value="Asignación mensual">Asignación mensual</option>
+              <option value="Bono / Extra">Bono / Extra</option>
+              <option value="Prestación social">Prestación social</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Medio de pago</label>
+            <select class="form-select" id="pago-medio">
+              <option value="Efectivo">💵 Efectivo</option>
+              <option value="Transferencia">📲 Transferencia</option>
+              <option value="Nequi">📱 Nequi</option>
+              <option value="Daviplata">📱 Daviplata</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nota (opcional)</label>
+            <input type="text" class="form-input" id="pago-nota" placeholder="Observación del pago">
+          </div>
+        </div>
+        <button class="btn-primary" onclick="registrarPago()">✅ Registrar pago</button>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+        <h3 class="section-title" style="margin:0;">Historial de pagos</h3>
+        <select class="form-select" style="width:auto;padding:7px 12px;font-size:.8rem;" id="filtro-pago-persona" onchange="renderPagos()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div id="pagos-list"></div>
+    </div>
+  </div>
+
+  <!-- CAPACITACIONES -->
+  <div class="tab-content" id="tab-capacitaciones">
+    <div class="form-card" id="cap-form" style="display:none;">
+      <h3>➕ Registrar capacitación</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Tema</label>
+          <input type="text" class="form-input" id="cap-tema" placeholder="Ej: Manipulación de alimentos">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fecha</label>
+          <input type="date" class="form-input" id="cap-fecha">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Participantes</label>
+        <div id="cap-participantes" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Observaciones</label>
+        <textarea class="form-textarea" id="cap-obs" placeholder="Notas sobre la capacitación..."></textarea>
+      </div>
+      <button class="btn-primary" onclick="registrarCap()">✅ Registrar capacitación</button>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+      <h3 class="section-title" style="margin:0;">Historial de capacitaciones</h3>
+      <button class="btn-secondary" id="btn-add-cap" onclick="toggleCapForm()" style="margin:0;padding:8px 16px;">+ Nueva</button>
+    </div>
+    <div id="cap-list"></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="tab-content" id="tab-admin">
+    <div id="admin-locked" style="text-align:center;padding:40px 20px;">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
+      <p style="color:rgba(255,255,255,.5);margin-bottom:20px;">Solo Aljavis puede editar el equipo</p>
+      <button class="btn-primary" onclick="openAdminPin()">Ingresar PIN de Admin</button>
+    </div>
+    <div id="admin-panel" style="display:none;">
+
+      <div style="margin-bottom:28px;">
+        <h3 class="section-title">➕ Agregar nueva persona al equipo</h3>
+        <div class="form-card">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre completo</label>
+              <input class="form-input" id="np-nombre" placeholder="Nombre y apellido">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Cargo</label>
+              <input class="form-input" id="np-cargo" placeholder="Ej: Operaria de Cocina">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tipo</label>
+              <select class="form-select" id="np-tipo">
+                <option value="empleada">👩 Empleada/o</option>
+                <option value="fundador">👴 Fundador/Asesor</option>
+                <option value="dueño">👑 Dueño/Admin</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">PIN de acceso</label>
+              <input class="form-input" id="np-pin" placeholder="Ej: 5678" maxlength="8" inputmode="numeric">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Salario base (COP)</label>
+              <input class="form-input" type="number" id="np-salario" placeholder="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fecha de ingreso</label>
+              <input class="form-input" id="np-ingreso" placeholder="dd/mm/aaaa">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="agregarPersona()">✅ Agregar al equipo</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:28px;">
+        <h3 class="section-title">👤 Editar perfil del equipo</h3>
+        <select class="form-select" id="admin-sel-persona" style="margin-bottom:14px;" onchange="loadPersonaForm()"></select>
+        <div id="persona-form-wrap"></div>
+      </div>
+
+      <div style="margin-bottom:28px;">
+        <h3 class="section-title">🔄 Exportar / Importar</h3>
+        <button class="btn-secondary" onclick="exportarJSON()">⬇ Exportar JSON</button>
+        <label class="btn-secondary" style="display:inline-block;cursor:pointer;">
+          ⬆ Importar JSON
+          <input type="file" accept=".json" style="display:none" onchange="importarJSON(event)">
+        </label>
+      </div>
+
+    </div>
+  </div><!-- fin tab-admin -->
+
+  <!-- NORMATIVIDAD -->
+  <div class="tab-content" id="tab-normatividad">
+
+    <!-- CHECKLIST POR EMPLEADA -->
+    <div style="background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.2);border-radius:16px;padding:16px 18px;margin-bottom:20px;">
+      <p style="font-size:.82rem;color:var(--accent);font-weight:700;margin-bottom:4px;">⚖️ Normatividad laboral — Sector gastronómico · Colombia</p>
+      <p style="font-size:.78rem;color:rgba(255,255,255,.5);">San Andrés Islas tiene régimen especial. Verifica cada ítem con tu empleada y márcalo como cumplido desde el Admin.</p>
+    </div>
+
+    <div id="norm-checklist-wrap"></div>
+
+    <!-- OBLIGACIONES DEL EMPLEADOR -->
+    <div style="margin-top:24px;">
+      <h3 class="section-title">📋 Obligaciones del empleador — Mendy Fast Food</h3>
+
+      <div class="norm-bloque">
+        <div class="norm-bloque-titulo">💰 Salario y pagos</div>
+        <div class="norm-item">▸ Pagar mínimo el salario mínimo legal vigente (SMLV 2026: <strong>$1.750.905</strong>)</div>
+        <div class="norm-item">▸ Auxilio de transporte 2026: <strong>$249.095</strong> mensuales (obligatorio si el empleado gana hasta 2 SMLV y vive a más de 1 km del trabajo)</div>
+        <div class="norm-item">▸ Pagar quincenalmente o mensualmente según acuerdo en contrato</div>
+        <div class="norm-item">▸ Prima de servicios: 15 días de salario en junio y 15 en diciembre</div>
+        <div class="norm-item">▸ Cesantías: 1 mes de salario por año trabajado (consignar al fondo antes del 14 de febrero)</div>
+        <div class="norm-item">▸ Intereses sobre cesantías: 12% anual (pagar directamente al empleado en enero)</div>
+        <div class="norm-item">▸ Vacaciones: 15 días hábiles por año trabajado</div>
+      </div>
+
+      <div class="norm-bloque">
+        <div class="norm-bloque-titulo">🏥 Seguridad social</div>
+        <div class="norm-item">▸ <strong>Salud (EPS):</strong> 12.5% del salario — 8.5% empleador + 4% empleado</div>
+        <div class="norm-item">▸ <strong>Pensión (AFP):</strong> 16% del salario — 12% empleador + 4% empleado</div>
+        <div class="norm-item">▸ <strong>ARL (Riesgo laboral):</strong> Clase I para restaurantes ≈ 0.522% — paga el empleador</div>
+        <div class="norm-item">▸ <strong>Caja de compensación familiar (SENA, ICBF, CCF):</strong> 9% del salario — paga el empleador</div>
+        <div class="norm-item norm-alerta">⚠️ En San Andrés: verificar afiliación con EPS habilitada en el Archipiélago (ej: Coomeva, Coosalud)</div>
+      </div>
+
+      <div class="norm-bloque">
+        <div class="norm-bloque-titulo">📄 Contrato y documentos</div>
+        <div class="norm-item">▸ Contrato escrito obligatorio — mínimo a término fijo con 30 días de preaviso para no renovar</div>
+        <div class="norm-item">▸ Entregar copia firmada del contrato al empleado</div>
+        <div class="norm-item">▸ Reglamento interno de trabajo (obligatorio desde 5 empleados)</div>
+        <div class="norm-item norm-alerta">⚠️ <strong>OCCRE obligatorio:</strong> Si la empleada no es raizal ni residente, debe tener permiso de trabajo vigente del OCCRE (Oficina de Control y Circulación y Residencia)</div>
+      </div>
+
+      <div class="norm-bloque">
+        <div class="norm-bloque-titulo">🍽️ Manipulación de alimentos (Res. 2674/2013)</div>
+        <div class="norm-item">▸ Todos los empleados que manejan alimentos deben tener <strong>carné de manipulación de alimentos vigente</strong></div>
+        <div class="norm-item">▸ El curso lo ofrecen el SENA, el INVIMA o entidades autorizadas por la Secretaría de Salud</div>
+        <div class="norm-item">▸ Renovación cada 1-2 años según la entidad certificadora</div>
+        <div class="norm-item">▸ El empleador debe garantizar que todos cuenten con él antes de manipular alimentos</div>
+        <div class="norm-item norm-alerta">⚠️ San Andrés: tramitar con la Secretaría de Salud del Archipiélago o entidad autorizada en la isla</div>
+      </div>
+
+      <div class="norm-bloque">
+        <div class="norm-bloque-titulo">👗 Dotación (Art. 230 CST)</div>
+        <div class="norm-item">▸ 3 entregas al año: <strong>30 de abril, 31 de agosto y 20 de diciembre</strong></div>
+        <div class="norm-item">▸ Aplica para empleados con salario hasta 2 SMLV</div>
+        <div class="norm-item">▸ Incluye: calzado y ropa de labor adecuada al cargo</div>
+        <div class="norm-item">▸ Debe quedar registrada con firma del empleado</div>
+      </div>
+
+      <div class="norm-bloque">
+        <div class="norm-bloque-titulo">🏝️ Régimen especial San Andrés</div>
+        <div class="norm-item">▸ San Andrés es Zona Especial de Régimen Aduanero (ZERA) — algunas exenciones tributarias aplican</div>
+        <div class="norm-item">▸ <strong>OCCRE:</strong> empleados no raizales necesitan permiso de residencia y trabajo vigente</div>
+        <div class="norm-item">▸ Los contratos laborales se rigen igual por el CST, no hay excepción en lo laboral</div>
+        <div class="norm-item norm-alerta">⚠️ Recomendado: consultar con un contador o abogado laboralista de la isla para casos puntuales</div>
+      </div>
+
+      <div class="norm-bloque" style="border-color:rgba(34,197,94,.3);">
+        <div class="norm-bloque-titulo" style="color:var(--green);">✅ Buenas prácticas adicionales</div>
+        <div class="norm-item">▸ Tener botiquín de primeros auxilios visible y dotado</div>
+        <div class="norm-item">▸ Extintores vigentes y señalizados (mínimo 1 por área de cocina)</div>
+        <div class="norm-item">▸ Señalización de rutas de evacuación</div>
+        <div class="norm-item">▸ Capacitación en BPM (Buenas Prácticas de Manufactura) al menos 1 vez al año</div>
+        <div class="norm-item">▸ Registros de temperatura de neveras y congeladores</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- fin screen-app -->
+<div class="ficha-overlay" id="ficha-overlay">
+  <div class="ficha-card">
+    <button class="ficha-close" onclick="closeFicha()">✕ Cerrar</button>
+    <div id="ficha-content"></div>
+  </div>
+</div>
+
+<!-- OVERLAY ADMIN PIN -->
+<div style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;align-items:center;justify-content:center;" id="overlay-admin" class="ov-flex">
+  <div style="background:#2C3A50;border-radius:20px;padding:28px 24px;width:100%;max-width:320px;text-align:center;">
+    <h3 style="font-family:'Syne',sans-serif;margin-bottom:6px;">🔐 Acceso Admin</h3>
+    <p style="font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:18px;">PIN de Aljavis</p>
+    <input type="password" class="pin-input" id="admin-pin-input" maxlength="8" placeholder="••••" inputmode="numeric">
+    <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="verifyAdminPin()">Verificar</button>
+    <div class="login-error" id="admin-pin-error"></div>
+    <button onclick="closeOverlay()" style="background:none;border:none;color:rgba(255,255,255,.4);margin-top:12px;cursor:pointer;font-size:.82rem;">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════
+//  DATOS DEL EQUIPO
+// ══════════════════════════════
+const EQUIPO_DEFAULT = [
+  {
+    id: 'p1',
+    nombre: 'Aljavis Murillo',
+    cargo: 'Dueño y Administrador',
+    tipo: 'dueño',
+    avatar: '👑',
+    pin: '1234',
+    cedula: '',
+    telefono: '',
+    ingreso: '',
+    salarioBase: 0,
+    tipoContrato: 'Propietario',
+    estado: 'activo',
+    funciones: [
+      'Dirección general del negocio',
+      'Control de inventario y compras',
+      'Revisión diaria de reportes operativos',
+      'Gestión financiera y pagos',
+      'Atención a proveedores',
+      'Toma de decisiones estratégicas',
+      'Supervisión del equipo de trabajo',
+    ],
+    notas: '',
+  },
+  {
+    id: 'p2',
+    nombre: 'Alfonso Murillo',
+    cargo: 'Fundador y Asesor',
+    tipo: 'fundador',
+    avatar: '👴',
+    pin: '0000',
+    cedula: '',
+    telefono: '',
+    ingreso: '',
+    salarioBase: 0,
+    tipoContrato: 'Asesor / Socio fundador',
+    estado: 'activo',
+    funciones: [
+      'Supervisión general de la operación',
+      'Validación de conteos de inventario',
+      'Apoyo en la toma de decisiones',
+      'Relación con proveedores históricos',
+      'Guía y acompañamiento al equipo',
+    ],
+    notas: 'Fundador del negocio. Recibe asignación mensual como reconocimiento a su aporte.',
+  },
+  {
+    id: 'p3',
+    nombre: 'Alicia James',
+    cargo: 'Operaria de Cocina',
+    tipo: 'empleada',
+    avatar: '👩',
+    pin: '',
+    cedula: '',
+    telefono: '',
+    ingreso: '',
+    salarioBase: 0,
+    tipoContrato: 'Término fijo',
+    estado: 'activo',
+    funciones: [
+      'Preparación y despacho de pedidos',
+      'Apertura y cierre de cocina',
+      'Control de mise en place diario',
+      'Limpieza y sanitización de cocina',
+      'Reporte de novedades de inventario',
+    ],
+    notas: '',
+  },
+  {
+    id: 'p4',
+    nombre: 'Yamileth Murguietio',
+    cargo: 'Operaria de Cocina / Caja',
+    tipo: 'empleada',
+    avatar: '👩',
+    pin: '',
+    cedula: '',
+    telefono: '',
+    ingreso: '',
+    salarioBase: 0,
+    tipoContrato: 'Término fijo',
+    estado: 'activo',
+    funciones: [
+      'Atención en caja y manejo del POS',
+      'Preparación de pedidos en cocina',
+      'Cuadre de caja al cierre del turno',
+      'Atención al cliente en mostrador',
+      'Limpieza de zona de servicio',
+    ],
+    notas: '',
+  },
+  {
+    id: 'p5',
+    nombre: 'Beatriz Vitola',
+    cargo: 'Operaria de Servicio',
+    tipo: 'empleada',
+    avatar: '👩',
+    pin: '',
+    cedula: '',
+    telefono: '',
+    ingreso: '',
+    salarioBase: 0,
+    tipoContrato: 'Término fijo',
+    estado: 'activo',
+    funciones: [
+      'Atención al cliente y despacho',
+      'Organización de zona de servicio',
+      'Apoyo en cocina según necesidad',
+      'Control de condimentos y dotación de mesas',
+      'Limpieza general al cierre',
+    ],
+    notas: '',
+  },
+];
+
+// ══════════════════════════════
+//  ESTADO
+// ══════════════════════════════
+let state = {
+  equipo: [], pagos: [], capacitaciones: [], normData: {},
+  currentUser: null, adminUnlocked: false,
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('mendy_personal_v1');
+    if (s) {
+      const p = JSON.parse(s);
+      state.equipo         = p.equipo         || EQUIPO_DEFAULT;
+      state.pagos          = p.pagos          || [];
+      state.capacitaciones = p.capacitaciones || [];
+      state.normData       = p.normData       || {};
+    } else {
+      state.equipo = EQUIPO_DEFAULT;
+    }
+  } catch { state.equipo = EQUIPO_DEFAULT; }
+}
+function saveState() {
+  localStorage.setItem('mendy_personal_v1', JSON.stringify({
+    equipo:state.equipo, pagos:state.pagos,
+    capacitaciones:state.capacitaciones, normData:state.normData,
+  }));
+}
+
+// ══════════════════════════════
+//  LOGIN
+// ══════════════════════════════
+let selectedPersonaId = null;
+
+function renderUserGrid() {
+  const grid = document.getElementById('user-grid');
+  grid.innerHTML = '';
+  state.equipo.filter(p => p.pin).forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'user-btn' + (p.id === selectedPersonaId ? ' selected' : '');
+    btn.innerHTML = `<div class="u-avatar">${p.avatar}</div>
+      <div class="u-name">${p.nombre.split(' ')[0]}</div>
+      <div class="u-role">${p.cargo}</div>`;
+    btn.onclick = () => {
+      selectedPersonaId = p.id;
+      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('pin-input').focus();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function doLogin() {
+  const pin = document.getElementById('pin-input').value.trim();
+  if (!selectedPersonaId) { document.getElementById('login-error').textContent = 'Selecciona tu nombre.'; return; }
+  const persona = state.equipo.find(p => p.id === selectedPersonaId && p.pin === pin);
+  if (!persona) { document.getElementById('login-error').textContent = 'PIN incorrecto.'; return; }
+  state.currentUser = persona;
+  state.adminUnlocked = false;
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-app').style.display = 'block';
+  document.getElementById('nav-user-name').innerHTML = `${persona.avatar} <strong>${persona.nombre.split(' ')[0]}</strong>`;
+  document.getElementById('tab-admin-btn').style.display = persona.tipo === 'dueño' ? 'inline-block' : 'none';
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-locked').style.display = 'block';
+
+  // Pagos: solo dueño y fundador
+  const esDirectivo = persona.tipo === 'dueño' || persona.tipo === 'fundador';
+  document.getElementById('pagos-panel').style.display     = esDirectivo ? 'block' : 'none';
+  document.getElementById('pagos-restringido').style.display = esDirectivo ? 'none' : 'block';
+
+  // Capacitaciones: mostrar botón + si es admin
+  document.getElementById('cap-form').style.display = 'none';
+  document.getElementById('btn-add-cap').style.display = esDirectivo ? 'inline-block' : 'none';
+
+  switchTab('equipo', document.querySelector('.tab-btn'));
+}
+
+function doLogout() {
+  state.currentUser = null; selectedPersonaId = null;
+  document.getElementById('screen-app').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('pin-input').value = '';
+  document.getElementById('login-error').textContent = '';
+  renderUserGrid();
+}
+document.getElementById('pin-input').addEventListener('keyup', e => { if(e.key==='Enter') doLogin(); });
+
+// ══════════════════════════════
+//  TABS
+// ══════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'equipo')         renderEquipo();
+  if (id === 'pagos')          renderPagos();
+  if (id === 'capacitaciones') renderCaps();
+  if (id === 'normatividad')   renderNormatividad();
+  if (id === 'admin' && state.adminUnlocked) renderAdmin();
+}
+
+// ══════════════════════════════
+//  EQUIPO
+// ══════════════════════════════
+function renderEquipo() {
+  const grid = document.getElementById('equipo-grid');
+  const nomina = state.equipo.reduce((s, p) => s + (p.salarioBase || 0), 0);
+  document.getElementById('kpi-total').textContent = state.equipo.filter(p => p.estado === 'activo').length;
+  document.getElementById('kpi-nomina').textContent = '$' + nomina.toLocaleString('es-CO');
+  const mesActual = new Date().toLocaleDateString('es-CO', {month:'long', year:'numeric'});
+  const capsEste = state.capacitaciones.filter(c => {
+    const d = new Date(c.fecha);
+    const now = new Date();
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+  document.getElementById('kpi-caps').textContent = capsEste;
+
+  grid.innerHTML = state.equipo.map(p => {
+    const tipoCls = p.tipo === 'dueño' ? 'pc-dueño' : p.tipo === 'fundador' ? 'pc-fundador' : 'pc-empleada';
+    const badgeCls = p.tipo === 'dueño' ? 'badge-dueño' : p.tipo === 'fundador' ? 'badge-fundador' : 'badge-empleada';
+    const badgeTxt = p.tipo === 'dueño' ? 'Dueño' : p.tipo === 'fundador' ? 'Fundador' : 'Empleada';
+    const ultimoPago = state.pagos.filter(x => x.personaId === p.id)[0];
+    return `<div class="persona-card ${tipoCls}" onclick="openFicha('${p.id}')">
+      <div class="pc-avatar">${p.avatar}</div>
+      <div class="pc-nombre">${p.nombre}</div>
+      <div class="pc-cargo">${p.cargo}</div>
+      <span class="pc-tipo-badge ${badgeCls}">${badgeTxt}</span>
+      <div class="pc-pago">
+        <span>${ultimoPago ? ultimoPago.periodo : 'Sin pagos registrados'}</span>
+        <span class="monto">${ultimoPago ? '$'+Number(ultimoPago.monto).toLocaleString('es-CO') : '—'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════
+//  FICHA PERSONA
+// ══════════════════════════════
+function openFicha(id) {
+  const p = state.equipo.find(x => x.id === id);
+  if (!p) return;
+  const tipoCls = p.tipo === 'dueño' ? 'badge-dueño' : p.tipo === 'fundador' ? 'badge-fundador' : 'badge-empleada';
+  const pagosPersona = state.pagos.filter(x => x.personaId === id).slice(0, 5);
+  const capsPersona  = state.capacitaciones.filter(c => c.participantes && c.participantes.includes(id)).slice(0, 5);
+
+  document.getElementById('ficha-content').innerHTML = `
+    <div class="ficha-header">
+      <div class="ficha-avatar">${p.avatar}</div>
+      <div class="ficha-titulo">
+        <h2>${p.nombre}</h2>
+        <p>${p.cargo} · <span class="pc-tipo-badge ${tipoCls}" style="font-size:.7rem;">${p.tipo}</span></p>
+      </div>
+    </div>
+
+    <div class="ficha-section">
+      <h3>📋 Información general</h3>
+      <div class="info-grid">
+        <div class="info-item"><div class="il">Tipo de contrato</div><div class="iv">${p.tipoContrato || '—'}</div></div>
+        <div class="info-item"><div class="il">Fecha de ingreso</div><div class="iv">${p.ingreso || '—'}</div></div>
+        <div class="info-item"><div class="il">Cédula</div><div class="iv">${p.cedula || '—'}</div></div>
+        <div class="info-item"><div class="il">Teléfono</div><div class="iv">${p.telefono || '—'}</div></div>
+        <div class="info-item"><div class="il">Salario / Asignación base</div><div class="iv" style="color:var(--green);">$${Number(p.salarioBase||0).toLocaleString('es-CO')}</div></div>
+        <div class="info-item"><div class="il">Estado</div><div class="iv">${p.estado === 'activo' ? '✅ Activo' : '⏸ Inactivo'}</div></div>
+        ${p.notas ? `<div class="info-item full"><div class="il">Notas</div><div class="iv">${p.notas}</div></div>` : ''}
+      </div>
+    </div>
+
+    <div class="ficha-section">
+      <h3>📌 Funciones y responsabilidades</h3>
+      <ul class="funciones-list">
+        ${p.funciones.map(f => `<li><span>▸</span><span>${f}</span></li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="ficha-section">
+      <h3>💰 Últimos pagos</h3>
+      ${pagosPersona.length ? pagosPersona.map(pg =>
+        `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.84rem;">
+          <span>${pg.periodo} · <span style="color:rgba(255,255,255,.45)">${pg.tipo}</span></span>
+          <span style="color:var(--green);font-weight:700;">$${Number(pg.monto).toLocaleString('es-CO')}</span>
+        </div>`
+      ).join('') : '<p style="color:rgba(255,255,255,.35);font-size:.82rem;">Sin pagos registrados.</p>'}
+    </div>
+
+    <div class="ficha-section">
+      <h3>📚 Capacitaciones</h3>
+      ${capsPersona.length ? capsPersona.map(c =>
+        `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.84rem;">
+          <span>${c.tema}</span>
+          <span style="color:rgba(255,255,255,.45);">${c.fecha}</span>
+        </div>`
+      ).join('') : '<p style="color:rgba(255,255,255,.35);font-size:.82rem;">Sin capacitaciones registradas.</p>'}
+    </div>`;
+
+  document.getElementById('ficha-overlay').classList.add('open');
+}
+function closeFicha() { document.getElementById('ficha-overlay').classList.remove('open'); }
+
+// ══════════════════════════════
+//  PAGOS
+// ══════════════════════════════
+function renderPagos() {
+  // Selector personas
+  const sel = document.getElementById('pago-persona');
+  sel.innerHTML = state.equipo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+
+  // Auto-llenar período con fecha de hoy
+  const campoPeriodo = document.getElementById('pago-periodo');
+  if (!campoPeriodo.value) {
+    const hoy = new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'});
+    campoPeriodo.value = hoy;
+  }
+
+  // Filtro historial
+  const filtroSel = document.getElementById('filtro-pago-persona');
+  filtroSel.innerHTML = '<option value="">Todos</option>' +
+    state.equipo.map(p => `<option value="${p.id}">${p.nombre}</option>`).join('');
+
+  const lista = document.getElementById('pagos-list');
+  const filtro = filtroSel.value;
+  const pagos = state.pagos.filter(p => !filtro || p.personaId === filtro);
+
+  if (!pagos.length) { lista.innerHTML = '<p style="color:rgba(255,255,255,.35);font-size:.84rem;">Sin pagos registrados.</p>'; return; }
+
+  lista.innerHTML = pagos.map(p => {
+    const persona = state.equipo.find(x => x.id === p.personaId);
+    return `<div class="pago-row">
+      <div style="flex:1;min-width:120px;">
+        <div class="pr-persona">${persona ? persona.nombre : '—'} <span style="font-size:.68rem;color:rgba(255,255,255,.3);font-weight:400;">N°${p.consecutivo||'—'}</span></div>
+        <div class="pr-meta">${p.periodo} · ${p.tipo} · ${p.medio||'—'}${p.nota?' · '+p.nota:''}</div>
+        <div class="pr-meta">👤 ${p.registradoPor} · ${p.fecha}${p.hora?' · '+p.hora:''} 🔒</div>
+      </div>
+      <div class="pr-monto">$${Number(p.monto).toLocaleString('es-CO')}</div>
+      <span class="badge-pagado">✅ Pagado</span>
+      <button class="btn-secondary" style="padding:6px 12px;font-size:.75rem;margin:0;" onclick="verDesprendible('${p.id}')">🖨 Ver</button>
+    </div>`;
+  }).join('');
+}
+
+function registrarPago() {
+  const personaId = document.getElementById('pago-persona').value;
+  const periodo   = document.getElementById('pago-periodo').value.trim();
+  const monto     = document.getElementById('pago-monto').value;
+  const tipo      = document.getElementById('pago-tipo').value;
+  const medio     = document.getElementById('pago-medio').value;
+  const nota      = document.getElementById('pago-nota').value.trim();
+  if (!periodo || !monto) { showToast('⚠️ Completa período y monto','warn'); return; }
+
+  const ahora    = new Date();
+  const hora     = ahora.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',hour12:true});
+  const fecha    = ahora.toLocaleDateString('es-CO');
+  const consec   = (state.pagos.length + 1).toString().padStart(4,'0');
+  const persona  = state.equipo.find(p => p.id === personaId);
+
+  state.pagos.unshift({
+    id: 'pg'+Date.now(),
+    consecutivo: consec,
+    personaId, periodo,
+    monto: Number(monto),
+    tipo, medio, nota,
+    cedula: persona ? persona.cedula : '',
+    registradoPor: state.currentUser.nombre,
+    fecha, hora,
+    bloqueado: true,
+  });
+  saveState(); renderPagos(); renderEquipo();
+  ['pago-periodo','pago-monto','pago-nota'].forEach(id => document.getElementById(id).value = '');
+  showToast('✅ Pago #'+consec+' registrado · '+hora);
+}
+
+function verDesprendible(pagoId) {
+  const pg      = state.pagos.find(p => p.id === pagoId);
+  const persona = state.equipo.find(p => p.id === pg.personaId);
+  if (!pg || !persona) return;
+
+  const montoFmt = '$'+Number(pg.monto).toLocaleString('es-CO');
+  const telPersona = persona.telefono ? persona.telefono.replace(/\D/g,'') : '';
+  const msgWA = encodeURIComponent(
+    `Hola ${persona.nombre.split(' ')[0]}, le enviamos su comprobante de pago N°${pg.consecutivo||'—'} correspondiente al período ${pg.periodo} por valor de ${montoFmt}.\n\nMedio de pago: ${pg.medio||'—'}.\n\nPor favor confirmar recibido de este pago.`
+  );
+  const linkWA = telPersona
+    ? `https://wa.me/57${telPersona}?text=${msgWA}`
+    : `https://wa.me/?text=${msgWA}`;
+
+  const html = `<div class="desprendible" id="desp-print">
+    <div class="desp-header">
+      <div>
+        <div class="desp-empresa">🍟 Mendy Fast Food</div>
+        <div class="desp-titulo">San Andrés Islas · Comprobante de pago</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:.75rem;color:#999;">N° <strong style="color:#1B2432;">${pg.consecutivo||'—'}</strong></div>
+        <div style="font-size:.7rem;color:#bbb;margin-top:2px;">Registro: ${pg.fecha} ${pg.hora||''}</div>
+      </div>
+    </div>
+
+    <div class="desp-grid">
+      <div class="desp-item"><div class="dl">Empleado / Persona</div><div class="dv">${persona.nombre}</div></div>
+      <div class="desp-item"><div class="dl">C.C. / Documento</div><div class="dv">${persona.cedula||'—'}</div></div>
+      <div class="desp-item"><div class="dl">Cargo</div><div class="dv">${persona.cargo}</div></div>
+      <div class="desp-item"><div class="dl">Período</div><div class="dv">${pg.periodo}</div></div>
+      <div class="desp-item"><div class="dl">Tipo de pago</div><div class="dv">${pg.tipo}</div></div>
+      <div class="desp-item"><div class="dl">Medio de pago</div><div class="dv">${pg.medio||'—'}</div></div>
+      <div class="desp-item"><div class="dl">Registrado por</div><div class="dv">${pg.registradoPor}</div></div>
+      <div class="desp-item"><div class="dl">Fecha y hora registro</div><div class="dv">${pg.fecha}${pg.hora?' · '+pg.hora:''}</div></div>
+      ${pg.nota?`<div class="desp-item" style="grid-column:1/-1"><div class="dl">Observación</div><div class="dv">${pg.nota}</div></div>`:''}
+    </div>
+
+    <div class="desp-total">
+      <div class="dt-label">Valor pagado</div>
+      <div class="dt-monto">${montoFmt}</div>
+    </div>
+
+    <div class="desp-firma">
+      <div class="firma-box">
+        <div class="firma-linea"></div>
+        <div class="firma-label">Firma empleado/a</div>
+      </div>
+      <div class="firma-box">
+        <div class="firma-linea"></div>
+        <div class="firma-label">Firma Aljavis Murillo</div>
+      </div>
+    </div>
+
+    <div style="border-top:1px dashed #ddd;margin-top:14px;padding-top:10px;font-size:.62rem;color:#aaa;line-height:1.55;text-align:justify;">
+      Este comprobante corresponde únicamente al pago de la jornada laborada en la fecha indicada y no constituye liquidación final del contrato ni reconocimiento de otros conceptos laborales. El trabajador declara haber recibido el valor aquí indicado por el medio de pago registrado. La confirmación por medios electrónicos o mensajes de datos constituye aceptación del pago conforme a la Ley 527 de 1999. Documento generado electrónicamente por el sistema interno de Mendy Fast Food.
+    </div>
+  </div>`;
+
+  document.getElementById('ficha-content').innerHTML = html +
+    `<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+      <button class="btn-primary" style="flex:1;" onclick="window.print()">🖨 Imprimir</button>
+      <a href="${linkWA}" target="_blank" class="btn-primary" style="flex:1;text-align:center;text-decoration:none;background:#22C55E;">💬 Enviar por WhatsApp</a>
+    </div>`;
+  document.getElementById('ficha-overlay').classList.add('open');
+}
+
+// ══════════════════════════════
+//  CAPACITACIONES
+// ══════════════════════════════
+function toggleCapForm() {
+  const f = document.getElementById('cap-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  if (f.style.display === 'block') {
+    // Render participantes checkboxes
+    document.getElementById('cap-participantes').innerHTML = state.equipo.map(p =>
+      `<label style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border-radius:10px;padding:7px 12px;cursor:pointer;font-size:.82rem;">
+        <input type="checkbox" value="${p.id}" style="accent-color:var(--primary);"> ${p.avatar} ${p.nombre}
+      </label>`
+    ).join('');
+  }
+}
+
+function registrarCap() {
+  const tema  = document.getElementById('cap-tema').value.trim();
+  const fecha = document.getElementById('cap-fecha').value;
+  const obs   = document.getElementById('cap-obs').value.trim();
+  const participantes = [...document.querySelectorAll('#cap-participantes input:checked')].map(i => i.value);
+  if (!tema || !fecha) { showToast('⚠️ Completa tema y fecha','warn'); return; }
+  state.capacitaciones.unshift({
+    id: 'cap'+Date.now(), tema, fecha, obs, participantes,
+    registradoPor: state.currentUser.nombre,
+  });
+  saveState(); renderCaps();
+  ['cap-tema','cap-obs'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cap-fecha').value = '';
+  document.getElementById('cap-form').style.display = 'none';
+  showToast('✅ Capacitación registrada');
+  renderEquipo();
+}
+
+function renderCaps() {
+  const list = document.getElementById('cap-list');
+  if (!state.capacitaciones.length) {
+    list.innerHTML = '<p style="color:rgba(255,255,255,.35);font-size:.84rem;">Sin capacitaciones registradas.</p>'; return;
+  }
+  list.innerHTML = state.capacitaciones.map(c => {
+    const personas = (c.participantes||[]).map(id => {
+      const p = state.equipo.find(x => x.id === id);
+      return p ? p.avatar + ' ' + p.nombre.split(' ')[0] : '';
+    }).filter(Boolean).join(', ');
+    return `<div class="cap-row">
+      <div style="flex:1;">
+        <div class="cr-titulo">📚 ${c.tema}</div>
+        <div class="cr-meta">📅 ${c.fecha}${c.obs?' · '+c.obs:''}</div>
+        <div class="cr-meta" style="margin-top:3px;">👥 ${personas || 'Sin participantes'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════
+//  ADMIN
+// ══════════════════════════════
+function openAdminPin() {
+  document.getElementById('overlay-admin').style.display = 'flex';
+  document.getElementById('admin-pin-input').value = '';
+  document.getElementById('admin-pin-error').textContent = '';
+  setTimeout(() => document.getElementById('admin-pin-input').focus(), 100);
+}
+function closeOverlay() { document.getElementById('overlay-admin').style.display = 'none'; }
+function verifyAdminPin() {
+  const pin = document.getElementById('admin-pin-input').value.trim();
+  if (pin === state.currentUser.pin && state.currentUser.tipo === 'dueño') {
+    state.adminUnlocked = true;
+    closeOverlay();
+    document.getElementById('admin-locked').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    renderAdmin();
+  } else { document.getElementById('admin-pin-error').textContent = 'PIN incorrecto.'; }
+}
+
+function agregarPersona() {
+  const nombre  = document.getElementById('np-nombre').value.trim();
+  const cargo   = document.getElementById('np-cargo').value.trim();
+  const tipo    = document.getElementById('np-tipo').value;
+  const pin     = document.getElementById('np-pin').value.trim();
+  const salario = Number(document.getElementById('np-salario').value) || 0;
+  const ingreso = document.getElementById('np-ingreso').value.trim();
+  if (!nombre || !cargo) { showToast('⚠️ Nombre y cargo son obligatorios','warn'); return; }
+  const avatares = { empleada:'👩', fundador:'👴', dueño:'👑' };
+  const nueva = {
+    id: 'p' + Date.now(),
+    nombre, cargo, tipo,
+    avatar: avatares[tipo] || '👤',
+    pin, cedula:'', telefono:'',
+    ingreso, salarioBase: salario,
+    tipoContrato: tipo === 'empleada' ? 'Término fijo' : tipo === 'fundador' ? 'Asesor / Socio' : 'Propietario',
+    estado: 'activo',
+    funciones: ['Por definir'],
+    notas: '',
+  };
+  state.equipo.push(nueva);
+  saveState();
+  renderEquipo();
+  renderUserGrid();
+  renderAdmin();
+  ['np-nombre','np-cargo','np-pin','np-salario','np-ingreso'].forEach(id => document.getElementById(id).value = '');
+  showToast('✅ ' + nombre + ' agregado al equipo');
+}
+
+function renderAdmin() {
+  const sel = document.getElementById('admin-sel-persona');
+  sel.innerHTML = state.equipo.map(p => `<option value="${p.id}">${p.avatar} ${p.nombre}</option>`).join('');
+  loadPersonaForm();
+}
+
+function loadPersonaForm() {
+  const id = document.getElementById('admin-sel-persona').value;
+  const p  = state.equipo.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('persona-form-wrap').innerHTML = `
+    <div class="form-card">
+      <h3>✏️ Editar — ${p.nombre}</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Cargo</label>
+          <input class="form-input" id="ef-cargo" value="${p.cargo}" placeholder="Cargo">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tipo de contrato</label>
+          <input class="form-input" id="ef-contrato" value="${p.tipoContrato}" placeholder="Tipo contrato">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Cédula</label>
+          <input class="form-input" id="ef-cedula" value="${p.cedula}" placeholder="No. Cédula">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono</label>
+          <input class="form-input" id="ef-tel" value="${p.telefono}" placeholder="Teléfono">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Fecha de ingreso</label>
+          <input class="form-input" id="ef-ingreso" value="${p.ingreso}" placeholder="dd/mm/aaaa">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Salario / Asignación (COP)</label>
+          <input class="form-input" type="number" id="ef-salario" value="${p.salarioBase}" placeholder="0">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">PIN de acceso</label>
+        <input class="form-input" id="ef-pin" value="${p.pin}" placeholder="PIN numérico" maxlength="8" inputmode="numeric">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Funciones (una por línea)</label>
+        <textarea class="form-textarea" id="ef-funciones" rows="5">${p.funciones.join('\n')}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notas</label>
+        <textarea class="form-textarea" id="ef-notas" rows="3">${p.notas}</textarea>
+      </div>
+      <button class="btn-primary" onclick="guardarPersona('${id}')">💾 Guardar cambios</button>
+    </div>`;
+}
+
+function guardarPersona(id) {
+  const p = state.equipo.find(x => x.id === id);
+  if (!p) return;
+  p.cargo        = document.getElementById('ef-cargo').value.trim();
+  p.tipoContrato = document.getElementById('ef-contrato').value.trim();
+  p.cedula       = document.getElementById('ef-cedula').value.trim();
+  p.telefono     = document.getElementById('ef-tel').value.trim();
+  p.ingreso      = document.getElementById('ef-ingreso').value.trim();
+  p.salarioBase  = Number(document.getElementById('ef-salario').value) || 0;
+  p.pin          = document.getElementById('ef-pin').value.trim();
+  p.funciones    = document.getElementById('ef-funciones').value.split('\n').filter(f => f.trim());
+  p.notas        = document.getElementById('ef-notas').value.trim();
+  saveState(); renderEquipo(); renderUserGrid();
+  showToast('✅ Perfil actualizado: ' + p.nombre);
+}
+
+// ══════════════════════════════
+//  NORMATIVIDAD
+// ══════════════════════════════
+const NORM_ITEMS = [
+  { id:'n1',  label:'Contrato escrito firmado',                     vence: false, aplica:['empleada'], anual: false },
+  { id:'n2',  label:'Afiliación a EPS',                             vence: false, aplica:['empleada','dueño','fundador'], anual: false },
+  { id:'n3',  label:'Afiliación a Pensión (AFP)',                   vence: false, aplica:['empleada'], anual: false },
+  { id:'n4',  label:'Afiliación a ARL',                             vence: false, aplica:['empleada'], anual: false },
+  { id:'n5',  label:'Afiliación a Caja de Compensación Familiar',   vence: false, aplica:['empleada'], anual: false },
+  { id:'n6',  label:'Carné de manipulación de alimentos vigente',   vence: true,  aplica:['empleada','dueño','fundador'], anual: false },
+  { id:'n7',  label:'OCCRE / Permiso de trabajo (si aplica)',       vence: true,  aplica:['empleada'], anual: false },
+  { id:'n8',  label:'Copia del contrato entregada al empleado',     vence: false, aplica:['empleada'], anual: false },
+  { id:'n9',  label:'Dotación 1 entregada (30 de abril)',           vence: false, aplica:['empleada'], anual: true },
+  { id:'n10', label:'Dotación 2 entregada (31 de agosto)',          vence: false, aplica:['empleada'], anual: true },
+  { id:'n11', label:'Dotación 3 entregada (20 de diciembre)',       vence: false, aplica:['empleada'], anual: true },
+  { id:'n12', label:'Cesantías consignadas al fondo (14 febrero)',  vence: false, aplica:['empleada'], anual: true },
+  { id:'n13', label:'Intereses cesantías pagados (enero)',          vence: false, aplica:['empleada'], anual: true },
+];
+
+function renderNormatividad() {
+  const wrap = document.getElementById('norm-checklist-wrap');
+  const esAdmin = state.currentUser.tipo === 'dueño';
+  const anioActual = new Date().getFullYear();
+  if (!state.normData) state.normData = {};
+
+  const personas = state.equipo.filter(p => p.estado === 'activo');
+
+  wrap.innerHTML = personas.map(p => {
+    const items = NORM_ITEMS.filter(n => n.aplica.includes(p.tipo));
+    if (!items.length) return '';
+    const nd = state.normData[p.id] || {};
+
+    // Para ítems anuales, la clave incluye el año
+    const getKey  = n => n.anual ? n.id + '_' + anioActual : n.id;
+    const isOk    = n => nd[getKey(n)] && nd[getKey(n)].ok;
+
+    const cumplidos = items.filter(n => isOk(n)).length;
+    const pct = Math.round(cumplidos / items.length * 100);
+    const pctColor = pct === 100 ? 'var(--green)' : pct >= 60 ? 'var(--yellow)' : 'var(--red)';
+
+    return `<div class="norm-emp-card">
+      <div class="norm-emp-header">
+        <span style="font-size:1.8rem;">${p.avatar}</span>
+        <div style="flex:1;">
+          <div class="norm-emp-name">${p.nombre}</div>
+          <div class="norm-emp-cargo">${p.cargo}</div>
+        </div>
+        <span class="pct-norm" style="background:${pctColor}20;color:${pctColor};">${cumplidos}/${items.length} · ${pct}%</span>
+      </div>
+      ${items.map(n => {
+        const key     = getKey(n);
+        const checked = nd[key] && nd[key].ok;
+        const vence   = nd[key] && nd[key].vence ? nd[key].vence : '';
+        const anualTag = n.anual ? `<span style="font-size:.68rem;background:rgba(255,209,102,.15);color:var(--accent);padding:1px 8px;border-radius:10px;margin-left:6px;">${anioActual}</span>` : '';
+        return `<div class="norm-check-item">
+          <div class="norm-check-box ${checked?'checked':''}"
+            ${esAdmin ? `onclick="toggleNormCheck('${p.id}','${n.id}',${n.anual})"` : ''}
+            title="${esAdmin?'Marcar como cumplido':'Solo Aljavis puede editar'}">
+            ${checked ? '✓' : ''}
+          </div>
+          <div style="flex:1;">
+            <div style="${checked?'text-decoration:line-through;opacity:.5;':''}">
+              ${n.label}${anualTag}
+            </div>
+            ${n.vence && esAdmin ? `
+              <div style="margin-top:4px;display:flex;align-items:center;gap:6px;">
+                <span style="font-size:.7rem;color:rgba(255,255,255,.4);">Vence:</span>
+                <input type="text" value="${vence}" placeholder="Ej: dic/2026"
+                  style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:2px 8px;color:#fff;font-size:.72rem;outline:none;width:90px;"
+                  onchange="updateNormVence('${p.id}','${n.id}',${n.anual},this.value)">
+              </div>` : vence ? `<div class="norm-check-vence">⏰ Vence: ${vence}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+function toggleNormCheck(personaId, itemId, esAnual) {
+  if (!state.normData) state.normData = {};
+  if (!state.normData[personaId]) state.normData[personaId] = {};
+  const key = esAnual ? itemId + '_' + new Date().getFullYear() : itemId;
+  const prev = state.normData[personaId][key] || { ok: false, vence: '' };
+  state.normData[personaId][key] = { ...prev, ok: !prev.ok };
+  saveState();
+  renderNormatividad();
+  showToast(state.normData[personaId][key].ok ? '✅ Marcado como cumplido' : '↩ Desmarcado');
+}
+
+function updateNormVence(personaId, itemId, esAnual, val) {
+  if (!state.normData) state.normData = {};
+  if (!state.normData[personaId]) state.normData[personaId] = {};
+  const key = esAnual ? itemId + '_' + new Date().getFullYear() : itemId;
+  if (!state.normData[personaId][key]) state.normData[personaId][key] = { ok: false, vence: '' };
+  state.normData[personaId][key].vence = val;
+  saveState();
+}
+
+// ══════════════════════════════
+//  EXPORT / IMPORT
+// ══════════════════════════════
+function exportarJSON() {
+  const data = JSON.stringify({ equipo:state.equipo, pagos:state.pagos, capacitaciones:state.capacitaciones, normData:state.normData||{} }, null, 2);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
+  a.download = 'mendy-personal-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); showToast('⬇ JSON exportado');
+}
+function importarJSON(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      const d = JSON.parse(ev.target.result);
+      if (d.equipo)         state.equipo         = d.equipo;
+      if (d.pagos)          state.pagos          = d.pagos;
+      if (d.capacitaciones) state.capacitaciones = d.capacitaciones;
+      if (d.normData)       state.normData       = d.normData;
+      saveState(); renderEquipo(); renderUserGrid();
+      showToast('✅ Datos importados');
+    } catch { showToast('❌ Error al leer archivo','error'); }
+  };
+  r.readAsText(file);
+}
+
+// ══════════════════════════════
+//  TOAST
+// ══════════════════════════════
+function showToast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type==='ok'?'var(--green)':type==='warn'?'var(--yellow)':'var(--red)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ══════════════════════════════
+//  INIT
+// ══════════════════════════════
+loadState();
+renderUserGrid();
+</script>
+</body>
+</html>
