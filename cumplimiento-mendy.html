@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cumplimiento sanitario – Mendy Fast Food</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #FF6B35;
+  --dark:    #1B2432;
+  --mid:     #2C3A50;
+  --green:   #22C55E;
+  --yellow:  #F59E0B;
+  --red:     #EF4444;
+  --blue:    #00B4D8;
+  --accent:  #FFD166;
+  --muted:   #6B7280;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Nunito',sans-serif;
+  background:var(--dark);
+  min-height:100vh;
+  color:#fff;
+}
+
+/* ══ LOGIN ══ */
+#screen-login {
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(145deg,#1B2432,#2C3A50);
+}
+.login-card {
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;
+  padding:36px 28px;
+  width:100%;
+  max-width:380px;
+  text-align:center;
+}
+.login-logo { font-size:3rem; margin-bottom:12px; }
+.login-title { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; margin-bottom:4px; }
+.login-title span { color:var(--primary); }
+.login-sub { color:rgba(255,255,255,.45); font-size:.85rem; margin-bottom:28px; }
+.user-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.user-btn {
+  background:rgba(255,255,255,.08);
+  border:2px solid rgba(255,255,255,.1);
+  border-radius:14px;
+  padding:14px 10px;
+  cursor:pointer;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  transition:.2s;
+}
+.user-btn:hover { border-color:var(--primary); background:rgba(255,107,53,.12); }
+.user-btn.selected { border-color:var(--primary); background:rgba(255,107,53,.18); }
+.user-btn .u-avatar { font-size:1.8rem; margin-bottom:6px; }
+.user-btn .u-name { font-size:.82rem; font-weight:700; }
+.user-btn .u-role { font-size:.7rem; color:rgba(255,255,255,.45); margin-top:2px; }
+.pin-label { color:rgba(255,255,255,.6); font-size:.82rem; margin-bottom:8px; text-align:left; }
+.pin-input {
+  width:100%;
+  background:rgba(255,255,255,.08);
+  border:2px solid rgba(255,255,255,.15);
+  border-radius:12px;
+  padding:13px 16px;
+  color:#fff;
+  font-size:1.4rem;
+  letter-spacing:6px;
+  text-align:center;
+  font-family:'Syne',sans-serif;
+  outline:none;
+  margin-bottom:14px;
+  transition:.2s;
+}
+.pin-input:focus { border-color:var(--primary); }
+.btn-login {
+  width:100%;
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  padding:14px;
+  font-family:'Syne',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+.btn-login:hover { background:#e85a25; }
+.login-error { color:var(--red); font-size:.8rem; margin-top:8px; min-height:18px; }
+
+/* ══ APP ══ */
+#screen-app { display:none; min-height:100vh; }
+.top-nav {
+  background:var(--mid);
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+.nav-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; }
+.nav-brand span { color:var(--primary); }
+.nav-user { display:flex; align-items:center; gap:8px; font-size:.82rem; color:rgba(255,255,255,.65); }
+.btn-logout {
+  background:rgba(255,255,255,.08);
+  border:none;
+  border-radius:8px;
+  padding:6px 12px;
+  color:rgba(255,255,255,.6);
+  cursor:pointer;
+  font-size:.78rem;
+  font-family:'Nunito',sans-serif;
+}
+.btn-logout:hover { background:rgba(255,255,255,.15); color:#fff; }
+
+.tabs {
+  display:flex;
+  background:var(--mid);
+  padding:0 20px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  overflow-x:auto;
+  gap:0;
+}
+.tab-btn {
+  background:none;
+  border:none;
+  border-bottom:3px solid transparent;
+  padding:13px 16px;
+  color:rgba(255,255,255,.5);
+  font-family:'Nunito',sans-serif;
+  font-size:.84rem;
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:.2s;
+}
+.tab-btn.active { color:#fff; border-bottom-color:var(--primary); }
+
+.tab-content { display:none; padding:20px; max-width:860px; margin:0 auto; }
+.tab-content.active { display:block; }
+
+/* ══ CARDS ══ */
+.section-title {
+  font-family:'Syne',sans-serif;
+  font-size:1rem;
+  color:var(--accent);
+  margin-bottom:14px;
+}
+
+.equipo-card {
+  background:rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:16px 18px;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  border-left:4px solid var(--green);
+  transition:.2s;
+}
+.equipo-card.warn  { border-left-color:var(--yellow); }
+.equipo-card.alert { border-left-color:var(--red); }
+
+.eq-icon { font-size:2rem; flex-shrink:0; }
+.eq-info { flex:1; }
+.eq-name { font-weight:700; font-size:.92rem; }
+.eq-area { font-size:.75rem; color:rgba(255,255,255,.45); margin-top:2px; }
+.eq-resp { font-size:.75rem; color:rgba(255,255,255,.45); margin-top:2px; }
+
+.eq-status-select {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.12);
+  border-radius:10px;
+  padding:6px 10px;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  font-size:.78rem;
+  outline:none;
+  cursor:pointer;
+}
+
+.semaforo {
+  width:11px; height:11px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.sem-ok    { background:var(--green); }
+.sem-warn  { background:var(--yellow); }
+.sem-alert { background:var(--red); box-shadow:0 0 6px rgba(239,68,68,.7); }
+
+/* ══ CHECKLIST ══ */
+.checklist-header {
+  background:rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:16px 20px;
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.checklist-header h3 { font-family:'Syne',sans-serif; font-size:1rem; }
+.checklist-header p  { font-size:.8rem; color:rgba(255,255,255,.45); margin-top:2px; }
+
+.progress-bar-wrap {
+  background:rgba(255,255,255,.1);
+  border-radius:99px;
+  height:8px;
+  overflow:hidden;
+  flex:1;
+  min-width:100px;
+}
+.progress-bar-fill {
+  height:100%;
+  border-radius:99px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  transition:.4s;
+}
+
+.turno-tabs {
+  display:flex;
+  gap:8px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+.turno-chip {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  padding:6px 16px;
+  font-size:.78rem;
+  font-weight:700;
+  color:rgba(255,255,255,.6);
+  cursor:pointer;
+  transition:.2s;
+}
+.turno-chip.active { background:var(--primary); border-color:var(--primary); color:#fff; }
+
+.check-item {
+  background:rgba(255,255,255,.04);
+  border-radius:14px;
+  padding:14px 16px;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  transition:.2s;
+  border:1.5px solid rgba(255,255,255,.06);
+}
+.check-item.done {
+  background:rgba(34,197,94,.08);
+  border-color:rgba(34,197,94,.2);
+}
+.check-item.done .ci-name { text-decoration:line-through; color:rgba(255,255,255,.4); }
+
+.check-box {
+  width:26px; height:26px;
+  border-radius:8px;
+  border:2px solid rgba(255,255,255,.2);
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:.2s;
+  font-size:1rem;
+}
+.check-box.checked { background:var(--green); border-color:var(--green); }
+
+.ci-info { flex:1; }
+.ci-name { font-size:.88rem; font-weight:600; transition:.2s; }
+.ci-area { font-size:.73rem; color:rgba(255,255,255,.4); margin-top:2px; }
+.ci-freq { font-size:.7rem; color:rgba(255,255,255,.35); margin-top:1px; }
+.ci-producto { font-size:.72rem; color:var(--blue); margin-top:2px; }
+
+.btn-save-check {
+  width:100%;
+  background:var(--green);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  font-family:'Syne',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:16px;
+  transition:.2s;
+}
+.btn-save-check:hover { background:#16a34a; }
+
+/* ══ HISTORIAL ══ */
+.hist-row {
+  background:rgba(255,255,255,.04);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.hist-row .hr-name { font-weight:700; font-size:.88rem; }
+.hist-row .hr-meta { font-size:.75rem; color:rgba(255,255,255,.4); margin-top:2px; }
+.badge-pct {
+  padding:3px 12px;
+  border-radius:20px;
+  font-size:.75rem;
+  font-weight:700;
+  flex-shrink:0;
+}
+
+/* ══ KPI ══ */
+.kpi-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;
+  margin-bottom:20px;
+}
+.kpi-card {
+  background:rgba(255,255,255,.07);
+  border-radius:16px;
+  padding:16px;
+  text-align:center;
+}
+.kpi-num { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; margin-bottom:4px; }
+.kpi-label { font-size:.73rem; color:rgba(255,255,255,.5); }
+
+/* ══ FORM ══ */
+.form-card {
+  background:rgba(255,255,255,.06);
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:16px;
+}
+.form-card h3 { font-family:'Syne',sans-serif; font-size:1rem; margin-bottom:16px; color:var(--accent); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-label { font-size:.78rem; color:rgba(255,255,255,.55); font-weight:600; }
+.form-input, .form-select {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.12);
+  border-radius:10px;
+  padding:10px 12px;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  font-size:.88rem;
+  outline:none;
+  transition:.2s;
+}
+.form-input:focus, .form-select:focus { border-color:var(--primary); }
+.form-select option { background:#2C3A50; }
+.btn-primary {
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  padding:11px 22px;
+  font-family:'Syne',sans-serif;
+  font-size:.88rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+.btn-primary:hover { background:#e85a25; }
+.btn-del {
+  background:rgba(239,68,68,.15);
+  border:none;
+  border-radius:8px;
+  padding:6px 12px;
+  color:var(--red);
+  font-size:.75rem;
+  cursor:pointer;
+  font-family:'Nunito',sans-serif;
+  font-weight:700;
+}
+
+/* ══ ADMIN ══ */
+.admin-lock { text-align:center; padding:40px 20px; }
+.admin-lock p { color:rgba(255,255,255,.5); margin-bottom:20px; }
+.admin-section { margin-bottom:28px; }
+
+.catalog-row {
+  background:rgba(255,255,255,.05);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.cr-name { flex:1; font-size:.88rem; font-weight:600; min-width:120px; }
+.cr-tag  { font-size:.72rem; color:rgba(255,255,255,.4); background:rgba(255,255,255,.08); padding:2px 10px; border-radius:20px; }
+
+/* ══ OVERLAY ══ */
+.overlay {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  z-index:200;
+  align-items:center;
+  justify-content:center;
+}
+.overlay.open { display:flex; }
+.overlay-card {
+  background:#2C3A50;
+  border-radius:20px;
+  padding:28px 24px;
+  width:100%;
+  max-width:320px;
+  text-align:center;
+}
+.overlay-card h3 { font-family:'Syne',sans-serif; font-size:1.1rem; margin-bottom:6px; }
+.overlay-card p  { font-size:.82rem; color:rgba(255,255,255,.5); margin-bottom:18px; }
+
+/* ══ TOAST ══ */
+.toast {
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--green);
+  color:#fff;
+  padding:13px 24px;
+  border-radius:14px;
+  font-weight:700;
+  font-size:.9rem;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+  transition:.35s cubic-bezier(.34,1.56,.64,1);
+  z-index:999;
+  white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+.btn-export {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.15);
+  border-radius:10px;
+  padding:10px 18px;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  font-size:.84rem;
+  font-weight:700;
+  cursor:pointer;
+  margin-right:8px;
+  margin-top:8px;
+}
+.btn-export:hover { background:rgba(255,255,255,.15); }
+
+@media(max-width:600px){
+  .form-row { grid-template-columns:1fr; }
+  .kpi-grid { grid-template-columns:1fr 1fr; }
+}
+
+/* ══ CUMPLIMIENTO ══ */
+.res-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-bottom:16px; }
+.res-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px; }
+.res-tit { font-size:.8rem; color:rgba(255,255,255,.55); font-weight:700; margin-bottom:6px; }
+.res-num { font-family:'Syne',sans-serif; font-size:2.1rem; font-weight:800; line-height:1.1; }
+.res-sub { font-size:.8rem; color:rgba(255,255,255,.6); margin-top:4px; }
+.desv-row { background:rgba(239,68,68,.08); border-left:3px solid var(--red); border-radius:10px; padding:10px 12px; font-size:.84rem; }
+.reg-scroll { overflow-x:auto; border-radius:12px; background:rgba(255,255,255,.04); margin-bottom:12px; }
+.reg-table { width:100%; border-collapse:collapse; font-size:.8rem; }
+.reg-table th { font-size:.72rem; color:rgba(255,255,255,.55); padding:8px; text-align:left; border-bottom:1px solid rgba(255,255,255,.1); }
+.reg-table td { padding:7px 8px; border-bottom:1px solid rgba(255,255,255,.05); }
+.auto-head { display:flex; flex-direction:column; gap:8px; background:rgba(255,255,255,.05); border-radius:14px; padding:12px 14px; margin-bottom:12px; font-size:.84rem; position:sticky; top:58px; z-index:5; backdrop-filter:blur(6px); }
+.turno-chip small { opacity:.65; margin-left:4px; }
+.item-card { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:14px; margin-bottom:14px; }
+.item-head { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:8px; font-size:.95rem; }
+.item-pts { font-size:.72rem; color:rgba(255,255,255,.45); font-weight:400; margin-left:4px; }
+.cal-chip { font-size:.75rem; font-weight:800; padding:4px 10px; border-radius:20px; }
+.q-row { border-top:1px solid rgba(255,255,255,.07); padding:10px 0; }
+.q-row.falta { box-shadow:inset 3px 0 0 var(--red); padding-left:10px; }
+.q-row.ok { box-shadow:inset 3px 0 0 var(--green); padding-left:10px; }
+.q-t { font-size:.86rem; font-weight:600; margin-bottom:6px; }
+.crit { color:var(--yellow); }
+.q-auto { font-size:.74rem; color:#5eead4; margin-bottom:6px; }
+.q-ops { display:flex; flex-wrap:wrap; gap:6px; }
+.ans { background:rgba(255,255,255,.07); border:1.5px solid rgba(255,255,255,.14); color:#fff; border-radius:10px; padding:8px 12px; font-size:.8rem; cursor:pointer; font-family:'Nunito',sans-serif; }
+.ans.sel { background:var(--primary); border-color:var(--primary); font-weight:700; }
+.ans:focus-visible, .turno-chip:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.q-v { font-size:.7rem; color:rgba(255,255,255,.35); margin-top:6px; }
+.q-hint { font-size:.76rem; margin-top:6px; background:rgba(255,255,255,.05); border-radius:8px; padding:6px 8px; color:rgba(255,255,255,.8); }
+.bar-row { display:grid; grid-template-columns:minmax(120px,1.2fr) 2fr 52px; gap:10px; align-items:center; font-size:.8rem; padding:4px 0; }
+.bar { height:9px; background:rgba(255,255,255,.08); border-radius:6px; overflow:hidden; } .bar > div { height:100%; }
+.acc-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-left:4px solid var(--yellow); border-radius:14px; padding:14px; margin-bottom:12px; }
+.acc-card.vencida { border-left-color:var(--red); } .acc-card.cerrada { border-left-color:var(--green); opacity:.7; }
+.acc-top { display:flex; gap:10px; } .acc-tipo { font-size:1.1rem; }
+.acc-t { font-size:.86rem; font-weight:700; } .acc-meta { font-size:.72rem; color:rgba(255,255,255,.45); margin-top:2px; }
+.acc-l { font-size:.8rem; color:rgba(255,255,255,.8); margin:6px 0 0; }
+.acc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; margin-top:10px; }
+.acc-grid label, .acc-ev { font-size:.72rem; color:rgba(255,255,255,.5); display:flex; flex-direction:column; gap:4px; }
+.acc-ev { margin-top:8px; }
+.vf-item { display:grid; grid-template-columns:1fr 90px; gap:8px; align-items:center; font-size:.8rem; padding:5px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+.q-grid { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:.8rem; }
+.q-grid dt { color:rgba(255,255,255,.45); } .q-grid dd { color:rgba(255,255,255,.85); }
+.btn-primary:disabled { opacity:.4; cursor:not-allowed; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="screen-login">
+  <div class="login-card">
+    <div class="login-logo">🏛️</div>
+    <div class="login-title">Mendy <span>Fast Food</span></div>
+    <div class="login-sub">Cumplimiento sanitario · San Andrés Islas</div>
+    <div class="user-grid" id="user-grid"></div>
+    <div class="pin-label">🔐 Ingresa tu PIN (el mismo de Saneamiento)</div>
+    <input type="password" class="pin-input" id="pin-input" maxlength="8" placeholder="••••" inputmode="numeric" onkeyup="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="screen-app">
+  <div class="top-nav">
+    <div class="nav-brand">🏛️ <span>Mendy</span> Cumplimiento</div>
+    <div class="nav-user"><span id="nav-user-name"></span><button class="btn-logout" onclick="doLogout()">Salir</button></div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="resumen" onclick="switchTab('resumen',this)">🏠 Resumen</button>
+    <button class="tab-btn" data-tab="auto" onclick="switchTab('auto',this)">📝 Autoevaluación</button>
+    <button class="tab-btn" data-tab="plan" onclick="switchTab('plan',this)">✅ Plan de acción</button>
+    <button class="tab-btn" data-tab="visitas" onclick="switchTab('visitas',this)">🏛️ Visitas</button>
+  </div>
+  <div class="tab-content active" id="tab-resumen"><div id="resumen-wrap"></div></div>
+  <div class="tab-content" id="tab-auto"><div id="auto-wrap"></div></div>
+  <div class="tab-content" id="tab-plan"><div id="plan-wrap"></div></div>
+  <div class="tab-content" id="tab-visitas"><div id="visitas-wrap"></div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ══ FIREBASE SDK ══ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBxvaYUD4N56iy8n9ATUGQTtpx13ew_Xzk",
+  authDomain: "mendy-fast-food.firebaseapp.com",
+  databaseURL: "https://mendy-fast-food-default-rtdb.firebaseio.com",
+  projectId: "mendy-fast-food",
+  storageBucket: "mendy-fast-food.firebasestorage.app",
+  messagingSenderId: "765233729072",
+  appId: "1:765233729072:web:6ec01b4e55e12f303a27f5"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+</script>
+<script>
+// ══════════════════════════════════════════════════════════════
+//  CATÁLOGO: Acta de inspección sanitaria con enfoque de riesgo
+//  para establecimientos de PREPARACIÓN DE ALIMENTOS (Res. 2674/2013)
+//  20 ítems · 5 bloques · 100 puntos. Preguntas basadas en el instructivo oficial.
+//  Pieza reutilizable: se puede copiar tal cual al sistema de otro restaurante.
+//  Claves sin puntos (Firebase no los admite): ítem "1_1" = 1.1 · pregunta "1_1a"
+//  r: sn (Sí cumple) · ns (No cumple) · tri (Todos/Algunos/Ninguno) · opt (opciones) · multi (todos marcados) · info (no suma)
+//  m: 🔴 hacerlo · 🟡 mitigar mientras tanto (mit) → definitivo (def) · crit: alerta crítica · na: permite "No aplica"
+//  auto: dato que el sistema puede responder solo · v: dónde se verifica
+// ══════════════════════════════════════════════════════════════
+const ACTA_PREPARACION = { version:'2026-09', nombre:'Preparación de alimentos', bloques:[
+ { id:'1', nombre:'Edificación e instalaciones', items:[
+  { id:'1_1', nombre:'Localización y diseño', pts:2, q:[
+   { id:'1_1a', t:'¿El local está lejos de basureros, agua estancada, lotes con maleza u otros focos de plagas?', r:'sn', m:'🟡', mit:'Puertas cerradas e inspección semanal de plagas', def:'Eliminar el foco o reportarlo a la Secretaría si es externo', v:'En sitio · Saneamiento' },
+   { id:'1_1b', t:'¿La construcción impide la entrada de plagas y animales (sin huecos, rendijas ni techos abiertos)?', r:'sn', crit:1, m:'🔴', def:'Sellar huecos y rendijas (bajo costo)', v:'En sitio (foto)' },
+   { id:'1_1c', t:'¿El local se usa también como vivienda o dormitorio?', r:'opt', o:[['No',1],['Sí, separado físicamente',1],['Sí, sin separar',0]], m:'🔴', def:'Separar físicamente vivienda y negocio', v:'En sitio' },
+   { id:'1_1d', t:'¿Materia prima, preparación, servicio y basura siguen un recorrido sin cruzarse?', r:'sn', m:'🟡', mit:'Separar por horario: recibir insumos y sacar basura fuera de la preparación', def:'Reorganizar el local', v:'Turnos' } ]},
+  { id:'1_2', nombre:'Pisos y paredes', pts:2, q:[
+   { id:'1_2a', t:'¿De qué es el piso de cocina y almacenamiento?', r:'opt', o:[['Cerámica',1],['Porcelanato',1],['Cemento pulido',1],['Epóxico',1],['Baldosa con grietas',0],['Madera o tierra',0]], m:'🟡', mit:'Sellar grietas con resina y limpieza reforzada registrada', def:'Material liso, lavable e impermeable', v:'En sitio (foto)' },
+   { id:'1_2b', t:'¿Pisos y paredes están sin grietas, huecos ni partes rugosas?', r:'sn', m:'🔴', def:'Resanar (bajo costo)', v:'En sitio (foto)' },
+   { id:'1_2c', t:'¿Las paredes de cocina son de color claro, lisas y lavables?', r:'sn', m:'🟡', mit:'Pintura lavable clara en la zona de preparación', def:'Enchape o pintura epóxica', v:'En sitio (foto)' },
+   { id:'1_2d', t:'¿Las uniones pared-piso y entre paredes son redondeadas (media caña)?', r:'sn', m:'🟡', mit:'Limpieza de esquinas en el checklist semanal', def:'Media caña sanitaria', v:'Saneamiento' },
+   { id:'1_2e', t:'¿El piso drena hacia el sifón sin dejar charcos?', r:'sn', m:'🟡', mit:'Secar con haragán después de cada lavado', def:'Corregir la pendiente', v:'En sitio' },
+   { id:'1_2f', t:'¿Los sifones tienen rejilla?', r:'sn', m:'🔴', def:'Instalar rejillas (bajo costo)', v:'En sitio (foto)' } ]},
+  { id:'1_3', nombre:'Techos, iluminación y ventilación', pts:2, q:[
+   { id:'1_3a', t:'¿El techo de cocina y almacenamiento está sin grietas, humedad ni material que se desprenda?', r:'sn', m:'🟡', mit:'No preparar ni guardar alimentos debajo del daño', def:'Reparar; si hay cielo falso, liso, impermeable y con acceso para limpiar', v:'En sitio (foto)' },
+   { id:'1_3b', t:'¿Ventanas y aberturas tienen malla contra insectos?', r:'sn', na:'No hay ventanas', crit:1, m:'🟡', mit:'Ventanas cerradas durante la preparación', def:'Malla fácil de limpiar', v:'En sitio (foto)' },
+   { id:'1_3c', t:'¿La cocina ventila bien, sin humo, vapor condensado ni calor acumulado?', r:'sn', m:'🟡', mit:'Campana encendida durante toda la operación', def:'Mejorar la extracción', v:'En sitio' },
+   { id:'1_3d', t:'¿Campana y extractores están limpios y sin goteo de grasa sobre la zona de preparación?', r:'sn', m:'🔴', def:'Limpieza por empresa con certificado y filtros semanales', v:'Saneamiento', auto:'campana' },
+   { id:'1_3e', t:'¿Las puertas son lisas y cierran sin dejar rendijas?', r:'sn', m:'🔴', def:'Ajustar o instalar barredera (bajo costo)', v:'En sitio' },
+   { id:'1_3f', t:'¿Las lámparas de cocina tienen protección contra caída de vidrios?', r:'sn', m:'🔴', def:'Instalar difusor o protector (bajo costo)', v:'En sitio (foto)' } ]},
+  { id:'1_4', nombre:'Instalaciones sanitarias', pts:4, q:[
+   { id:'1_4b', t:'¿Hay baño para el personal, separado de la cocina, funcionando y limpio?', r:'sn', m:'🔴', def:'Adecuar el baño del personal (con 6 o menos manipuladores basta un baño mixto)', v:'En sitio · Saneamiento' },
+   { id:'1_4c', t:'¿El baño tiene todo esto?', r:'multi', o:['Papel higiénico','Jabón desinfectante en dispensador','Secado desechable','Papelera de pedal'], m:'🔴', def:'Dotar lo que falte (bajo costo)', v:'En sitio' },
+   { id:'1_4d', t:'¿Hay vestier o casilleros para el personal?', r:'sn', m:'🟡', mit:'Zona definida para ropa y objetos personales, fuera de la cocina', def:'Casilleros', v:'En sitio' },
+   { id:'1_4e', t:'¿Hay lavamanos cerca de la zona de preparación, solo para manos?', r:'sn', m:'🔴', def:'Instalar lavamanos; el lavaplatos no lo reemplaza', v:'En sitio (foto)' },
+   { id:'1_4f', t:'¿Ese lavamanos se acciona sin las manos (pedal, rodilla o sensor)?', r:'sn', m:'🟡', mit:'Cerrar el grifo con la toalla desechable', def:'Grifería de pedal o sensor', v:'En sitio' },
+   { id:'1_4g', t:'¿Hay avisos de lavado de manos en baño y cocina?', r:'sn', m:'🔴', def:'Poner avisos (bajo costo)', v:'En sitio (foto)' },
+   { id:'1_4h', t:'Si los clientes usan baño del local, ¿hay baños separados por sexo?', r:'sn', na:'Los clientes no usan baño del local', m:'🔴', def:'Adecuar, o justificar el "no aplica"', v:'En sitio' } ]} ]},
+ { id:'2', nombre:'Equipos y utensilios', items:[
+  { id:'2_1', nombre:'Condiciones de equipos y utensilios', pts:5, q:[
+   { id:'2_1a', t:'¿Tiene todos los equipos que necesita su menú (sin improvisar)?', r:'sn', m:'🟡', mit:'No ofrecer los platos que dependen del equipo faltante', def:'Adquirirlo', v:'Saneamiento (equipos)' },
+   { id:'2_1b', t:'¿Los equipos son de materiales resistentes a la corrosión y a los químicos de limpieza?', r:'sn', m:'🟡', mit:'Sacar de contacto directo con alimentos', def:'Reemplazar', v:'Saneamiento (equipos)' },
+   { id:'2_1c', t:'¿Hay equipos oxidados, rotos, pelados o con reparaciones improvisadas (cinta, alambre)?', r:'ns', m:'🔴', def:'Sacar de uso, reparar o reemplazar', v:'Saneamiento (estado del equipo)', auto:'equiposDanados' },
+   { id:'2_1d', t:'¿Todos los equipos se pueden limpiar por completo, incluso por debajo y atrás?', r:'sn', m:'🟡', mit:'Limpieza profunda semanal moviendo el equipo', def:'Elevar sobre patas o ruedas', v:'Saneamiento' },
+   { id:'2_1e', t:'¿Tiene termómetro para medir la temperatura de cocción?', r:'sn', m:'🔴', def:'Termómetro de punzón (bajo costo)', v:'Saneamiento (equipos)', auto:'termometro' },
+   { id:'2_1f', t:'¿Neveras y congeladores tienen termómetro visible?', r:'sn', m:'🔴', def:'Termómetro en cada equipo de frío (bajo costo)', v:'Saneamiento (equipos)', auto:'termometro' } ]},
+  { id:'2_2', nombre:'Superficies en contacto con el alimento', pts:7, q:[
+   { id:'2_2a', t:'¿De qué son los mesones de preparación?', r:'opt', o:[['Acero inoxidable',1],['Granito sellado',1],['Madera',0],['Otro material poroso',0]], m:'🟡', mit:'Trabajar siempre sobre tabla de polietileno, nunca directo en el mesón', def:'Forrar en acero inoxidable', v:'En sitio (foto)' },
+   { id:'2_2b', t:'¿De qué son las tablas de corte?', r:'opt', o:[['Polietileno',1],['Otro plástico sanitario',1],['Madera',0]], m:'🔴', def:'Cambiar a polietileno (bajo costo)', v:'En sitio · Saneamiento' },
+   { id:'2_2c', t:'¿Las tablas están sin surcos profundos ni partes astilladas?', r:'sn', m:'🔴', def:'Reemplazar las gastadas', v:'Saneamiento (estado del equipo)' },
+   { id:'2_2d', t:'¿Algún cuchillo o utensilio tiene mango de madera?', r:'ns', m:'🔴', def:'Cambiar por mango plástico o metálico (bajo costo)', v:'En sitio' },
+   { id:'2_2e', t:'¿Los recipientes para guardar alimentos son de plástico grado alimentario, vidrio o acero?', r:'sn', m:'🔴', def:'Reemplazar los no aptos', v:'En sitio' },
+   { id:'2_2f', t:'¿Las piezas que tocan alimento y no son de fácil acceso se pueden desarmar para lavar?', r:'sn', na:'No hay equipos así', m:'🟡', mit:'Limpieza profunda periódica con desarme por técnico, registrada', def:'Cambiar el equipo', v:'Saneamiento' },
+   { id:'2_2g', t:'Si usa desechables, ¿son de un solo uso?', r:'sn', na:'No usa desechables', m:'🔴', def:'No reutilizar desechables', v:'En sitio' } ]} ]},
+ { id:'3', nombre:'Personal manipulador', items:[
+  { id:'3_1', nombre:'Estado de salud', pts:7, q:[
+   { id:'3_1a', t:'Si un empleado llega con diarrea, heridas infectadas o irritaciones en la piel, ¿qué se hace?', r:'opt', o:[['Se cambia de actividad o se envía al médico',1],['Sigue trabajando igual',0]], crit:1, m:'🔴', def:'Definir la regla y comunicarla hoy (sin costo)', v:'Personal' },
+   { id:'3_1b', t:'¿Esa regla está escrita y el personal la conoce?', r:'sn', m:'🔴', def:'Escribirla y que el personal firme enterado', v:'Personal' },
+   { id:'3_1c', t:'¿Queda registro cuando se aplica?', r:'sn', m:'🔴', def:'Registrar cada caso', v:'Personal' } ]},
+  { id:'3_2', nombre:'Reconocimiento médico', pts:2, q:[
+   { id:'3_2a', t:'¿Cada manipulador tiene certificado médico de aptitud para manipular alimentos?', r:'tri', m:'🔴', def:'Programar exámenes; mientras tanto, quien no lo tenga no manipula alimentos', v:'Personal', auto:'certTodos' },
+   { id:'3_2b', t:'¿Todos los certificados tienen menos de un año?', r:'sn', m:'🔴', def:'Renovar los vencidos', v:'Personal', auto:'certVigentes' },
+   { id:'3_2c', t:'¿Los certificados están en el local, a la mano en una visita?', r:'sn', m:'🔴', def:'Copia en la carpeta del local (sin costo)', v:'En sitio' },
+   { id:'3_2d', t:'Si el médico ordenó tratamiento, ¿hay certificado de aptitud al terminarlo?', r:'sn', na:'No ha pasado', m:'🔴', def:'Pedir el certificado posterior', v:'Personal' } ]},
+  { id:'3_3', nombre:'Prácticas higiénicas', pts:7, q:[
+   { id:'3_3a', t:'¿El negocio entrega uniforme de color claro, con cremallera o broche (sin botones)?', r:'sn', m:'🔴', def:'Dotar uniformes', v:'Personal (dotación)' },
+   { id:'3_3b', t:'¿El calzado del personal es cerrado, resistente e impermeable?', r:'sn', m:'🔴', def:'Exigir o dotar calzado', v:'Personal (dotación)' },
+   { id:'3_3c', t:'¿Usan gorro que cubra todo el cabello y tapabocas cuando se necesita?', r:'sn', m:'🔴', def:'Dotar y exigir (bajo costo)', v:'Turnos (apertura)', auto:'turnoManos' },
+   { id:'3_3d', t:'¿El personal llega y sale con ropa de calle y se cambia en el local?', r:'sn', m:'🟡', mit:'Cambiarse en el baño y guardar la ropa en bolsa cerrada fuera de la cocina', def:'Casilleros (ver 1.4)', v:'Turnos (apertura)' },
+   { id:'3_3e', t:'¿Uñas cortas, limpias, sin esmalte y sin joyas ni relojes en la cocina?', r:'sn', m:'🔴', def:'Regla escrita y verificación en la apertura', v:'Turnos (apertura)' },
+   { id:'3_3f', t:'¿Nadie come, fuma ni escupe en zonas de alimentos?', r:'sn', m:'🔴', def:'Regla escrita y sitio definido para comer', v:'Personal' },
+   { id:'3_3g', t:'¿Quien prepara o sirve alimentos maneja dinero al mismo tiempo?', r:'ns', m:'🟡', mit:'Lavado de manos después de cada cobro y preferir pagos electrónicos', def:'Separar caja y cocina', v:'Turnos (áreas)' },
+   { id:'3_3h', t:'¿Se sirve con utensilios y nunca con la mano?', r:'sn', m:'🔴', def:'Regla y utensilios de servido', v:'Turnos' },
+   { id:'3_3i', t:'¿Hay jabón desinfectante y secado desechable en la zona de preparación?', r:'sn', m:'🔴', def:'Dotar el lavamanos de cocina (bajo costo)', v:'En sitio' },
+   { id:'3_3j', t:'¿Se lavan las manos al empezar, al volver al área y cada vez que se ensucian?', r:'sn', m:'🔴', def:'Avisos y verificación', v:'Turnos (apertura)', auto:'turnoManos' },
+   { id:'3_3k', t:'Si usan guantes, ¿son impermeables, limpios y se lavan como las manos?', r:'sn', na:'No usan guantes', m:'🔴', def:'Regla de uso de guantes', v:'Personal' } ]},
+  { id:'3_4', nombre:'Educación y capacitación', pts:4, q:[
+   { id:'3_4a', t:'¿Existe un plan de capacitación escrito de al menos 10 horas al año?', r:'sn', m:'🔴', def:'Elaborar el plan', v:'Personal' },
+   { id:'3_4b', t:'¿El plan dice todo esto?', r:'multi', o:['Metodología','Duración','Responsables','Cronograma','Temas','Evaluación'], m:'🔴', def:'Completar el plan', v:'Personal' },
+   { id:'3_4c', t:'¿Cubre todos estos temas?', r:'multi', o:['Manipulación','Higiene personal','Limpieza','Plagas','Contaminación cruzada','Proveedores','Temperaturas','Almacenamiento'], m:'🟡', mit:'Charlas cortas en el turno sobre los temas faltantes, registradas', def:'Incluirlos en el plan', v:'Personal (capacitaciones)' },
+   { id:'3_4d', t:'¿Hay registros de asistencia, horas y evaluación de cada participante?', r:'sn', m:'🔴', def:'Registrar cada sesión', v:'Personal (capacitaciones)', auto:'capsRegistros' },
+   { id:'3_4e', t:'¿Cada empleado sabe explicar los puntos críticos de su trabajo y qué hacer si algo sale mal? (pregúntele a cada uno)', r:'tri', m:'🔴', def:'Refuerzo práctico en el puesto', v:'Entrevista en sitio' } ]} ]},
+ { id:'4', nombre:'Requisitos higiénicos', items:[
+  { id:'4_1', nombre:'Control de materias primas e insumos', pts:5, q:[
+   { id:'4_1a', t:'¿Tiene facturas o documentos que muestren el origen de todo lo que compra?', r:'opt', o:[['Todo',1],['Parte',0],['Nada',0]], m:'🟡', mit:'Anotar el proveedor en cada entrada y guardar lo que haya', def:'Comprar solo con factura', v:'Inventario (entradas)', auto:'facturas' },
+   { id:'4_1b', t:'¿Los productos empacados que compra tienen registro sanitario y rótulo?', r:'sn', m:'🔴', def:'Cambiar de producto o proveedor', v:'Inventario · En sitio' },
+   { id:'4_1c', t:'Al recibir, ¿se revisa olor, color, temperatura, empaque y fecha de vencimiento?', r:'sn', m:'🔴', def:'Rutina de recepción (sin costo)', v:'Inventario (entradas)', auto:'recepcion' },
+   { id:'4_1d', t:'¿Frutas y verduras se lavan con agua potable y se desinfectan antes de usarlas?', r:'sn', na:'No usa frutas ni verduras', m:'🔴', def:'Procedimiento de lavado y desinfección', v:'Turnos (apertura)', auto:'turnoVerduras' },
+   { id:'4_1e', t:'¿Lo congelado se descongela en nevera y nunca se vuelve a congelar?', r:'sn', crit:1, m:'🔴', def:'Regla de descongelación', v:'Turnos (apertura)', auto:'turnoDescongelar' },
+   { id:'4_1f', t:'¿El hielo que compra o usa viene de agua potable?', r:'sn', na:'No usa hielo', m:'🔴', def:'Proveedor de hielo con soporte, o hielo propio con agua potable', v:'Inventario' },
+   { id:'4_1g', t:'¿Lo que debe ir refrigerado se guarda en frío apenas llega, sin quedar a temperatura ambiente?', r:'sn', crit:1, m:'🔴', def:'Guardar de inmediato al recibir', v:'Inventario (entradas)', auto:'recepcion' } ]},
+  { id:'4_2', nombre:'Prevención de la contaminación cruzada', pts:9, q:[
+   { id:'4_2a', t:'En la nevera, ¿lo crudo está separado de lo cocido y listo para servir (crudo abajo, tapado)?', r:'sn', crit:1, m:'🔴', def:'Reorganizar la nevera hoy (sin costo)', v:'Turnos (apertura)', auto:'turnoNevera' },
+   { id:'4_2b', t:'¿Las tablas y cuchillos de crudos se diferencian de los de cocidos, o se lavan y desinfectan entre usos?', r:'sn', crit:1, m:'🟡', mit:'Lavar y desinfectar entre cada uso', def:'Tablas por color', v:'Turnos · Saneamiento' },
+   { id:'4_2c', t:'¿Los alimentos listos se protegen (tapados) mientras esperan?', r:'sn', m:'🔴', def:'Recipientes con tapa', v:'Turnos' },
+   { id:'4_2d', t:'¿Todo utensilio que tocó crudo o algo contaminado se lava y desinfecta antes de volver a usarse?', r:'sn', m:'🔴', def:'Regla y verificación', v:'Turnos · Saneamiento' },
+   { id:'4_2e', t:'¿Lavar, cortar y preparar se hace de forma que no se ensucia lo que ya está limpio?', r:'sn', m:'🟡', mit:'Separar por turnos: crudos primero, limpieza, luego listos para servir', def:'Zonas de trabajo separadas', v:'Turnos' } ]},
+  { id:'4_3', nombre:'Manejo de temperaturas', pts:7, q:[
+   { id:'4_3a', t:'¿Los alimentos que se cocinan superan los 60 °C? ¿Se mide?', r:'opt', o:[['Sí, se mide',1],['Sí, pero sin medir',0],['No',0]], crit:1, m:'🔴', def:'Medir con termómetro (ver 2.1)', v:'Recetario · Saneamiento' },
+   { id:'4_3b', t:'¿La nevera se mantiene a 4 °C ± 2?', r:'opt', o:[['Sí',1],['No',0],['No se sabe',0]], m:'🔴', def:'Termómetro y registro diario', v:'Saneamiento (temperaturas)', auto:'tempNevera' },
+   { id:'4_3c', t:'¿El congelador mantiene los productos congelados?', r:'opt', o:[['Sí',1],['No',0],['No se sabe',0]], m:'🔴', def:'Termómetro y registro diario', v:'Saneamiento (temperaturas)', auto:'tempCongelador' },
+   { id:'4_3d', t:'¿Los equipos de frío permanecen encendidos siempre (no se apagan para ahorrar energía)?', r:'sn', crit:1, m:'🔴', def:'Nunca apagar equipos con producto', v:'Saneamiento (temperaturas)' },
+   { id:'4_3e', t:'Lo que espera para servirse, ¿se mantiene caliente (más de 60 °C) o frío (4 °C o menos)?', r:'sn', m:'🟡', mit:'Preparar al momento, sin dejar alimentos listos esperando', def:'Baño maría o refrigeración', v:'Turnos' },
+   { id:'4_3f', t:'¿Queda registro de las temperaturas?', r:'sn', m:'🔴', def:'Registro diario', v:'Saneamiento (temperaturas)', auto:'tempRegistro' } ]},
+  { id:'4_4', nombre:'Condiciones de almacenamiento', pts:4, q:[
+   { id:'4_4a', t:'¿Los envases y desechables que tocan alimento se guardan en un sitio exclusivo, limpio y protegido?', r:'sn', m:'🟡', mit:'Caja plástica cerrada exclusiva', def:'Estante exclusivo con cierre', v:'En sitio' },
+   { id:'4_4b', t:'¿Las materias primas se guardan protegidas, tapadas y sin tocar el piso?', r:'sn', m:'🔴', def:'Estibas o estantería (bajo costo)', v:'Inventario · En sitio (foto)' },
+   { id:'4_4c', t:'¿Hay químicos, venenos o combustibles en la cocina o donde se guardan alimentos?', r:'ns', crit:1, m:'🔴', def:'Reubicar hoy en sitio aparte y rotulado', v:'En sitio (foto)' } ]} ]},
+ { id:'5', nombre:'Saneamiento', items:[
+  { id:'5_1', nombre:'Suministro y calidad de agua potable', pts:7, q:[
+   { id:'5_1b', t:'¿Alcanza el agua para preparar y para limpiar durante toda la jornada?', r:'sn', m:'🟡', mit:'Llenar el tanque antes de iniciar la operación', def:'Aumentar almacenamiento', v:'En sitio' },
+   { id:'5_1c', t:'¿El tanque es de material sanitario, tapado, sin grietas y de fácil acceso para lavarlo?', r:'sn', na:'No tiene tanque', crit:1, m:'🔴', def:'Taparlo hoy; reparar o cambiar si tiene grietas', v:'En sitio (foto)' },
+   { id:'5_1d', t:'¿El tanque se lava y desinfecta con frecuencia fija y queda registrado?', r:'opt', o:[['Sí, con registro',1],['Sí, sin registro',0],['No',0]], m:'🔴', def:'Registrar cada lavado', v:'Saneamiento (agua)', auto:'lavado' },
+   { id:'5_1e', t:'¿Se mide el cloro residual del agua almacenada?', r:'sn', m:'🔴', def:'Kit de cloro y registro (bajo costo)', v:'Saneamiento (agua)', auto:'cloro' },
+   { id:'5_1f', t:'Si tiene pozo o planta propia, ¿tiene análisis fisicoquímico y microbiológico del agua?', r:'sn', na:'Usa agua del acueducto', crit:1, m:'🔴', def:'Contratar análisis de laboratorio', v:'Carpeta del plan' },
+   { id:'5_1g', t:'¿Guarda la factura del acueducto como soporte?', r:'sn', na:'No usa acueducto', m:'🔴', def:'Archivar la última (sin costo)', v:'Carpeta del plan' } ]},
+  { id:'5_2', nombre:'Residuos líquidos', pts:4, q:[
+   { id:'5_2a', t:'¿Los desagües evacuan rápido, sin empozarse?', r:'sn', m:'🔴', def:'Destapar o corregir', v:'En sitio' },
+   { id:'5_2b', t:'¿Hay devolución de aguas o malos olores por los sifones?', r:'ns', m:'🔴', def:'Revisión de plomería', v:'En sitio' },
+   { id:'5_2c', t:'¿Los desagües están lejos de salpicar alimentos o superficies de trabajo?', r:'sn', m:'🟡', mit:'Rejilla con tapa y no ubicar alimentos cerca', def:'Reubicar', v:'En sitio' } ]},
+  { id:'5_3', nombre:'Residuos sólidos', pts:4, q:[
+   { id:'5_3a', t:'¿Los recipientes de basura son lavables y tienen tapa?', r:'sn', m:'🔴', def:'Cambiar recipientes (bajo costo)', v:'Saneamiento (equipos)' },
+   { id:'5_3b', t:'¿Los recipientes están lejos de donde se prepara, guarda o sirve comida?', r:'sn', m:'🔴', def:'Reubicar (sin costo)', v:'En sitio' },
+   { id:'5_3c', t:'¿La basura se saca a diario sin acumularse en la cocina?', r:'sn', m:'🔴', def:'Rutina de cierre', v:'Saneamiento (cierre)', auto:'basura' },
+   { id:'5_3d', t:'¿Dónde espera la basura hasta la recolección es un sitio cerrado o tapado, protegido de plagas?', r:'sn', m:'🟡', mit:'Caneca grande con tapa hermética, fuera de la cocina', def:'Cuarto o punto de basuras protegido', v:'En sitio (foto)' },
+   { id:'5_3e', t:'¿Separa los residuos (orgánicos, reciclables, aceite usado)?', r:'sn', m:'🔴', def:'Recipientes por tipo (bajo costo)', v:'En sitio' } ]},
+  { id:'5_4', nombre:'Control integral de plagas', pts:9, q:[
+   { id:'5_4a', t:'¿Se ha visto rastro de plagas en el último mes (cucarachas, roedores, moscas, excrementos, daños)?', r:'ns', crit:1, m:'🔴', def:'Intervención inmediata con empresa', v:'Saneamiento (plagas)', auto:'plagasRastro' },
+   { id:'5_4b', t:'¿Tiene medidas preventivas (mallas, sellado de huecos, alimentos tapados, basura tapada)?', r:'sn', m:'🔴', def:'Implementar (ver 1.1 y 1.3)', v:'En sitio' },
+   { id:'5_4c', t:'¿Hace inspección periódica de rincones, bodega y zona de basuras?', r:'sn', m:'🔴', def:'Inspección semanal registrada (sin costo)', v:'Saneamiento (plagas)', auto:'plagasInspeccion' },
+   { id:'5_4d', t:'¿Fumiga con empresa autorizada que deja certificado?', r:'sn', m:'🔴', def:'Contratar y archivar el certificado', v:'Saneamiento · Finanzas (provisión)', auto:'fumigacion' } ]},
+  { id:'5_5', nombre:'Limpieza y desinfección de áreas, equipos y utensilios', pts:7, q:[
+   { id:'5_5a', t:'¿Los químicos de limpieza están rotulados y guardados lejos de alimentos, preparación y servido?', r:'sn', crit:1, m:'🔴', def:'Estante aparte y rótulos (bajo costo)', v:'En sitio (foto)' },
+   { id:'5_5b', t:'¿Cada químico se prepara con la dosis del fabricante y todo el personal sabe cuál es?', r:'sn', m:'🔴', def:'Tabla de diluciones visible', v:'Saneamiento (químicos)', auto:'quimicos' },
+   { id:'5_5c', t:'¿Traperos, escobas y paños están en buen estado?', r:'sn', m:'🔴', def:'Reponer implementos', v:'En sitio' },
+   { id:'5_5d', t:'¿Los implementos de aseo se lavan fuera de la zona de preparación?', r:'sn', m:'🟡', mit:'Lavarlos solo después del cierre y desinfectar la poceta', def:'Poceta exclusiva de aseo', v:'Saneamiento' },
+   { id:'5_5e', t:'¿Lo que ya se limpió queda protegido hasta usarse (escurrido, tapado)?', r:'sn', m:'🔴', def:'Escurridor o área limpia', v:'En sitio' },
+   { id:'5_5f', t:'¿Hay rutina de limpieza por turno que se cumple y registra?', r:'sn', m:'🔴', def:'Checklist por turno', v:'Saneamiento (historial)', auto:'checklistSanea' } ]},
+  { id:'5_6', nombre:'Soportes documentales de saneamiento', pts:2, q:[
+   { id:'5_6a', t:'¿Tiene plan de saneamiento escrito?', r:'sn', m:'🔴', def:'Elaborar el plan', v:'Saneamiento (plan)', auto:'plan' },
+   { id:'5_6b', t:'¿Incluye limpieza y desinfección con sustancias, concentración y forma de uso?', r:'sn', m:'🔴', def:'Completar la tabla de químicos', v:'Saneamiento (químicos)', auto:'quimicos' },
+   { id:'5_6c', t:'¿Incluye residuos sólidos con recolección, almacenamiento interno, clasificación y disposición final?', r:'sn', m:'🔴', def:'Completar el programa', v:'Saneamiento (plan)', auto:'plan' },
+   { id:'5_6d', t:'¿Incluye control de plagas con medidas preventivas?', r:'sn', m:'🔴', def:'Completar el programa', v:'Saneamiento (plan)', auto:'plan' },
+   { id:'5_6e', t:'¿Incluye agua potable con fuente y tratamiento?', r:'sn', m:'🔴', def:'Completar el programa', v:'Saneamiento (plan)', auto:'plan' },
+   { id:'5_6f', t:'¿Tiene registros que prueben que el plan se cumple, incluido el lavado del tanque?', r:'sn', m:'🔴', def:'Registros por programa', v:'Saneamiento (registros)', auto:'lavado' } ]} ]},
+]};
+
+// ══════════════════════════════
+//  DATOS
+//  Escribe solo en mendy/cumplimiento (autoevaluaciones, acciones, visitas, borrador).
+//  Lee (sin modificar) Saneamiento, sus registros y la evidencia sanitaria de Personal, Turnos e Inventario.
+// ══════════════════════════════
+const CUMP_REF = db.ref('mendy/cumplimiento');
+const SAN_REF  = db.ref('mendy/saneamiento');
+const REG_REF  = db.ref('mendy/saneamiento_registros');
+const EVID_REF = db.ref('mendy/evidencia_sanitaria');
+const USERS_DEFAULT = [
+  { id:'u1', name:'Aljavis', role:'admin', pin:'1234', avatar:'👑' },
+  { id:'u2', name:'Don Alfonso', role:'supervisor', pin:'0000', avatar:'👴' },
+];
+const ACTA = ACTA_PREPARACION;
+const ITEMS = ACTA.bloques.flatMap(b => b.items.map(i => ({ ...i, bloque:b.id })));
+const PREGUNTAS = ITEMS.flatMap(i => i.q.map(q => ({ ...q, item:i.id })));
+
+let state = {
+  currentUser:null, users:USERS_DEFAULT,
+  san:{}, regs:{ temperaturas:{}, agua_cloro:{}, plagas_inspeccion:{} }, estado:{},
+  evid:{ personal:null, turnos:null, recep:{} },
+  c:{ autoevaluaciones:{}, acciones:{}, visitas:{}, borrador:null, mig:{} },
+  bloqueActivo:'1', verAutoeval:null, filtroAcc:'abiertas', visitaAbierta:null, visitaForm:false,
+};
+
+// ── utilidades ──
+function pad2(n){ return String(n).padStart(2,'0'); }
+function isoDate(d=new Date()){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+function mesKey(d=new Date()){ return d.getFullYear()+'-'+pad2(d.getMonth()+1); }
+function mesAnteriorKey(m){ const [y,mo]=m.split('-').map(Number); return mesKey(new Date(y,mo-2,1)); }
+function addDays(iso,n){ const [y,m,d]=iso.split('-').map(Number); return isoDate(new Date(y,m-1,d+n)); }
+function diasEntre(a,b){ const f=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}; return Math.round((f(b)-f(a))/86400000); }
+function diasHasta(iso){ return diasEntre(isoDate(), iso); }
+function fechaCO(iso){ if(!iso) return ''; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+function fechaCorta(iso){ if(!iso) return ''; const [,m,d]=iso.split('-'); return `${d}/${m}`; }
+function esc(t){ return String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function cod(id){ return id.replace('_','.'); }
+function itemPorId(id){ return ITEMS.find(i => i.id===id); }
+function pregPorId(id){ return PREGUNTAS.find(q => q.id===id); }
+function esAdmin(){ return state.currentUser && state.currentUser.role==='admin'; }
+function lista(obj){ return Object.values(obj || {}); }
+function pesos(n){ return '$' + Math.round(n||0).toLocaleString('es-CO'); }
+function showToast(msg,type='ok'){ const t=document.getElementById('toast'); t.textContent=msg;
+  t.style.background=type==='ok'?'var(--green)':type==='warn'?'var(--yellow)':'var(--red)'; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+
+// ── carga ──
+function init(){
+  SAN_REF.on('value', s => { const v = s.val() || {}; state.san = v; if (v.users && v.users.length) state.users = v.users; renderUserGrid(); refrescar(); });
+  const m = mesKey();
+  ['temperaturas','agua_cloro','plagas_inspeccion'].forEach(t => [m, mesAnteriorKey(m)].forEach(mm =>
+    REG_REF.child(t).child(mm).on('value', s => { state.regs[t][mm] = s.val() || {}; refrescar(); })));
+  REG_REF.child('config/estado').on('value', s => { state.estado = s.val() || {}; refrescar(); });
+  EVID_REF.child('personal').on('value', s => { state.evid.personal = s.val(); refrescar(); });
+  EVID_REF.child('turnos').on('value', s => { state.evid.turnos = s.val(); refrescar(); });
+  [m, mesAnteriorKey(m)].forEach(mm => EVID_REF.child('inventario/recepciones').child(mm).on('value', s => { state.evid.recep[mm] = s.val() || {}; refrescar(); }));
+  CUMP_REF.on('value', s => { const v = s.val() || {};
+    state.c = { autoevaluaciones:v.autoevaluaciones||{}, acciones:v.acciones||{}, visitas:v.visitas||{}, borrador:v.borrador||null, mig:v.mig||{} };
+    refrescar(); });
+}
+function refrescar(){
+  if (!state.currentUser) return;
+  const a = document.querySelector('.tab-content.active'); if (!a) return;
+  const foco = document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
+  if (a.id==='tab-resumen') renderResumen();
+  if (a.id==='tab-plan' && !foco) renderAcciones();
+  if (a.id==='tab-visitas' && !state.visitaForm && !foco) renderVisitas();
+  if (a.id==='tab-auto' && !foco) renderAuto();
+}
+
+// ── login ──
+let selectedUserId = null;
+function renderUserGrid(){
+  const g = document.getElementById('user-grid'); if (!g) return;
+  g.innerHTML = state.users.filter(u => u.role!=='empleada').map(u =>
+    `<button class="user-btn ${u.id===selectedUserId?'selected':''}" onclick="selectedUserId='${u.id}';renderUserGrid();document.getElementById('pin-input').focus()">
+      <div class="u-avatar">${u.avatar||'👤'}</div><div class="u-name">${esc(u.name)}</div><div class="u-role">${u.role==='admin'?'👑 Admin':'👴 Supervisor'}</div></button>`).join('');
+}
+function doLogin(){
+  const pin = document.getElementById('pin-input').value.trim();
+  if (!selectedUserId) { document.getElementById('login-error').textContent='Selecciona tu nombre primero.'; return; }
+  const u = state.users.find(x => x.id===selectedUserId && x.pin===pin);
+  if (!u) { document.getElementById('login-error').textContent='PIN incorrecto.'; return; }
+  state.currentUser = u;
+  document.getElementById('screen-login').style.display='none';
+  document.getElementById('screen-app').style.display='block';
+  document.getElementById('nav-user-name').innerHTML = `${u.avatar||''} <strong>${esc(u.name)}</strong>`;
+  if (u.role==='admin') setTimeout(migrarVisitaInicial, 800);
+  switchTab('resumen', document.querySelector('.tab-btn'));
+}
+function doLogout(){ state.currentUser=null; selectedUserId=null; document.getElementById('screen-app').style.display='none';
+  document.getElementById('screen-login').style.display='flex'; document.getElementById('pin-input').value=''; renderUserGrid(); }
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  (btn || document.querySelector(`.tab-btn[data-tab="${id}"]`)).classList.add('active');
+  if (id==='resumen') renderResumen();
+  if (id==='auto') renderAuto();
+  if (id==='plan') renderAcciones();
+  if (id==='visitas') { state.visitaForm=false; renderVisitas(); }
+}
+
+// ══════════════════════════════
+//  CALIFICACIÓN (misma regla del instructivo)
+// ══════════════════════════════
+function respondida(q, v){ return q.r==='multi' ? (v!==undefined && v!==null) : (v!=null && v!==''); }
+function evalPregunta(q, v){
+  if (q.r==='multi' && v!=null && v!=='na') { const sel = String(v).split(',').filter(x=>x!==''); return sel.length===q.o.length ? 'ok' : 'falta'; }
+  if (v==null || v==='') return null;
+  if (v==='na') return 'ok';
+  if (q.r==='sn') return v==='si' ? 'ok' : 'falta';
+  if (q.r==='ns') return v==='no' ? 'ok' : 'falta';
+  if (q.r==='tri') return v==='todos' ? 'ok' : 'falta';
+  if (q.r==='opt') { const i = Number(String(v).slice(1)); return q.o[i] && q.o[i][1] ? 'ok' : 'falta'; }
+  if (q.r==='multi') { const sel = String(v).split(',').filter(x=>x!==''); return sel.length===q.o.length ? 'ok' : 'falta'; }
+  return null;
+}
+// estados: resultado por pregunta ('ok' | 'falta' | 'mit' | null)
+function calItem(item, estados){
+  const e = item.q.map(q => estados[q.id]);
+  if (e.some(x => x==null)) return { cal:null, pts:0 };
+  const ok = e.filter(x => x==='ok').length, mit = e.filter(x => x==='mit').length;
+  if (ok===e.length) return { cal:'A', pts:item.pts };
+  if (ok===0 && mit===0) return { cal:'I', pts:0 };
+  return { cal:'AR', pts:item.pts/2 };
+}
+function estadosDe(resp){ const o={}; PREGUNTAS.forEach(q => o[q.id] = evalPregunta(q, resp[q.id])); return o; }
+function estadosConPlan(resp){
+  const o = estadosDe(resp);
+  const acc = accionesPorPregunta();
+  Object.keys(o).forEach(qid => { if (o[qid]==='falta' && acc[qid]) {
+    if (acc[qid].estado==='cerrada') o[qid]='ok'; else if (acc[qid].estado==='mitigada') o[qid]='mit'; } });
+  return o;
+}
+function resultado(estados){
+  const items = {}; let total = 0, completo = true; const bloques = {};
+  ITEMS.forEach(i => { const r = calItem(i, estados); items[i.id] = r; if (!r.cal) completo = false; total += r.pts;
+    bloques[i.bloque] = bloques[i.bloque] || { pts:0, max:0 }; bloques[i.bloque].pts += r.pts; bloques[i.bloque].max += i.pts; });
+  const criticos = PREGUNTAS.filter(q => q.crit && estados[q.id]==='falta').map(q => q.id);
+  const critIna = criticos.filter(qid => items[pregPorId(qid).item].cal==='I');
+  const concepto = critIna.length ? 'des' : total>=90 ? 'fav' : total>=60 ? 'req' : 'des';
+  return { items, total:Math.round(total*10)/10, completo, bloques, criticos, critIna, concepto };
+}
+function conceptoTxt(c){ return c==='fav'?'Favorable':c==='req'?'Favorable con requerimientos':'Desfavorable'; }
+function conceptoColor(c){ return c==='fav'?'var(--green)':c==='req'?'var(--yellow)':'var(--red)'; }
+function calColor(c){ return c==='A'?'var(--green)':c==='AR'?'var(--yellow)':c==='I'?'var(--red)':'rgba(255,255,255,.35)'; }
+
+// ══════════════════════════════
+//  DATOS DEL SISTEMA (respuestas precargadas)
+// ══════════════════════════════
+function dias30(){ const out=[]; for (let i=29;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); out.push(isoDate(d)); } return out; }
+function keySanea(iso){ const [y,m,d]=iso.split('-').map(Number); return `${d}_${m}_${y}`; }
+function regs30(tipo){ const hoy=isoDate(), desde=addDays(hoy,-29); const m=mesKey();
+  return [...lista(state.regs[tipo][mesAnteriorKey(m)]), ...lista(state.regs[tipo][m])].filter(r => r.fecha>=desde && r.fecha<=hoy); }
+function recep30(){ const hoy=isoDate(), desde=addDays(hoy,-29); const m=mesKey();
+  return [...lista(state.evid.recep[mesAnteriorKey(m)]), ...lista(state.evid.recep[m])].filter(r => r.fecha>=desde); }
+// Cumplimiento de una práctica diaria sobre los días con datos (mínimo 7 para opinar)
+function ratioDias(diasConMarca, primerDia){
+  const hoy = isoDate(); const desde = [addDays(hoy,-29), primerDia].filter(Boolean).sort().pop();
+  if (!primerDia) return null;
+  const ventana = diasEntre(desde, hoy) + 1;
+  if (ventana < 7) return null;
+  const n = diasConMarca.filter(d => d>=desde && d<=hoy).length;
+  return { n, ventana, ok: n/ventana >= 0.8 };
+}
+function autoTurno(idTarea){
+  const ev = state.evid.turnos; if (!ev || !ev.dias) return null;
+  const todos = Object.keys(ev.dias).sort(); const primer = todos[0];
+  const conMarca = todos.filter(d => ev.dias[d] && ev.dias[d][idTarea]);
+  const r = ratioDias(conMarca, primer); if (!r) return { val:null, det:'Turnos aún tiene pocos días de datos' };
+  return { val: r.ok?'si':'no', det:`Turnos: cumplida ${r.n} de ${r.ventana} días` };
+}
+function autoChecklistSanea(filtro){
+  const ct = state.san.checkToday || {}; const dias = dias30();
+  const conDatos = dias.filter(d => ct[keySanea(d)]); if (!conDatos.length) return { val:null, det:'Saneamiento aún no tiene checklists registrados' };
+  const conMarca = dias.filter(d => filtro(ct[keySanea(d)] || {}));
+  const r = ratioDias(conMarca, conDatos[0]); if (!r) return { val:null, det:'Saneamiento aún tiene pocos días de datos' };
+  return { val: r.ok?'si':'no', det:`Saneamiento: ${r.n} de ${r.ventana} días` };
+}
+function certEstado(c){ if (!c || !c.vence) return 'falta'; const d = diasHasta(c.vence); return d<0?'vencido':'vigente'; }
+const AUTO = {
+  campana(){ const e = (state.san.equipos||[]).find(x => x.id==='e05'); if (!e) return null;
+    if (e.status==='alert') return { val:'no', det:'Saneamiento: campana marcada como dañada' };
+    if (e.mant && e.mant.ultimo && /limpieza/i.test(e.mant.tipo||'')) return { val:'si', det:`Saneamiento: limpieza por empresa el ${fechaCO(e.mant.ultimo)}` };
+    return { val:null, det:'Saneamiento: no hay limpieza por empresa registrada' }; },
+  equiposDanados(){ const d = (state.san.equipos||[]).filter(e => e.status==='alert'); if (!state.san.equipos) return null;
+    return d.length ? { val:'si', det:`Saneamiento: ${d.map(e=>e.name).join(', ')} marcado como dañado` } : { val:'no', det:'Saneamiento: ningún equipo marcado como dañado' }; },
+  termometro(){ if (!state.san.equipos) return null; const t = state.san.equipos.some(e => /term[oó]metro/i.test(e.name));
+    return t ? { val:'si', det:'Saneamiento: hay termómetros en la lista de equipos' } : { val:'no', det:'Saneamiento: no hay termómetros en la lista de equipos' }; },
+  certTodos(){ const p = state.evid.personal; if (!p) return null; const act = (p.personas||[]).filter(x=>x.activo); if (!act.length) return null;
+    const ok = act.filter(x => certEstado((p.certificados||{})[x.id])==='vigente').length;
+    return { val: ok===act.length?'todos':ok?'algunos':'ninguno', det:`Personal: ${ok} de ${act.length} con certificado vigente` }; },
+  certVigentes(){ const p = state.evid.personal; if (!p) return null; const act = (p.personas||[]).filter(x=>x.activo);
+    const venc = act.filter(x => certEstado((p.certificados||{})[x.id])==='vencido').length, falt = act.filter(x => certEstado((p.certificados||{})[x.id])==='falta').length;
+    return { val: (venc||falt)?'no':'si', det: venc||falt ? `Personal: ${venc} vencido${venc===1?'':'s'}, ${falt} sin certificado` : 'Personal: todos vigentes' }; },
+  capsRegistros(){ const p = state.evid.personal; if (!p) return null; const anio = String(new Date().getFullYear());
+    const c = (p.capacitaciones||[]).filter(x => x.fecha && x.fecha.startsWith(anio) && x.horas>0 && x.evaluacion && x.evaluacion!=='sin');
+    return c.length ? { val:'si', det:`Personal: ${c.length} capacitación${c.length>1?'es':''} con horas y evaluación este año` } : { val:'no', det:'Personal: no hay capacitaciones con horas y evaluación este año' }; },
+  turnoManos(){ return autoTurno('c-a-08'); }, turnoVerduras(){ return autoTurno('c-a-10'); },
+  turnoDescongelar(){ return autoTurno('c-a-05'); }, turnoNevera(){ return autoTurno('c-a-09'); },
+  facturas(){ const r = recep30(); if (!r.length) return null; const f = r.filter(x=>x.factura).length;
+    return { val: f===r.length?'o0':f?'o1':'o2', det:`Inventario: ${f} de ${r.length} recepciones con factura (30 días)` }; },
+  recepcion(){ const r = recep30(); if (!r.length) return null; return { val:'si', det:`Inventario: ${r.length} recepciones revisadas en 30 días` }; },
+  tempNevera(){ return autoTemp('e11'); }, tempCongelador(){ return autoTemp('e12'); },
+  tempRegistro(){ const r = regs30('temperaturas'); if (!r.length) return { val:'no', det:'Saneamiento: sin registros de temperatura en 30 días' };
+    const dias = [...new Set(r.map(x=>x.fecha))].sort(); const rr = ratioDias(dias, dias[0]);
+    if (!rr) return { val:null, det:'Saneamiento: pocos días de registro todavía' };
+    return { val: rr.ok?'si':'no', det:`Saneamiento: registro en ${rr.n} de ${rr.ventana} días` }; },
+  lavado(){ const l = state.estado.agua_lavado; if (!l) return { val:null, det:'Saneamiento: no hay lavados registrados' };
+    const d = diasHasta(l.proxima); return d >= -3 ? { val:'o0', det:`Saneamiento: último lavado ${fechaCO(l.fecha)}` } : { val:null, det:`Saneamiento: lavado vencido desde ${fechaCO(l.proxima)}` }; },
+  cloro(){ const r = regs30('agua_cloro').filter(x => x.fecha >= addDays(isoDate(),-13));
+    return r.length ? { val:'si', det:`Saneamiento: ${r.length} lectura${r.length>1?'s':''} en 14 días` } : { val:'no', det:'Saneamiento: sin lecturas de cloro en 14 días' }; },
+  plagasRastro(){ const r = regs30('plagas_inspeccion'); if (!r.length) return null; const h = r.filter(x=>x.hallazgo);
+    return h.length ? { val:'si', det:`Saneamiento: rastro encontrado ${h.length} vez/veces en 30 días` } : { val:'no', det:`Saneamiento: ${r.length} inspecciones sin rastro` }; },
+  plagasInspeccion(){ const r = regs30('plagas_inspeccion').filter(x => x.fecha >= addDays(isoDate(),-9));
+    return r.length ? { val:'si', det:'Saneamiento: inspección registrada esta semana' } : { val:'no', det:'Saneamiento: sin inspección en los últimos 10 días' }; },
+  fumigacion(){ const f = state.estado.plagas_fumigacion; if (!f) return { val:'no', det:'Saneamiento: no hay fumigación registrada' };
+    if (f.proxima && diasHasta(f.proxima) < 0) return { val:'no', det:`Saneamiento: fumigación vencida desde ${fechaCO(f.proxima)}` };
+    return f.link ? { val:'si', det:`Saneamiento: fumigación ${fechaCO(f.fecha)} con certificado` } : { val:'no', det:'Saneamiento: fumigación sin certificado enlazado' }; },
+  quimicos(){ const q = state.san.quimicos; if (!q || !q.length) return null; const inc = q.filter(x => !x.dilucion || !x.formaUso).length;
+    return inc ? { val:'no', det:`Saneamiento: ${inc} químico${inc>1?'s':''} sin dilución o forma de uso` } : { val:'si', det:'Saneamiento: tabla de químicos completa' }; },
+  checklistSanea(){ return autoChecklistSanea(dia => dia.apertura && Object.values(dia.apertura).some(Boolean)); },
+  basura(){ return autoChecklistSanea(dia => dia.cierre && dia.cierre.t14); },
+  plan(){ const p = state.san.plan; return p && p.revision ? { val:'si', det:`Saneamiento: plan revisado el ${fechaCO(p.revision.fecha)}` } : { val:'no', det:'Saneamiento: el plan no se ha revisado ni firmado' }; },
+};
+function autoTemp(eqId){
+  const r = regs30('temperaturas').map(x => x.lecturas && x.lecturas[eqId]).filter(Boolean);
+  if (!r.length) return { val:null, det:'Saneamiento: sin lecturas de este equipo en 30 días' };
+  const malas = r.filter(l => !l.ok).length;
+  return { val: malas?'o1':'o0', det: malas ? `Saneamiento: ${malas} de ${r.length} lecturas fuera de rango` : `Saneamiento: ${r.length} lecturas en rango` };
+}
+function autoRespuesta(q){ if (!q.auto || !AUTO[q.auto]) return null; try { return AUTO[q.auto](); } catch(e){ return null; } }
+
+// ══════════════════════════════
+//  VISITA INICIAL (acta del 9 de julio de 2026, bloque 5)
+// ══════════════════════════════
+function migrarVisitaInicial(){
+  if (state.c.mig && state.c.mig.visita1) return;
+  if (lista(state.c.visitas).length) { CUMP_REF.child('mig/visita1').set(true); return; }
+  const v = { id:'v20260709', fecha:'2026-07-09', entidad:'Secretaría de Salud Departamental (S.S.D.)', motivo:'', ciudad:'San Andrés',
+    funcionarios:[{ nombre:'Edith Taylor Jay', cargo:'Técnico operativo' }, { nombre:'Rosa Rivas Tordecilla', cargo:'Tecnóloga en Control Ambiental' }],
+    atendio:{ nombre:'Yamileth Murguietia', cargo:'Oficios varios' }, pct:75, concepto:'req', medida:false,
+    items:{ '5_1':'AR', '5_2':'A', '5_3':'A', '5_4':'A', '5_5':'AR', '5_6':'I' },
+    hallazgos:{
+      '5_1':'La persona que atiende manifiesta que el agua corriente proviene de la empresa de acueducto, pero no se evidencian registros que garanticen su potabilidad.',
+      '5_5':'Procesos deficientes de limpieza en campana extractora.',
+      '5_6':'El establecimiento no cuenta con plan de saneamiento escrito ni implementado.' },
+    obsAutoridad:'Establecimiento acogido a estrategia EMES',
+    obsEstablecimiento:'Una visita muy constructiva y con información completa y explícita de lo que se debe mejorar',
+    nota:'Cargada desde la foto del acta: solo la página del bloque de saneamiento (24 de 33 puntos). Faltan las demás páginas.',
+    foto:null, creado:Date.now(), creadoPor:'Sistema' };
+  CUMP_REF.child('visitas/'+v.id).set(v);
+  Object.entries(v.hallazgos).forEach(([item, txt]) => crearAccion({ origen:'visita', visitaId:v.id, item, texto:txt,
+    m:'🔴', def: item==='5_1' ? 'Registrar lavado del tanque y lecturas de cloro en Saneamiento; guardar factura del acueducto'
+      : item==='5_5' ? 'Registrar la limpieza de campana por empresa con certificado; filtros cada semana'
+      : 'Completar, revisar y firmar el plan de saneamiento (pestaña Plan de Saneamiento)', fecha: addDays(isoDate(), 30) }));
+  CUMP_REF.child('mig/visita1').set(true);
+}
+
+// ══════════════════════════════
+//  PLAN DE ACCIÓN
+// ══════════════════════════════
+function crearAccion(a){
+  const id = 'a' + Date.now() + Math.floor(Math.random()*1000);
+  const acc = Object.assign({ id, estado:'pendiente', responsable:'Aljavis', costo:null, evidencia:'', creado:isoDate(), creadoPor: state.currentUser ? state.currentUser.name : 'Sistema' }, a);
+  CUMP_REF.child('acciones/'+id).set(acc);
+  return acc;
+}
+function accionesPorPregunta(){ const o = {}; lista(state.c.acciones).filter(a => a.preguntaId && a.estado!=='descartada')
+  .sort((a,b)=> (a.creado||'') < (b.creado||'') ? -1 : 1).forEach(a => o[a.preguntaId] = a); return o; }
+function accionVencida(a){ return a.estado!=='cerrada' && a.estado!=='descartada' && a.fecha && diasHasta(a.fecha) < 0; }
+
+// ══════════════════════════════
+//  RESUMEN
+// ══════════════════════════════
+function autoevalsOrdenadas(){ return lista(state.c.autoevaluaciones).sort((a,b)=> a.ts-b.ts); }
+function visitasOrdenadas(){ return lista(state.c.visitas).sort((a,b)=> a.fecha<b.fecha?-1:1); }
+function renderResumen(){
+  const ae = autoevalsOrdenadas(); const ult = ae[ae.length-1]; const prev = ae[ae.length-2];
+  const vs = visitasOrdenadas(); const uv = vs[vs.length-1];
+  const acc = lista(state.c.acciones); const abiertas = acc.filter(a => !['cerrada','descartada'].includes(a.estado));
+  const venc = abiertas.filter(accionVencida); const costo = abiertas.reduce((t,a)=>t+(Number(a.costo)||0),0);
+  let html = '<div class="res-grid">';
+  // Visita
+  html += `<div class="res-card"><p class="res-tit">🏛️ Última visita de la Secretaría</p>` + (uv ? `
+    <div class="res-num" style="color:${conceptoColor(uv.concepto)}">${uv.pct!=null?uv.pct+' %':'—'}</div>
+    <p class="res-sub">${conceptoTxt(uv.concepto)} · ${fechaCO(uv.fecha)}</p>
+    <p class="res-sub">${abiertas.filter(a=>a.visitaId===uv.id).length} hallazgo(s) abiertos de esa visita</p>` : '<p class="res-sub">Sin visitas registradas.</p>') + `</div>`;
+  // Autoevaluación
+  if (ult) {
+    const conPlan = resultado(estadosConPlan(ult.respuestas||{}));
+    const prox = addDays(ult.fecha, 90); const d = diasHasta(prox);
+    html += `<div class="res-card"><p class="res-tit">📝 Autoevaluación</p>
+      <div class="res-num" style="color:${conceptoColor(ult.concepto)}">${ult.total} %</div>
+      <p class="res-sub">${conceptoTxt(ult.concepto)} · ${fechaCO(ult.fecha)}</p>
+      <p class="res-sub">Con el avance del plan: <b style="color:${conceptoColor(conPlan.concepto)}">${conPlan.total} %</b></p>
+      <p class="res-sub" style="color:${d<0?'var(--red)':d<=15?'var(--yellow)':'rgba(255,255,255,.5)'}">${d<0?`⚠️ La trimestral se venció el ${fechaCO(prox)}`:`Próxima: ${fechaCO(prox)} (en ${d} días)`}</p></div>`;
+  } else html += `<div class="res-card"><p class="res-tit">📝 Autoevaluación</p><p class="res-sub">Aún no hay ninguna. La primera marca el punto de partida.</p>
+      ${esAdmin()?`<button class="btn-primary" style="margin-top:10px" onclick="switchTab('auto')">Empezar</button>`:''}</div>`;
+  // Plan
+  html += `<div class="res-card"><p class="res-tit">✅ Plan de acción</p>
+    <div class="res-num" style="color:${venc.length?'var(--red)':abiertas.length?'var(--yellow)':'var(--green)'}">${abiertas.length}</div>
+    <p class="res-sub">acciones abiertas · ${venc.length} vencida${venc.length===1?'':'s'}</p>
+    ${costo?`<p class="res-sub">Costo estimado pendiente: <b>${pesos(costo)}</b> (prográmalo en la provisión de Finanzas)</p>`:''}</div>`;
+  html += '</div>';
+  // Alertas críticas
+  if (ult) {
+    const accQ = accionesPorPregunta();
+    const crit = (ult.criticos||[]).filter(qid => !(accQ[qid] && accQ[qid].estado==='cerrada'));
+    if (crit.length) html += `<div class="desv-row" style="margin-bottom:14px;"><b>⚠️ Alertas críticas</b> (si el inspector las ve como inaceptables, el concepto es desfavorable aunque el % sea alto):
+      <ul style="margin:6px 0 0 18px;">${crit.map(qid => `<li>${cod(pregPorId(qid).item)} · ${esc(pregPorId(qid).t)}</li>`).join('')}</ul></div>`;
+  }
+  // Vencidas
+  if (venc.length) html += `<p class="section-title">⏰ Acciones vencidas</p>` + venc.slice(0,6).map(a => `<div class="hist-row" style="border-left:3px solid var(--red)"><div>
+      <div class="hr-name">${a.m||''} ${cod(a.item)} · ${esc(textoAccion(a))}</div><div class="hr-meta">Venció ${fechaCO(a.fecha)} · ${esc(a.responsable||'')}</div></div></div>`).join('');
+  // Comparación trimestral
+  if (ult && prev) {
+    html += `<p class="section-title" style="margin-top:18px;">📈 Comparación con la autoevaluación anterior (${fechaCO(prev.fecha)})</p>
+      <div class="reg-scroll"><table class="reg-table"><tr><th>Bloque</th><th>Antes</th><th>Ahora</th><th>Cambio</th></tr>` +
+      ACTA.bloques.map(b => { const a = pctBloque(prev,b.id), n = pctBloque(ult,b.id), dd = n-a;
+        return `<tr><td>${b.id}. ${esc(b.nombre)}</td><td>${a} %</td><td>${n} %</td><td style="color:${dd>0?'var(--green)':dd<0?'var(--red)':'inherit'}">${dd>0?'+':''}${dd}</td></tr>`; }).join('') +
+      `<tr><td><b>Total</b></td><td><b>${prev.total} %</b></td><td><b>${ult.total} %</b></td><td><b>${(ult.total-prev.total>0?'+':'')+Math.round((ult.total-prev.total)*10)/10}</b></td></tr></table></div>`;
+  }
+  document.getElementById('resumen-wrap').innerHTML = html;
+}
+function pctBloque(ae, bid){ const b = (ae.bloques||{})[bid]; return b && b.max ? Math.round(b.pts/b.max*100) : 0; }
+function textoAccion(a){ if (a.texto) return a.texto; const q = a.preguntaId && pregPorId(a.preguntaId); return q ? q.t : ''; }
+
+// ══════════════════════════════
+//  AUTOEVALUACIÓN
+// ══════════════════════════════
+function renderAuto(){
+  const wrap = document.getElementById('auto-wrap');
+  if (state.verAutoeval) { wrap.innerHTML = resultadosHtml(state.c.autoevaluaciones[state.verAutoeval]); return; }
+  const b = state.c.borrador;
+  const pasadas = autoevalsOrdenadas().reverse();
+  if (!b) {
+    wrap.innerHTML = `<div class="form-card"><h3>📝 Autoevaluación trimestral</h3>
+      <p style="font-size:.84rem;color:rgba(255,255,255,.65);margin-bottom:10px;">Son 110 preguntas sobre cómo es el local, en los 20 ítems del acta de la Secretaría. Lo que el sistema ya sabe viene respondido (marcado 📊); revísalo y responde lo demás. Se puede dejar a medias y seguir después.</p>
+      <p style="font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:12px;">El puntaje es una estimación: quien califica es el inspector.</p>
+      ${esAdmin() ? `<button class="btn-primary" onclick="empezarAutoeval()">Empezar autoevaluación</button>` : '<p style="font-size:.8rem;color:var(--yellow)">Solo Aljavis puede hacer la autoevaluación.</p>'}</div>` +
+      (pasadas.length ? `<p class="section-title">Autoevaluaciones anteriores</p>` + pasadas.map(a => `<div class="hist-row" style="cursor:pointer" onclick="state.verAutoeval='${a.id}';renderAuto()"><div>
+        <div class="hr-name">${fechaCO(a.fecha)} · ${a.total} % · ${conceptoTxt(a.concepto)}</div><div class="hr-meta">👤 ${esc(a.user)} · ver resultados</div></div>
+        <span class="badge-pct" style="background:${conceptoColor(a.concepto)}22;color:${conceptoColor(a.concepto)}">${a.total}%</span></div>`).join('') : '');
+    return;
+  }
+  const resp = b.respuestas || {}; const est = estadosDe(resp); const res = resultado(est);
+  const respondidas = PREGUNTAS.filter(q => respondida(q, resp[q.id])).length;
+  const chips = ACTA.bloques.map(bl => { const qs = PREGUNTAS.filter(q => itemPorId(q.item).bloque===bl.id);
+    const r = qs.filter(q => respondida(q, resp[q.id])).length;
+    return `<span class="turno-chip ${state.bloqueActivo===bl.id?'active':''}" onclick="state.bloqueActivo='${bl.id}';renderAuto();window.scrollTo(0,0)">${bl.id}. ${esc(bl.nombre)} <small>${r}/${qs.length}</small></span>`; }).join('');
+  const bloque = ACTA.bloques.find(x => x.id===state.bloqueActivo);
+  const items = bloque.items.map(it => itemHtml(it, resp, est, b.auto||{}, res.items[it.id])).join('');
+  const sig = ACTA.bloques[ACTA.bloques.indexOf(bloque)+1];
+  wrap.innerHTML = `<div class="auto-head"><div><b>${respondidas}/${PREGUNTAS.length}</b> respondidas · puntaje parcial <b>${res.total}</b> de 100</div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${Math.round(respondidas/PREGUNTAS.length*100)}%"></div></div></div>
+    <div class="turno-tabs" style="flex-wrap:wrap">${chips}</div>${items}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+      ${sig ? `<button class="btn-primary" onclick="state.bloqueActivo='${sig.id}';renderAuto();window.scrollTo(0,0)">Siguiente: ${esc(sig.nombre)} →</button>` : ''}
+      <button class="btn-primary" style="background:var(--green)" ${respondidas<PREGUNTAS.length?'disabled title="Faltan preguntas por responder"':''} onclick="terminarAutoeval()">✅ Terminar y guardar</button>
+      <button class="btn-export" onclick="descartarBorrador()">Descartar</button></div>`;
+}
+function itemHtml(it, resp, est, auto, r){
+  return `<div class="item-card"><div class="item-head"><div><b>${cod(it.id)} ${esc(it.nombre)}</b> <span class="item-pts">${it.pts} pts</span></div>
+    <span class="cal-chip" style="background:${calColor(r.cal)}22;color:${calColor(r.cal)}">${r.cal ? r.cal+' · '+String(r.pts).replace('.',',')+' pts' : 'sin terminar'}</span></div>
+    ${it.q.map(q => preguntaHtml(q, resp[q.id], est[q.id], auto[q.id])).join('')}</div>`;
+}
+function preguntaHtml(q, v, e, auto){
+  const b = (val, lbl) => `<button class="ans ${v===val?'sel':''}" onclick="responder('${q.id}','${val}')">${lbl}</button>`;
+  let ops = '';
+  if (q.r==='sn') ops = b('si','Sí') + b('no','No');
+  if (q.r==='ns') ops = b('no','No') + b('si','Sí');
+  if (q.r==='tri') ops = b('todos','Todos') + b('algunos','Algunos') + b('ninguno','Ninguno');
+  if (q.r==='opt') ops = q.o.map((o,i) => b('o'+i, esc(o[0]))).join('');
+  if (q.r==='multi') { const sel = String(v||'').split(',').filter(x=>x!=='');
+    ops = q.o.map((o,i) => `<button class="ans ${sel.includes(String(i))?'sel':''}" onclick="toggleMulti('${q.id}',${i})">${sel.includes(String(i))?'☑':'☐'} ${esc(o)}</button>`).join('')
+      + `<button class="ans ${v===''?'sel':''}" onclick="setMulti('${q.id}','')">No tiene ninguno</button>`; }
+  if (q.na) ops += `<button class="ans ${v==='na'?'sel':''}" onclick="responder('${q.id}','na')">No aplica: ${esc(q.na)}</button>`;
+  const falta = e==='falta' ? `<div class="q-hint">${q.m==='🟡' ? `🟡 <b>Mientras tanto:</b> ${esc(q.mit)} · <b>Definitivo:</b> ${esc(q.def)}` : `🔴 <b>Hacerlo:</b> ${esc(q.def)}`}</div>` : '';
+  return `<div class="q-row ${e==='falta'?'falta':e==='ok'?'ok':''}"><div class="q-t">${q.crit?'<span class="crit" title="Alerta crítica">⚠</span> ':''}${esc(q.t)}</div>
+    ${auto ? `<div class="q-auto">📊 ${esc(auto)}</div>` : ''}
+    <div class="q-ops">${ops}</div><div class="q-v">Se verifica en: ${esc(q.v||'')}</div>${falta}</div>`;
+}
+function empezarAutoeval(){
+  const respuestas = {}, auto = {};
+  PREGUNTAS.forEach(q => { const a = autoRespuesta(q); if (a) { auto[q.id] = a.det; if (a.val) respuestas[q.id] = a.val; } });
+  CUMP_REF.child('borrador').set({ inicio:isoDate(), user:state.currentUser.name, respuestas, auto });
+  state.bloqueActivo = '1';
+  const n = Object.keys(respuestas).length;
+  showToast(`✅ ${n} respuesta${n===1?'':'s'} precargada${n===1?'':'s'} con datos del sistema`);
+}
+function responder(qid, val){
+  if (!esAdmin()) return;
+  const actual = ((state.c.borrador||{}).respuestas||{})[qid];
+  const nuevo = actual===val ? null : val;
+  if (!state.c.borrador.respuestas) state.c.borrador.respuestas = {};
+  if (nuevo==null) delete state.c.borrador.respuestas[qid]; else state.c.borrador.respuestas[qid] = nuevo;
+  CUMP_REF.child('borrador/respuestas/'+qid).set(nuevo);
+  const y = window.scrollY; renderAuto(); window.scrollTo(0,y);
+}
+function setMulti(qid, val){
+  if (!esAdmin()) return;
+  const b = state.c.borrador; b.respuestas = b.respuestas || {}; b.respuestas[qid] = val;
+  CUMP_REF.child('borrador/respuestas/'+qid).set(val);
+  const y = window.scrollY; renderAuto(); window.scrollTo(0,y);
+}
+function toggleMulti(qid, i){
+  const actual = String(((state.c.borrador||{}).respuestas||{})[qid] || '').split(',').filter(x=>x!=='');
+  const s = String(i); const n = actual.includes(s) ? actual.filter(x=>x!==s) : [...actual, s];
+  setMulti(qid, n.sort().join(','));
+}
+function descartarBorrador(){ if (!confirm('¿Descartar esta autoevaluación sin guardar?')) return; CUMP_REF.child('borrador').set(null); state.c.borrador=null; renderAuto(); }
+function terminarAutoeval(){
+  const b = state.c.borrador; const resp = b.respuestas || {};
+  // Las casillas múltiples sin nada marcado cuentan como respondidas (no cumple)
+  const est = estadosDe(resp);
+  const faltan = PREGUNTAS.filter(q => est[q.id]==null);
+  if (faltan.length) { showToast(`⚠️ Faltan ${faltan.length} preguntas`,'warn'); return; }
+  const r = resultado(est);
+  const id = 'ae' + Date.now();
+  const ae = { id, ts:Date.now(), fecha:isoDate(), user:state.currentUser.name, respuestas:resp, auto:b.auto||{},
+    items:Object.fromEntries(Object.entries(r.items).map(([k,v]) => [k, { cal:v.cal, pts:v.pts }])),
+    bloques:r.bloques, total:r.total, concepto:r.concepto, criticos:r.criticos };
+  CUMP_REF.child('autoevaluaciones/'+id).set(ae);
+  // Cada faltante pasa al plan de acción (sin duplicar las que ya están abiertas)
+  const abiertas = accionesPorPregunta(); let nuevas = 0;
+  PREGUNTAS.filter(q => est[q.id]==='falta').forEach(q => {
+    const ya = abiertas[q.id]; if (ya && ya.estado!=='cerrada') return;
+    crearAccion({ origen:'autoevaluacion', autoevalId:id, preguntaId:q.id, item:q.item, m:q.m, mit:q.mit||null, def:q.def, v:q.v||'',
+      crit:!!q.crit, fecha: addDays(isoDate(), q.m==='🔴' ? 15 : 30) }); nuevas++; });
+  CUMP_REF.child('borrador').set(null);
+  state.verAutoeval = id; state.c.autoevaluaciones[id] = ae; state.c.borrador = null;
+  showToast(`✅ Autoevaluación guardada: ${r.total} %. ${nuevas} ${nuevas===1?'acción nueva':'acciones nuevas'} en el plan.`);
+  renderAuto();
+}
+function resultadosHtml(ae){
+  if (!ae) return '';
+  const est = estadosDe(ae.respuestas||{}); const conPlan = resultado(estadosConPlan(ae.respuestas||{}));
+  const faltantes = PREGUNTAS.filter(q => est[q.id]==='falta').map(q => ({ q, item:itemPorId(q.item) }));
+  // ordenar por puntos que se recuperan en el ítem
+  faltantes.sort((a,b) => (b.item.pts - (ae.items[b.item.id]||{}).pts) - (a.item.pts - (ae.items[a.item.id]||{}).pts));
+  return `<button class="btn-export" style="margin-bottom:12px" onclick="state.verAutoeval=null;renderAuto()">← Volver</button>
+    <div class="res-grid">
+      <div class="res-card"><p class="res-tit">Resultado del ${fechaCO(ae.fecha)}</p><div class="res-num" style="color:${conceptoColor(ae.concepto)}">${ae.total} %</div><p class="res-sub">${conceptoTxt(ae.concepto)}</p></div>
+      <div class="res-card"><p class="res-tit">Con el avance del plan</p><div class="res-num" style="color:${conceptoColor(conPlan.concepto)}">${conPlan.total} %</div><p class="res-sub">Sube cuando las acciones se cierran; las medidas temporales dejan el ítem al menos en AR.</p></div>
+    </div>
+    <p class="section-title">Por bloque</p>` +
+    ACTA.bloques.map(b => { const p = pctBloque(ae,b.id); return `<div class="bar-row"><span>${b.id}. ${esc(b.nombre)}</span><div class="bar"><div style="width:${p}%;background:${p>=90?'var(--green)':p>=60?'var(--yellow)':'var(--red)'}"></div></div><b>${p} %</b></div>`; }).join('') +
+    `<p class="section-title" style="margin-top:16px;">Por ítem</p><div class="reg-scroll"><table class="reg-table"><tr><th>Ítem</th><th>Calificación</th><th>Puntos</th></tr>` +
+    ITEMS.map(i => { const r = ae.items[i.id]||{}; return `<tr><td>${cod(i.id)} ${esc(i.nombre)}</td><td style="color:${calColor(r.cal)};font-weight:800">${r.cal||'—'}</td><td>${String(r.pts||0).replace('.',',')} / ${i.pts}</td></tr>`; }).join('') + `</table></div>` +
+    `<p class="section-title" style="margin-top:16px;">Lo que falta, primero lo que más suma (${faltantes.length})</p>` +
+    (faltantes.length ? faltantes.map(({q,item}) => `<div class="hist-row" style="border-left:3px solid ${q.m==='🔴'?'var(--red)':'var(--yellow)'}"><div>
+      <div class="hr-name">${q.crit?'⚠ ':''}${cod(item.id)} · ${esc(q.t)}</div>
+      <div class="hr-meta">${q.m==='🟡'?`🟡 Mientras tanto: ${esc(q.mit)} · Definitivo: ${esc(q.def)}`:`🔴 ${esc(q.def)}`}</div>
+      <div class="hr-meta">Se verifica en: ${esc(q.v||'')}</div></div></div>`).join('') : '<p style="font-size:.85rem;color:var(--green)">✅ No falta nada.</p>');
+}
+
+// ══════════════════════════════
+//  PLAN DE ACCIÓN
+// ══════════════════════════════
+function renderAcciones(){
+  const todas = lista(state.c.acciones).filter(a => a.estado!=='descartada');
+  const f = state.filtroAcc;
+  const sel = todas.filter(a => f==='todas' ? true : f==='cerradas' ? a.estado==='cerrada' : f==='vencidas' ? accionVencida(a) : a.estado!=='cerrada')
+    .sort((a,b) => ((a.estado==='cerrada') - (b.estado==='cerrada')) || ((a.fecha||'9') < (b.fecha||'9') ? -1 : 1));
+  const abiertas = todas.filter(a => a.estado!=='cerrada');
+  const costo = abiertas.reduce((t,a)=>t+(Number(a.costo)||0),0);
+  const chip = (k,l) => `<span class="turno-chip ${f===k?'active':''}" onclick="state.filtroAcc='${k}';renderAcciones()">${l}</span>`;
+  document.getElementById('plan-wrap').innerHTML =
+    `<div class="turno-tabs">${chip('abiertas',`Abiertas (${abiertas.length})`)}${chip('vencidas',`Vencidas (${todas.filter(accionVencida).length})`)}${chip('cerradas','Cerradas')}${chip('todas','Todas')}</div>
+    ${costo ? `<p style="font-size:.8rem;color:rgba(255,255,255,.6);margin-bottom:12px;">💰 Costo estimado de lo pendiente: <b>${pesos(costo)}</b>. Prográmalo en la Alcancía de Provisión del módulo de Finanzas.</p>` : ''}` +
+    (sel.length ? sel.map(accionHtml).join('') : '<p style="font-size:.85rem;color:rgba(255,255,255,.45)">No hay acciones en este filtro.</p>');
+}
+function accionHtml(a){
+  const it = itemPorId(a.item) || { nombre:'' }; const dis = esAdmin() ? '' : 'disabled';
+  const origen = a.origen==='visita' ? `Hallazgo de la visita del ${fechaCO((state.c.visitas[a.visitaId]||{}).fecha)}` : `Autoevaluación del ${fechaCO((state.c.autoevaluaciones[a.autoevalId]||{}).fecha)}`;
+  const vencida = accionVencida(a);
+  const estados = [['pendiente','Pendiente'],['proceso','En proceso'],...(a.m==='🟡'?[['mitigada','Mitigada (medida temporal)']]:[]),['cerrada','Cerrada']];
+  return `<div class="acc-card ${a.estado==='cerrada'?'cerrada':vencida?'vencida':''}">
+    <div class="acc-top"><span class="acc-tipo">${a.m||'🔴'}</span><div style="flex:1">
+      <div class="acc-t">${a.crit?'⚠ ':''}${cod(a.item)} ${esc(it.nombre)} · ${esc(textoAccion(a))}</div>
+      <div class="acc-meta">${origen}${a.v?' · se verifica en '+esc(a.v):''}</div></div></div>
+    ${a.mit ? `<p class="acc-l">🟡 <b>Mientras tanto:</b> ${esc(a.mit)}</p>` : ''}
+    <p class="acc-l">${a.m==='🟡'?'<b>Definitivo:</b>':'🔴 <b>Hacer:</b>'} ${esc(a.def||'')}</p>
+    <div class="acc-grid">
+      <label>Responsable<input class="form-input" value="${esc(a.responsable||'')}" ${dis} onchange="actualizarAccion('${a.id}','responsable',this.value)"></label>
+      <label>Fecha límite<input class="form-input" type="date" value="${a.fecha||''}" ${dis} onchange="actualizarAccion('${a.id}','fecha',this.value)" style="${vencida?'border-color:var(--red)':''}"></label>
+      <label>Costo estimado (COP)<input class="form-input" type="number" min="0" step="1000" value="${a.costo||''}" ${dis} onchange="actualizarAccion('${a.id}','costo',this.value?Number(this.value):null)"></label>
+      <label>Estado<select class="form-select" ${dis} onchange="cambiarEstado('${a.id}',this.value)">${estados.map(([k,l])=>`<option value="${k}" ${a.estado===k?'selected':''}>${l}</option>`).join('')}</select></label>
+    </div>
+    <label class="acc-ev">Evidencia (qué se hizo o enlace al soporte)<input class="form-input" value="${esc(a.evidencia||'')}" ${dis} placeholder="Ej: registrado en Saneamiento el 12/10, certificado en Drive" onchange="actualizarAccion('${a.id}','evidencia',this.value)"></label>
+    ${a.cerrado ? `<p class="acc-meta">Cerrada el ${fechaCO(a.cerrado)} por ${esc(a.cerradoPor||'')}</p>` : ''}</div>`;
+}
+function actualizarAccion(id, campo, valor){ if (!esAdmin()) return; CUMP_REF.child(`acciones/${id}/${campo}`).set(valor===''?null:valor); state.c.acciones[id][campo]=valor; showToast('✅ Guardado'); }
+function cambiarEstado(id, estado){
+  if (!esAdmin()) return; const a = state.c.acciones[id];
+  if (estado==='cerrada' && !(a.evidencia||'').trim()) { showToast('⚠️ Escribe primero la evidencia de cierre','warn'); renderAcciones(); return; }
+  const upd = { estado, cerrado: estado==='cerrada' ? isoDate() : null, cerradoPor: estado==='cerrada' ? state.currentUser.name : null };
+  CUMP_REF.child('acciones/'+id).update(upd); Object.assign(a, upd);
+  showToast(estado==='cerrada' ? '✅ Acción cerrada' : '✅ Estado actualizado'); renderAcciones();
+}
+
+// ══════════════════════════════
+//  VISITAS
+// ══════════════════════════════
+const MOTIVOS = ['Programación','Solicitud del interesado','Peticiones, quejas y reclamos','Solicitud oficial','Evento de interés en salud pública','Otro'];
+function renderVisitas(){
+  const wrap = document.getElementById('visitas-wrap');
+  if (state.visitaForm) { wrap.innerHTML = formVisitaHtml(); return; }
+  const vs = visitasOrdenadas().reverse(); const uv = vs[0];
+  let html = uv ? `<div class="form-card" style="border-left:4px solid var(--accent)"><h3>📋 Para el encabezado de la próxima acta</h3>
+    <p style="font-size:.84rem;line-height:1.7">Concepto sanitario de la última visita: <b>${conceptoTxt(uv.concepto)}</b><br>Fecha de la última inspección: <b>${fechaCO(uv.fecha)}</b><br>% de cumplimiento de la última inspección: <b>${uv.pct!=null?uv.pct+' %':'—'}</b></p></div>` : '';
+  if (esAdmin()) html += `<button class="btn-primary" style="margin-bottom:14px" onclick="state.visitaForm=true;renderVisitas()">➕ Registrar visita</button>`;
+  html += vs.length ? vs.map(v => visitaHtml(v, state.visitaAbierta===v.id)).join('') : '<p style="font-size:.85rem;color:rgba(255,255,255,.45)">Sin visitas registradas.</p>';
+  wrap.innerHTML = html;
+}
+function visitaHtml(v, abierta){
+  const acc = lista(state.c.acciones).filter(a => a.visitaId===v.id);
+  const cab = `<div class="hist-row" style="cursor:pointer" onclick="state.visitaAbierta=${abierta?'null':`'${v.id}'`};renderVisitas()"><div>
+    <div class="hr-name">🏛️ ${fechaCO(v.fecha)} · ${v.pct!=null?v.pct+' % · ':''}${conceptoTxt(v.concepto)}</div>
+    <div class="hr-meta">${esc(v.entidad||'')} · ${acc.filter(a=>a.estado!=='cerrada').length} de ${acc.length} hallazgos abiertos</div></div>
+    <span style="font-size:.8rem">${abierta?'▴':'▾'}</span></div>`;
+  if (!abierta) return cab;
+  const items = Object.entries(v.items||{});
+  return cab + `<div class="form-card" style="margin-top:-6px">
+    ${v.nota ? `<p class="acc-meta" style="margin-bottom:8px">ℹ️ ${esc(v.nota)}</p>` : ''}
+    <dl class="q-grid"><dt>Entidad</dt><dd>${esc(v.entidad||'')}</dd>${v.motivo?`<dt>Motivo</dt><dd>${esc(v.motivo)}</dd>`:''}
+      <dt>Funcionarios</dt><dd>${(v.funcionarios||[]).filter(f=>f.nombre).map(f=>`${esc(f.nombre)} (${esc(f.cargo)})`).join(' · ')}</dd>
+      <dt>Atendió</dt><dd>${v.atendio?`${esc(v.atendio.nombre)} (${esc(v.atendio.cargo)})`:''}</dd>
+      <dt>Medida sanitaria</dt><dd>${v.medida?'Sí':'No'}</dd>
+      ${v.obsAutoridad?`<dt>Observación autoridad</dt><dd>${esc(v.obsAutoridad)}</dd>`:''}
+      ${v.obsEstablecimiento?`<dt>Observación establecimiento</dt><dd>${esc(v.obsEstablecimiento)}</dd>`:''}
+      ${v.foto?`<dt>Acta</dt><dd><a href="${esc(v.foto)}" target="_blank" rel="noopener" style="color:var(--blue)">📷 Ver foto del acta</a></dd>`:''}</dl>
+    ${items.length ? `<p class="section-title" style="margin-top:12px">Calificación por ítem</p><div class="reg-scroll"><table class="reg-table"><tr><th>Ítem</th><th>Cal.</th><th>Hallazgo</th><th>Acción</th></tr>
+      ${items.sort().map(([k,c]) => { const a = acc.find(x=>x.item===k); return `<tr><td>${cod(k)} ${esc((itemPorId(k)||{}).nombre||'')}</td><td style="color:${calColor(c)};font-weight:800">${c}</td>
+        <td style="white-space:normal;text-align:left">${esc((v.hallazgos||{})[k]||'')}</td><td>${a?(a.estado==='cerrada'?'✅ Cerrada':'⏳ '+a.estado):''}</td></tr>`; }).join('')}</table></div>` : ''}</div>`;
+}
+function formVisitaHtml(){
+  const opcCal = ['','A','AR','I','NA'];
+  return `<div class="form-card"><h3>🏛️ Registrar visita de la Secretaría</h3>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" type="date" id="vf-fecha" value="${isoDate()}" max="${isoDate()}"></div>
+      <div class="form-group"><label class="form-label">Entidad</label><input class="form-input" id="vf-entidad" value="Secretaría de Salud Departamental"></div></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Motivo</label><select class="form-select" id="vf-motivo">${MOTIVOS.map(m=>`<option>${m}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">¿Aplicaron medida sanitaria de seguridad?</label><select class="form-select" id="vf-medida"><option value="no">No</option><option value="si">Sí</option></select></div></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Funcionario 1 (nombre y cargo)</label><input class="form-input" id="vf-f1n" placeholder="Nombre"><input class="form-input" id="vf-f1c" placeholder="Cargo" style="margin-top:6px"></div>
+      <div class="form-group"><label class="form-label">Funcionario 2 (opcional)</label><input class="form-input" id="vf-f2n" placeholder="Nombre"><input class="form-input" id="vf-f2c" placeholder="Cargo" style="margin-top:6px"></div></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Quién atendió (nombre y cargo)</label><input class="form-input" id="vf-an" placeholder="Nombre"><input class="form-input" id="vf-ac" placeholder="Cargo" style="margin-top:6px"></div>
+      <div class="form-group"><label class="form-label">% de cumplimiento del acta</label><input class="form-input" type="number" id="vf-pct" min="0" max="100" step="0.5">
+        <label class="form-label" style="margin-top:8px">Concepto</label><select class="form-select" id="vf-concepto"><option value="fav">Favorable</option><option value="req" selected>Favorable con requerimientos</option><option value="des">Desfavorable</option></select></div></div>
+    <p class="acc-meta" style="margin:8px 0">No se guardan cédulas: nombre y cargo bastan.</p>
+    <p class="section-title">Calificación por ítem (lo que diga el acta; en blanco si no aparece)</p>
+    ${ITEMS.map(i => `<div class="vf-item"><span>${cod(i.id)} ${esc(i.nombre)}</span>
+      <select class="form-select" id="vf-cal-${i.id}" onchange="document.getElementById('vf-h-${i.id}').style.display=['AR','I'].includes(this.value)?'block':'none'">${opcCal.map(c=>`<option value="${c}">${c||'—'}</option>`).join('')}</select>
+      <textarea class="form-input" id="vf-h-${i.id}" style="display:none;grid-column:1/-1;min-height:50px" placeholder="Hallazgo que escribió el inspector"></textarea></div>`).join('')}
+    <div class="form-group" style="margin-top:12px"><label class="form-label">Observación de la autoridad</label><input class="form-input" id="vf-oa"></div>
+    <div class="form-group"><label class="form-label">Observación del establecimiento</label><input class="form-input" id="vf-oe"></div>
+    <div class="form-group"><label class="form-label">Enlace a la foto del acta (Drive)</label><input class="form-input" id="vf-foto" placeholder="https://…"></div>
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn-primary" onclick="guardarVisita()">💾 Guardar visita</button><button class="btn-export" onclick="state.visitaForm=false;renderVisitas()">Cancelar</button></div></div>`;
+}
+function guardarVisita(){
+  const g = id => document.getElementById(id).value.trim();
+  const fecha = g('vf-fecha'); if (!fecha) { showToast('⚠️ Escribe la fecha','warn'); return; }
+  const foto = g('vf-foto'); if (foto && !/^https:\/\//i.test(foto)) { showToast('⚠️ El enlace debe empezar por https://','warn'); return; }
+  const items = {}, hallazgos = {};
+  ITEMS.forEach(i => { const c = g('vf-cal-'+i.id); if (c) items[i.id] = c; const h = g('vf-h-'+i.id); if (h && ['AR','I'].includes(c)) hallazgos[i.id] = h; });
+  const sinTexto = Object.entries(items).filter(([k,c]) => ['AR','I'].includes(c) && !hallazgos[k]);
+  if (sinTexto.length) { showToast(`⚠️ Escribe el hallazgo de ${sinTexto.map(([k])=>cod(k)).join(', ')}`,'warn'); return; }
+  const pct = g('vf-pct');
+  const v = { id:'v'+fecha.replace(/-/g,'')+'_'+Date.now().toString().slice(-4), fecha, entidad:g('vf-entidad'), motivo:g('vf-motivo'), medida:g('vf-medida')==='si',
+    funcionarios:[{nombre:g('vf-f1n'),cargo:g('vf-f1c')},{nombre:g('vf-f2n'),cargo:g('vf-f2c')}].filter(f=>f.nombre),
+    atendio: g('vf-an') ? { nombre:g('vf-an'), cargo:g('vf-ac') } : null, pct: pct===''?null:Number(pct), concepto:g('vf-concepto'),
+    items, hallazgos, obsAutoridad:g('vf-oa'), obsEstablecimiento:g('vf-oe'), foto:foto||null, creado:Date.now(), creadoPor:state.currentUser.name };
+  CUMP_REF.child('visitas/'+v.id).set(v);
+  Object.entries(hallazgos).forEach(([item, txt]) => crearAccion({ origen:'visita', visitaId:v.id, item, texto:txt, m:'🔴', def:'Corregir el hallazgo y dejar evidencia', fecha:addDays(fecha, 30) }));
+  state.visitaForm = false; state.visitaAbierta = v.id;
+  showToast(`✅ Visita guardada. ${Object.keys(hallazgos).length} hallazgo(s) pasaron al plan de acción.`);
+  setTimeout(renderVisitas, 50);
+}
+
+// ══════════════════════════════
+//  INICIO
+// ══════════════════════════════
+init();
+renderUserGrid();
+</script>
+</body>
+</html>

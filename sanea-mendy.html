@@ -1,0 +1,2984 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equipos y Saneamiento – Mendy Fast Food</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #FF6B35;
+  --dark:    #1B2432;
+  --mid:     #2C3A50;
+  --green:   #22C55E;
+  --yellow:  #F59E0B;
+  --red:     #EF4444;
+  --blue:    #00B4D8;
+  --accent:  #FFD166;
+  --muted:   #6B7280;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Nunito',sans-serif;
+  background:var(--dark);
+  min-height:100vh;
+  color:#fff;
+}
+
+/* ══ LOGIN ══ */
+#screen-login {
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:linear-gradient(145deg,#1B2432,#2C3A50);
+}
+.login-card {
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;
+  padding:36px 28px;
+  width:100%;
+  max-width:380px;
+  text-align:center;
+}
+.login-logo { font-size:3rem; margin-bottom:12px; }
+.login-title { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; margin-bottom:4px; }
+.login-title span { color:var(--primary); }
+.login-sub { color:rgba(255,255,255,.45); font-size:.85rem; margin-bottom:28px; }
+.user-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+.user-btn {
+  background:rgba(255,255,255,.08);
+  border:2px solid rgba(255,255,255,.1);
+  border-radius:14px;
+  padding:14px 10px;
+  cursor:pointer;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  transition:.2s;
+}
+.user-btn:hover { border-color:var(--primary); background:rgba(255,107,53,.12); }
+.user-btn.selected { border-color:var(--primary); background:rgba(255,107,53,.18); }
+.user-btn .u-avatar { font-size:1.8rem; margin-bottom:6px; }
+.user-btn .u-name { font-size:.82rem; font-weight:700; }
+.user-btn .u-role { font-size:.7rem; color:rgba(255,255,255,.45); margin-top:2px; }
+.pin-label { color:rgba(255,255,255,.6); font-size:.82rem; margin-bottom:8px; text-align:left; }
+.pin-input {
+  width:100%;
+  background:rgba(255,255,255,.08);
+  border:2px solid rgba(255,255,255,.15);
+  border-radius:12px;
+  padding:13px 16px;
+  color:#fff;
+  font-size:1.4rem;
+  letter-spacing:6px;
+  text-align:center;
+  font-family:'Syne',sans-serif;
+  outline:none;
+  margin-bottom:14px;
+  transition:.2s;
+}
+.pin-input:focus { border-color:var(--primary); }
+.btn-login {
+  width:100%;
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  padding:14px;
+  font-family:'Syne',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+.btn-login:hover { background:#e85a25; }
+.login-error { color:var(--red); font-size:.8rem; margin-top:8px; min-height:18px; }
+
+/* ══ APP ══ */
+#screen-app { display:none; min-height:100vh; }
+.top-nav {
+  background:var(--mid);
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+.nav-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; }
+.nav-brand span { color:var(--primary); }
+.nav-user { display:flex; align-items:center; gap:8px; font-size:.82rem; color:rgba(255,255,255,.65); }
+.btn-logout {
+  background:rgba(255,255,255,.08);
+  border:none;
+  border-radius:8px;
+  padding:6px 12px;
+  color:rgba(255,255,255,.6);
+  cursor:pointer;
+  font-size:.78rem;
+  font-family:'Nunito',sans-serif;
+}
+.btn-logout:hover { background:rgba(255,255,255,.15); color:#fff; }
+
+.tabs {
+  display:flex;
+  background:var(--mid);
+  padding:0 20px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  overflow-x:auto;
+  gap:0;
+}
+.tab-btn {
+  background:none;
+  border:none;
+  border-bottom:3px solid transparent;
+  padding:13px 16px;
+  color:rgba(255,255,255,.5);
+  font-family:'Nunito',sans-serif;
+  font-size:.84rem;
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:.2s;
+}
+.tab-btn.active { color:#fff; border-bottom-color:var(--primary); }
+
+.tab-content { display:none; padding:20px; max-width:860px; margin:0 auto; }
+.tab-content.active { display:block; }
+
+/* ══ CARDS ══ */
+.section-title {
+  font-family:'Syne',sans-serif;
+  font-size:1rem;
+  color:var(--accent);
+  margin-bottom:14px;
+}
+
+.equipo-card {
+  background:rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:16px 18px;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  border-left:4px solid var(--green);
+  transition:.2s;
+}
+.equipo-card.warn  { border-left-color:var(--yellow); }
+.equipo-card.alert { border-left-color:var(--red); }
+
+.eq-icon { font-size:2rem; flex-shrink:0; }
+.eq-info { flex:1; }
+.eq-name { font-weight:700; font-size:.92rem; }
+.eq-area { font-size:.75rem; color:rgba(255,255,255,.45); margin-top:2px; }
+.eq-resp { font-size:.75rem; color:rgba(255,255,255,.45); margin-top:2px; }
+
+.eq-status-select {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.12);
+  border-radius:10px;
+  padding:6px 10px;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  font-size:.78rem;
+  outline:none;
+  cursor:pointer;
+}
+
+.semaforo {
+  width:11px; height:11px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.sem-ok    { background:var(--green); }
+.sem-warn  { background:var(--yellow); }
+.sem-alert { background:var(--red); box-shadow:0 0 6px rgba(239,68,68,.7); }
+
+/* ══ CHECKLIST ══ */
+.checklist-header {
+  background:rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:16px 20px;
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.checklist-header h3 { font-family:'Syne',sans-serif; font-size:1rem; }
+.checklist-header p  { font-size:.8rem; color:rgba(255,255,255,.45); margin-top:2px; }
+
+.progress-bar-wrap {
+  background:rgba(255,255,255,.1);
+  border-radius:99px;
+  height:8px;
+  overflow:hidden;
+  flex:1;
+  min-width:100px;
+}
+.progress-bar-fill {
+  height:100%;
+  border-radius:99px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  transition:.4s;
+}
+
+.turno-tabs {
+  display:flex;
+  gap:8px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+.turno-chip {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  padding:6px 16px;
+  font-size:.78rem;
+  font-weight:700;
+  color:rgba(255,255,255,.6);
+  cursor:pointer;
+  transition:.2s;
+}
+.turno-chip.active { background:var(--primary); border-color:var(--primary); color:#fff; }
+
+.check-item {
+  background:rgba(255,255,255,.04);
+  border-radius:14px;
+  padding:14px 16px;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  transition:.2s;
+  border:1.5px solid rgba(255,255,255,.06);
+}
+.check-item.done {
+  background:rgba(34,197,94,.08);
+  border-color:rgba(34,197,94,.2);
+}
+.check-item.done .ci-name { text-decoration:line-through; color:rgba(255,255,255,.4); }
+
+.check-box {
+  width:26px; height:26px;
+  border-radius:8px;
+  border:2px solid rgba(255,255,255,.2);
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  flex-shrink:0;
+  transition:.2s;
+  font-size:1rem;
+}
+.check-box.checked { background:var(--green); border-color:var(--green); }
+
+.ci-info { flex:1; }
+.ci-name { font-size:.88rem; font-weight:600; transition:.2s; }
+.ci-area { font-size:.73rem; color:rgba(255,255,255,.4); margin-top:2px; }
+.ci-freq { font-size:.7rem; color:rgba(255,255,255,.35); margin-top:1px; }
+.ci-producto { font-size:.72rem; color:var(--blue); margin-top:2px; }
+
+.btn-save-check {
+  width:100%;
+  background:var(--green);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  font-family:'Syne',sans-serif;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:16px;
+  transition:.2s;
+}
+.btn-save-check:hover { background:#16a34a; }
+
+/* ══ HISTORIAL ══ */
+.hist-row {
+  background:rgba(255,255,255,.04);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.hist-row .hr-name { font-weight:700; font-size:.88rem; }
+.hist-row .hr-meta { font-size:.75rem; color:rgba(255,255,255,.4); margin-top:2px; }
+.badge-pct {
+  padding:3px 12px;
+  border-radius:20px;
+  font-size:.75rem;
+  font-weight:700;
+  flex-shrink:0;
+}
+
+/* ══ KPI ══ */
+.kpi-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;
+  margin-bottom:20px;
+}
+.kpi-card {
+  background:rgba(255,255,255,.07);
+  border-radius:16px;
+  padding:16px;
+  text-align:center;
+}
+.kpi-num { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; margin-bottom:4px; }
+.kpi-label { font-size:.73rem; color:rgba(255,255,255,.5); }
+
+/* ══ FORM ══ */
+.form-card {
+  background:rgba(255,255,255,.06);
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:16px;
+}
+.form-card h3 { font-family:'Syne',sans-serif; font-size:1rem; margin-bottom:16px; color:var(--accent); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-label { font-size:.78rem; color:rgba(255,255,255,.55); font-weight:600; }
+.form-input, .form-select {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.12);
+  border-radius:10px;
+  padding:10px 12px;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  font-size:.88rem;
+  outline:none;
+  transition:.2s;
+}
+.form-input:focus, .form-select:focus { border-color:var(--primary); }
+.form-select option { background:#2C3A50; }
+.btn-primary {
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  padding:11px 22px;
+  font-family:'Syne',sans-serif;
+  font-size:.88rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+.btn-primary:hover { background:#e85a25; }
+.btn-del {
+  background:rgba(239,68,68,.15);
+  border:none;
+  border-radius:8px;
+  padding:6px 12px;
+  color:var(--red);
+  font-size:.75rem;
+  cursor:pointer;
+  font-family:'Nunito',sans-serif;
+  font-weight:700;
+}
+
+/* ══ ADMIN ══ */
+.admin-lock { text-align:center; padding:40px 20px; }
+.admin-lock p { color:rgba(255,255,255,.5); margin-bottom:20px; }
+.admin-section { margin-bottom:28px; }
+
+.catalog-row {
+  background:rgba(255,255,255,.05);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.cr-name { flex:1; font-size:.88rem; font-weight:600; min-width:120px; }
+.cr-tag  { font-size:.72rem; color:rgba(255,255,255,.4); background:rgba(255,255,255,.08); padding:2px 10px; border-radius:20px; }
+
+/* ══ OVERLAY ══ */
+.overlay {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  z-index:200;
+  align-items:center;
+  justify-content:center;
+}
+.overlay.open { display:flex; }
+.overlay-card {
+  background:#2C3A50;
+  border-radius:20px;
+  padding:28px 24px;
+  width:100%;
+  max-width:320px;
+  text-align:center;
+}
+.overlay-card h3 { font-family:'Syne',sans-serif; font-size:1.1rem; margin-bottom:6px; }
+.overlay-card p  { font-size:.82rem; color:rgba(255,255,255,.5); margin-bottom:18px; }
+
+/* ══ TOAST ══ */
+.toast {
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--green);
+  color:#fff;
+  padding:13px 24px;
+  border-radius:14px;
+  font-weight:700;
+  font-size:.9rem;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+  transition:.35s cubic-bezier(.34,1.56,.64,1);
+  z-index:999;
+  white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+.btn-export {
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.15);
+  border-radius:10px;
+  padding:10px 18px;
+  color:#fff;
+  font-family:'Nunito',sans-serif;
+  font-size:.84rem;
+  font-weight:700;
+  cursor:pointer;
+  margin-right:8px;
+  margin-top:8px;
+}
+.btn-export:hover { background:rgba(255,255,255,.15); }
+
+@media(max-width:600px){
+  .form-row { grid-template-columns:1fr; }
+  .kpi-grid { grid-template-columns:1fr 1fr; }
+}
+
+/* ══ TEMPERATURAS ══ */
+.temp-card { background:rgba(0,180,216,.07); border:1px solid rgba(0,180,216,.28); border-radius:16px; padding:16px; margin-bottom:16px; }
+.temp-card.done { background:rgba(34,197,94,.06); border-color:rgba(34,197,94,.28); }
+.temp-card.bad  { background:rgba(239,68,68,.07); border-color:rgba(239,68,68,.35); }
+.temp-head { display:flex; justify-content:space-between; align-items:baseline; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
+.temp-head h4 { font-family:'Syne',sans-serif; font-size:.95rem; }
+.temp-head span { font-size:.75rem; color:rgba(255,255,255,.5); }
+.temp-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px solid rgba(255,255,255,.07); }
+.temp-row:first-of-type { border-top:none; }
+.temp-name { flex:1; min-width:0; }
+.temp-name strong { display:block; font-size:.88rem; }
+.temp-range { font-size:.72rem; color:rgba(255,255,255,.45); }
+.sign-btn { width:42px; height:46px; border-radius:10px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); color:#fff; font-size:1.2rem; font-weight:800; cursor:pointer; }
+.temp-input { width:76px; height:46px; text-align:center; font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:700; background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.18); border-radius:10px; color:#fff; outline:none; }
+.temp-input.ok  { border-color:var(--green); }
+.temp-input.bad { border-color:var(--red); }
+.temp-unit { font-size:.8rem; color:rgba(255,255,255,.5); width:22px; }
+.temp-chips { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 4px; }
+.temp-chip { font-size:.78rem; padding:5px 10px; border-radius:20px; background:rgba(255,255,255,.08); }
+.temp-chip.ok  { background:rgba(34,197,94,.15); color:#86efac; }
+.temp-chip.bad { background:rgba(239,68,68,.18); color:#fca5a5; font-weight:700; }
+.temp-accion { margin-top:12px; }
+.temp-accion p { font-size:.8rem; color:#fca5a5; font-weight:700; margin-bottom:6px; }
+.temp-accion textarea { width:100%; min-height:70px; resize:vertical; }
+.btn-temp { width:100%; margin-top:12px; background:var(--blue); color:#fff; border:none; border-radius:12px; padding:13px; font-family:'Syne',sans-serif; font-size:.95rem; font-weight:700; cursor:pointer; }
+.btn-temp.ghost { background:rgba(255,255,255,.08); font-family:'Nunito',sans-serif; font-weight:700; font-size:.84rem; padding:10px; }
+.btn-wa { background:#25D366; }
+.sign-btn:focus-visible, .temp-input:focus-visible, .btn-temp:focus-visible, .reg-nav button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.reg-nav { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; }
+.reg-nav h3 { font-family:'Syne',sans-serif; font-size:1.05rem; text-transform:capitalize; }
+.reg-nav button { background:rgba(255,255,255,.08); border:none; color:#fff; border-radius:10px; padding:8px 14px; font-size:1rem; cursor:pointer; }
+.reg-nav button:disabled { opacity:.3; cursor:default; }
+.reg-scroll { overflow-x:auto; margin-bottom:18px; border-radius:12px; background:rgba(255,255,255,.04); }
+.reg-table { width:100%; border-collapse:collapse; font-size:.8rem; }
+.reg-table th { font-size:.72rem; color:rgba(255,255,255,.55); font-weight:700; padding:8px 6px; text-align:center; border-bottom:1px solid rgba(255,255,255,.1); white-space:nowrap; }
+.reg-table td { padding:7px 6px; text-align:center; border-bottom:1px solid rgba(255,255,255,.05); white-space:nowrap; }
+.reg-table td:first-child, .reg-table th:first-child { text-align:left; }
+.t-ok { color:#86efac; } .t-bad { color:#fca5a5; font-weight:800; } .t-none { color:rgba(255,255,255,.25); }
+.desv-row { background:rgba(239,68,68,.08); border-left:3px solid var(--red); border-radius:10px; padding:10px 12px; margin-bottom:8px; font-size:.82rem; }
+.desv-row .dv-meta { font-size:.74rem; color:rgba(255,255,255,.5); margin-top:3px; }
+.temp-cfg-row { display:grid; grid-template-columns:1.6fr auto 1.2fr .8fr .8fr; gap:8px; align-items:center; background:rgba(255,255,255,.05); border-radius:12px; padding:10px 12px; margin-bottom:8px; font-size:.84rem; }
+.temp-cfg-row input[type=number] { width:100%; }
+@media (max-width:560px){ .temp-cfg-row { grid-template-columns:1fr 1fr; } }
+
+/* ══ QUÍMICOS ══ */
+.q-card { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-left:4px solid var(--blue); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+.q-card.incompleto { border-left-color:var(--yellow); }
+.q-top { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; flex-wrap:wrap; }
+.q-name { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; }
+.q-uso { font-size:.8rem; color:rgba(255,255,255,.55); margin-top:2px; }
+.q-dil { margin:10px 0 6px; font-size:1.05rem; font-weight:800; color:var(--accent); }
+.q-dil.falta { color:var(--yellow); font-size:.88rem; }
+.q-grid { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:.8rem; }
+.q-grid dt { color:rgba(255,255,255,.45); }
+.q-grid dd { color:rgba(255,255,255,.85); }
+.q-tareas { font-size:.74rem; color:rgba(255,255,255,.45); margin-top:8px; }
+.q-actions { display:flex; gap:6px; }
+.q-actions button { background:rgba(255,255,255,.08); border:none; color:#fff; border-radius:8px; padding:6px 10px; font-size:.78rem; cursor:pointer; }
+.q-actions button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.q-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+#print-quimicos { display:none; }
+#print-plan { display:none; }
+/* ══ PLAN ══ */
+.plan-doc { background:rgba(255,255,255,.04); border-radius:16px; padding:18px; font-size:.86rem; line-height:1.55; }
+.plan-doc section { margin-bottom:22px; }
+.plan-doc h2 { font-family:'Syne',sans-serif; font-size:1.02rem; margin-bottom:8px; color:var(--accent); }
+.plan-doc h3 { font-size:.86rem; margin:14px 0 6px; color:rgba(255,255,255,.75); }
+.plan-doc p { margin-bottom:6px; color:rgba(255,255,255,.8); max-width:75ch; }
+.plan-doc .pm { color:rgba(255,255,255,.45); font-size:.78rem; }
+.plan-doc table.pt { width:100%; border-collapse:collapse; font-size:.78rem; margin-bottom:8px; display:block; overflow-x:auto; }
+.plan-doc table.pt th, .plan-doc table.pt td { border:1px solid rgba(255,255,255,.1); padding:6px 8px; text-align:left; vertical-align:top; }
+.plan-doc table.pt th { background:rgba(255,255,255,.06); color:rgba(255,255,255,.65); }
+.plan-bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:14px 0; }
+.plan-bar .form-select { width:auto; }
+.plan-doc td.malo { color:#fca5a5; font-weight:700; }
+@media print {
+  body.imprimiendo-quimicos { background:#fff; }
+  body.imprimiendo-quimicos > *:not(#print-quimicos) { display:none !important; }
+  body.imprimiendo-quimicos #print-quimicos { display:block; color:#000; font-family:Arial,sans-serif; padding:10mm; }
+  #print-quimicos h1 { font-size:20pt; margin-bottom:4pt; }
+  #print-quimicos p { font-size:10pt; margin-bottom:10pt; }
+  #print-quimicos table { width:100%; border-collapse:collapse; font-size:12pt; }
+  #print-quimicos th, #print-quimicos td { border:1.5pt solid #000; padding:7pt; text-align:left; vertical-align:top; }
+  #print-quimicos th { background:#e5e5e5; }
+  #print-quimicos td.dil { font-size:15pt; font-weight:bold; }
+  @page { size:A4; margin:12mm; }
+  body.imprimiendo-plan { background:#fff; }
+  body.imprimiendo-plan > *:not(#print-plan) { display:none !important; }
+  body.imprimiendo-plan #print-plan { display:block; color:#000; font-family:Arial,sans-serif; font-size:10pt; line-height:1.35; }
+  #print-plan .enc { border-bottom:2pt solid #000; margin-bottom:10pt; padding-bottom:4pt; }
+  #print-plan h1 { font-size:16pt; }
+  #print-plan h2 { font-size:12.5pt; margin:12pt 0 5pt; border-bottom:1pt solid #999; page-break-after:avoid; }
+  #print-plan h3 { font-size:10.5pt; margin:8pt 0 4pt; page-break-after:avoid; }
+  #print-plan p { margin-bottom:4pt; }
+  #print-plan .pm { color:#444; font-size:8.5pt; }
+  #print-plan table.pt { width:100%; border-collapse:collapse; margin-bottom:6pt; font-size:8.5pt; page-break-inside:auto; }
+  #print-plan table.pt tr { page-break-inside:avoid; }
+  #print-plan table.pt th, #print-plan table.pt td { border:0.75pt solid #000; padding:3pt 4pt; text-align:left; vertical-align:top; }
+  #print-plan table.pt th { background:#e5e5e5; }
+  #print-plan table.compact td, #print-plan table.compact th { padding:1.5pt 3pt; text-align:center; }
+  #print-plan td.malo { font-weight:bold; text-decoration:underline; }
+  #print-plan .hoja { page-break-before:always; }
+  #print-plan .dos-col { display:flex; gap:8pt; align-items:flex-start; }
+  #print-plan .dos-col > div:first-child { flex:0 0 32%; }
+  #print-plan .dos-col > div:last-child { flex:1; }
+  #print-plan .firma { margin-top:18pt; }
+}
+
+/* ══ EQUIPOS: ficha y mantenimiento ══ */
+.equipo-card { flex-wrap:wrap; }
+.eq-toggle { background:rgba(255,255,255,.08); border:none; color:#fff; border-radius:8px; padding:6px 10px; font-size:.76rem; cursor:pointer; font-family:'Nunito',sans-serif; }
+.eq-toggle:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.eq-panel { flex-basis:100%; border-top:1px solid rgba(255,255,255,.08); padding-top:12px; margin-top:4px; }
+.eq-sub { font-size:.8rem; font-weight:700; color:rgba(255,255,255,.6); margin:4px 0 8px; }
+.eq-panel .q-grid + .eq-sub { margin-top:14px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="screen-login">
+  <div class="login-card">
+    <div class="login-logo">🧼</div>
+    <div class="login-title">Mendy <span>Fast Food</span></div>
+    <div class="login-sub">Equipos y Saneamiento · San Andrés Islas</div>
+    <div class="user-grid" id="user-grid"></div>
+    <div class="pin-label">🔐 Ingresa tu PIN</div>
+    <input type="password" class="pin-input" id="pin-input" maxlength="8" placeholder="••••" inputmode="numeric">
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="screen-app">
+  <div class="top-nav">
+    <div class="nav-brand">🧼 <span>Mendy</span> Saneamiento</div>
+    <div class="nav-user">
+      <span id="nav-user-name"></span>
+      <button class="btn-logout" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('resumen',this)">🏠 Resumen</button>
+    <button class="tab-btn" onclick="switchTab('checklist',this)">✅ Checklist</button>
+    <button class="tab-btn" onclick="switchTab('registros',this)">🌡️ Registros</button>
+    <button class="tab-btn" onclick="switchTab('quimicos',this)">🧪 Químicos</button>
+    <button class="tab-btn" onclick="switchTab('plan',this)">📄 Plan</button>
+    <button class="tab-btn" onclick="switchTab('equipos',this)">🔧 Equipos</button>
+    <button class="tab-btn" onclick="switchTab('historial',this)">📅 Historial</button>
+    <button class="tab-btn" id="tab-admin-btn" style="display:none" onclick="switchTab('admin',this)">⚙️ Admin</button>
+  </div>
+
+  <!-- RESUMEN -->
+  <div class="tab-content active" id="tab-resumen">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-equipos" style="color:var(--blue)">0</div>
+        <div class="kpi-label">Total equipos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-eq-ok" style="color:var(--green)">0</div>
+        <div class="kpi-label">En buen estado ✅</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-eq-warn" style="color:var(--yellow)">0</div>
+        <div class="kpi-label">Necesita revisión ⚠️</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-eq-alert" style="color:var(--red)">0</div>
+        <div class="kpi-label">Dañado / Fuera de servicio 🔴</div>
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,.05);border-radius:16px;padding:18px;margin-bottom:14px;">
+      <p style="font-size:.84rem;color:rgba(255,255,255,.5);font-weight:600;margin-bottom:10px;">📅 Checklist de hoy</p>
+      <div id="resumen-hoy" style="font-size:.88rem;color:rgba(255,255,255,.65);">Sin registros hoy.</div>
+    </div>
+
+    <div style="background:rgba(0,180,216,.06);border:1px solid rgba(0,180,216,.2);border-radius:16px;padding:18px;margin-bottom:14px;">
+      <p style="font-size:.84rem;color:rgba(255,255,255,.5);font-weight:600;margin-bottom:10px;">🌡️ Temperaturas</p>
+      <div id="resumen-temps" style="font-size:.86rem;color:rgba(255,255,255,.7);">Cargando…</div>
+    </div>
+
+    <div style="background:rgba(255,209,102,.05);border:1px solid rgba(255,209,102,.18);border-radius:16px;padding:18px;margin-bottom:14px;">
+      <p style="font-size:.84rem;color:rgba(255,255,255,.5);font-weight:600;margin-bottom:10px;">💧 Agua y 🐜 plagas</p>
+      <div id="resumen-ap" style="font-size:.86rem;color:rgba(255,255,255,.7);">Cargando…</div>
+    </div>
+
+    <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:16px;padding:18px;" id="equipos-alert-box" style="display:none">
+      <p style="font-size:.84rem;color:var(--red);font-weight:700;margin-bottom:8px;">🔴 Equipos que necesitan atención</p>
+      <div id="equipos-alert-list"></div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="tab-content" id="tab-checklist">
+    <div class="checklist-header">
+      <div>
+        <h3>✅ Checklist de limpieza</h3>
+        <p id="check-fecha"></p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex:1;max-width:200px;">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="check-progress" style="width:0%"></div>
+        </div>
+        <span style="font-size:.8rem;font-weight:700;" id="check-pct">0%</span>
+      </div>
+    </div>
+
+    <div class="turno-tabs">
+      <span class="turno-chip active" onclick="setTurno('apertura',this)">🌅 Apertura</span>
+      <span class="turno-chip" onclick="setTurno('cierre',this)">🌙 Cierre</span>
+      <span class="turno-chip" onclick="setTurno('semanal',this)">📅 Semanal</span>
+    </div>
+
+    <div id="periodicas-wrap"></div>
+    <div id="temp-card-wrap"></div>
+    <div id="checklist-items"></div>
+    <button class="btn-save-check" onclick="guardarChecklist()">💾 Guardar Checklist</button>
+  </div>
+
+  <!-- EQUIPOS -->
+  <div class="tab-content" id="tab-equipos">
+    <p style="font-size:.82rem;color:rgba(255,255,255,.45);margin-bottom:14px;">
+      📋 Estado actual de equipos y utensilios. Actualiza el estado si detectas algún problema.
+    </p>
+    <div id="equipos-list"></div>
+  </div>
+
+  <!-- REGISTROS -->
+  <div class="tab-content" id="tab-registros">
+    <div class="reg-nav">
+      <button onclick="cambiarMesRegistro(-1)" aria-label="Mes anterior">◀</button>
+      <h3 id="reg-mes-titulo"></h3>
+      <button id="reg-next" onclick="cambiarMesRegistro(1)" aria-label="Mes siguiente">▶</button>
+    </div>
+    <div class="kpi-grid" id="reg-kpis"></div>
+    <p class="section-title">🌡️ Temperaturas del mes</p>
+    <p style="font-size:.75rem;color:rgba(255,255,255,.45);margin-bottom:8px;">A = apertura · C = cierre. En rojo, lecturas fuera de rango.</p>
+    <div class="reg-scroll"><table class="reg-table" id="reg-tabla"></table></div>
+    <p class="section-title">🔴 Fuera de rango y acción tomada</p>
+    <div id="reg-desv"></div>
+    <p class="section-title" style="margin-top:22px;">💧 Agua potable</p>
+    <div id="reg-agua"></div>
+    <p class="section-title" style="margin-top:22px;">🐜 Control de plagas</p>
+    <div id="reg-plagas"></div>
+  </div>
+
+  <!-- QUÍMICOS -->
+  <div class="tab-content" id="tab-quimicos">
+    <p style="font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:14px;">Productos de limpieza y desinfección. Prepara siempre con la dilución indicada; nunca "a ojo".</p>
+    <div class="q-bar">
+      <button class="btn-export" onclick="imprimirQuimicos()">🖨️ Imprimir tabla para la pared</button>
+      <button class="btn-primary" id="q-btn-nuevo" style="display:none" onclick="abrirFormQuimico()">➕ Agregar producto</button>
+    </div>
+    <div id="q-form-wrap"></div>
+    <div id="quimicos-list"></div>
+  </div>
+
+  <!-- PLAN -->
+  <div class="tab-content" id="tab-plan">
+    <div id="plan-estado"></div>
+    <div class="plan-bar">
+      <button class="btn-primary" onclick="imprimirPlan(false)">🖨️ Imprimir plan</button>
+      <select class="form-select" id="plan-mes" aria-label="Mes de la hoja de registros"></select>
+      <button class="btn-export" onclick="imprimirHoja()">🖨️ Hoja del mes</button>
+      <button class="btn-export" onclick="imprimirPlan(true)">🖨️ Plan + hoja del mes</button>
+    </div>
+    <div class="plan-bar" id="plan-admin" style="display:none">
+      <button class="btn-export" onclick="state.planEdit=true;renderPlan()">✏️ Editar textos</button>
+      <button class="btn-export" onclick="registrarRevisionPlan()">✅ Registrar revisión del plan</button>
+    </div>
+    <div class="plan-doc" id="plan-doc"></div>
+  </div>
+
+  <!-- HISTORIAL -->
+  <div class="tab-content" id="tab-historial">
+    <p style="font-size:.82rem;color:rgba(255,255,255,.45);margin-bottom:14px;">
+      Últimos checklists completados por el equipo.
+    </p>
+    <div id="historial-list"></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="tab-content" id="tab-admin">
+    <div id="admin-locked" class="admin-lock">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
+      <p>Esta sección es solo para Aljavis</p>
+      <button class="btn-primary" onclick="openAdminPin()">Ingresar PIN de Admin</button>
+    </div>
+    <div id="admin-panel" style="display:none;">
+
+      <!-- Usuarios -->
+      <div class="admin-section">
+        <h3 class="section-title">👥 Usuarios</h3>
+        <div id="users-list"></div>
+        <div class="form-card" style="margin-top:12px;">
+          <h3>➕ Nuevo usuario</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-input" id="nu-name" placeholder="Nombre completo">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rol</label>
+              <select class="form-select" id="nu-role">
+                <option value="empleada">👩 Empleada</option>
+                <option value="supervisor">👴 Supervisor</option>
+                <option value="admin">👑 Admin</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">PIN</label>
+              <input type="text" class="form-input" id="nu-pin" placeholder="Ej: 1234" maxlength="8" inputmode="numeric">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Avatar</label>
+              <input type="text" class="form-input" id="nu-avatar" placeholder="👩" maxlength="2">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="addUser()">✅ Crear usuario</button>
+        </div>
+      </div>
+
+      <!-- Equipos catálogo -->
+      <div class="admin-section">
+        <h3 class="section-title">🔧 Catálogo de equipos</h3>
+        <div id="equipos-catalog"></div>
+        <div class="form-card" style="margin-top:12px;">
+          <h3>➕ Nuevo equipo / utensilio</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre</label>
+              <input type="text" class="form-input" id="ne-name" placeholder="Ej: Freidora doble">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Área</label>
+              <select class="form-select" id="ne-area">
+                <option>Cocina</option>
+                <option>Bar / bebidas</option>
+                <option>Caja</option>
+                <option>Zona fría</option>
+                <option>General</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Responsable</label>
+              <input type="text" class="form-input" id="ne-resp" placeholder="Quien lo usa / cuida">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Emoji</label>
+              <input type="text" class="form-input" id="ne-icon" placeholder="🍳" maxlength="2">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="addEquipo()">✅ Agregar equipo</button>
+        </div>
+      </div>
+
+      <!-- Tareas checklist -->
+      <div class="admin-section">
+        <h3 class="section-title">📋 Tareas de limpieza</h3>
+        <div id="tareas-catalog"></div>
+        <div class="form-card" style="margin-top:12px;">
+          <h3>➕ Nueva tarea</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tarea</label>
+              <input type="text" class="form-input" id="nt-tarea" placeholder="Ej: Limpiar freidora">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Área</label>
+              <input type="text" class="form-input" id="nt-area" placeholder="Ej: Cocina">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Turno</label>
+              <select class="form-select" id="nt-turno">
+                <option value="apertura">🌅 Apertura</option>
+                <option value="cierre">🌙 Cierre</option>
+                <option value="semanal">📅 Semanal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Producto de limpieza</label>
+              <input type="text" class="form-input" id="nt-prod" placeholder="Ej: Ajax, agua caliente">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Químico de la tabla (muestra su dilución)</label>
+              <select class="form-select" id="nt-quim"></select>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="addTarea()">✅ Agregar tarea</button>
+        </div>
+      </div>
+
+      <!-- Agua y plagas config -->
+      <div class="admin-section">
+        <h3 class="section-title">💧 Agua y 🐜 plagas</h3>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Días entre lavados del tanque</label>
+            <input class="form-input" type="number" id="apc-dias" min="1" max="180"></div>
+          <div class="form-group"><label class="form-label">Cloro residual aceptable (mg/L)</label>
+            <div style="display:flex;gap:8px;"><input class="form-input" type="number" step="0.1" id="apc-min" aria-label="Mínimo"><input class="form-input" type="number" step="0.1" id="apc-max" aria-label="Máximo"></div></div>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;"><label class="form-label">Zonas de la inspección de plagas (separadas por coma)</label>
+          <input class="form-input" id="apc-zonas"></div>
+        <p style="font-size:.75rem;color:rgba(255,255,255,.45);margin-bottom:10px;">Cloro: 0,3 a 2,0 mg/L según la Res. 2115 de 2007.</p>
+        <button class="btn-primary" onclick="guardarAPCfg()">💾 Guardar configuración</button>
+      </div>
+
+      <!-- Temperaturas config -->
+      <div class="admin-section">
+        <h3 class="section-title">🌡️ Registro de temperaturas</h3>
+        <p style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:10px;">Aparecen los equipos del área "Zona fría". Refrigeración: 4 °C ± 2 según el instructivo. Congelación: la norma no fija un número; -18 °C es la referencia habitual.</p>
+        <div class="form-group" style="margin-bottom:12px;max-width:320px;">
+          <label class="form-label">¿Cuándo se registra?</label>
+          <select class="form-select" id="tcfg-frec">
+            <option value="ambos">🌅 Apertura y 🌙 cierre</option>
+            <option value="apertura">🌅 Solo apertura</option>
+          </select>
+        </div>
+        <div id="tcfg-equipos"></div>
+        <button class="btn-primary" onclick="guardarTempCfg()">💾 Guardar configuración</button>
+      </div>
+
+      <!-- Export / Import -->
+      <div class="admin-section">
+        <h3 class="section-title">🛟 Copia de seguridad</h3>
+        <p style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:10px;">Descarga toda la información de los 8 sistemas de Mendy en un archivo. Hazlo una vez al mes y guárdalo en tu Drive, en una carpeta solo tuya: tiene PIN y datos de nómina.</p>
+        <p id="respaldo-info" style="font-size:.8rem;margin-bottom:10px;"></p>
+        <button class="btn-primary" id="btn-respaldo" onclick="descargarCopiaCompleta()">⬇ Descargar copia completa</button>
+      </div>
+
+      <div class="admin-section">
+        <h3 class="section-title">🔄 Exportar / Importar (solo saneamiento)</h3>
+        <button class="btn-export" onclick="exportarJSON()">⬇ Exportar JSON</button>
+        <label class="btn-export" style="display:inline-block;cursor:pointer;">
+          ⬆ Importar JSON
+          <input type="file" accept=".json" style="display:none" onchange="importarJSON(event)">
+        </label>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY ADMIN PIN -->
+<div class="overlay" id="overlay-admin">
+  <div class="overlay-card">
+    <h3>🔐 Acceso Admin</h3>
+    <p>Ingresa el PIN de administrador</p>
+    <input type="password" class="pin-input" id="admin-pin-input" maxlength="8" placeholder="••••" inputmode="numeric">
+    <button class="btn-primary" style="width:100%;margin-top:8px;" onclick="verifyAdminPin()">Verificar</button>
+    <div class="login-error" id="admin-pin-error"></div>
+    <button onclick="closeOverlay()" style="background:none;border:none;color:rgba(255,255,255,.4);margin-top:12px;cursor:pointer;font-size:.82rem;">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="print-quimicos"></div>
+<div id="print-plan"></div>
+
+<!-- ══ FIREBASE SDK ══ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBxvaYUD4N56iy8n9ATUGQTtpx13ew_Xzk",
+  authDomain: "mendy-fast-food.firebaseapp.com",
+  databaseURL: "https://mendy-fast-food-default-rtdb.firebaseio.com",
+  projectId: "mendy-fast-food",
+  storageBucket: "mendy-fast-food.firebasestorage.app",
+  messagingSenderId: "765233729072",
+  appId: "1:765233729072:web:6ec01b4e55e12f303a27f5"
+};
+firebase.initializeApp(firebaseConfig);
+const db     = firebase.database();
+const DB_REF = db.ref('mendy/saneamiento');
+</script>
+
+<script>
+// ══════════════════════════════
+//  DATOS POR DEFECTO
+// ══════════════════════════════
+const DEFAULT_USERS = [
+  { id:'u1', name:'Aljavis',     role:'admin',      pin:'1234', avatar:'👑' },
+  { id:'u2', name:'Don Alfonso', role:'supervisor',  pin:'0000', avatar:'👴' },
+];
+
+const EQUIPOS_DEFAULT = [
+  // Cocina
+  { id:'e01', name:'Freidora doble',        area:'Cocina',      icon:'🍟', resp:'Cocinera',  status:'ok' },
+  { id:'e02', name:'Plancha para carnes',   area:'Cocina',      icon:'🥩', resp:'Cocinera',  status:'ok' },
+  { id:'e03', name:'Horno microondas',      area:'Cocina',      icon:'📦', resp:'Cocinera',  status:'ok' },
+  { id:'e04', name:'Licuadora industrial',  area:'Cocina',      icon:'🥤', resp:'Cocinera',  status:'ok' },
+  { id:'e05', name:'Campana extractora',    area:'Cocina',      icon:'💨', resp:'Cocinera',  status:'ok' },
+  { id:'e06', name:'Mesón de trabajo acero',area:'Cocina',      icon:'🪨', resp:'Cocinera',  status:'ok' },
+  { id:'e07', name:'Tablas de corte',       area:'Cocina',      icon:'🟫', resp:'Cocinera',  status:'ok' },
+  { id:'e08', name:'Cuchillos de cocina',   area:'Cocina',      icon:'🔪', resp:'Cocinera',  status:'ok' },
+  { id:'e09', name:'Ollas y sartenes',      area:'Cocina',      icon:'🍳', resp:'Cocinera',  status:'ok' },
+  { id:'e10', name:'Espátulas y pinzas',    area:'Cocina',      icon:'🥄', resp:'Cocinera',  status:'ok' },
+  // Zona fría
+  { id:'e11', name:'Nevera principal',      area:'Zona fría',   icon:'🧊', resp:'Don Alfonso', status:'ok' },
+  { id:'e12', name:'Congelador',            area:'Zona fría',   icon:'❄️', resp:'Don Alfonso', status:'ok' },
+  { id:'e13', name:'Enfriador de bebidas',  area:'Zona fría',   icon:'🥶', resp:'Don Alfonso', status:'ok' },
+  // Caja
+  { id:'e14', name:'Sistema POS / caja',    area:'Caja',        icon:'💳', resp:'Cajera',   status:'ok' },
+  { id:'e15', name:'Impresora de tickets',  area:'Caja',        icon:'🖨️', resp:'Cajera',   status:'ok' },
+  // General
+  { id:'e16', name:'Tanque de gas',         area:'General',     icon:'⛽', resp:'Aljavis',  status:'ok' },
+  { id:'e17', name:'Extintor',              area:'General',     icon:'🧯', resp:'Aljavis',  status:'ok' },
+  { id:'e18', name:'Basureros por área',    area:'General',     icon:'🗑️', resp:'Todos',    status:'ok' },
+];
+
+const TAREAS_DEFAULT = [
+  // Apertura
+  { id:'t01', tarea:'Lavar y sanitizar tablas de corte',   area:'Cocina',    turno:'apertura', prod:'Hipoclorito diluido' },
+  { id:'t02', tarea:'Limpiar mesón de trabajo',             area:'Cocina',    turno:'apertura', prod:'Desengrasante + paño' },
+  { id:'t03', tarea:'Revisar aceite de freidora',           area:'Cocina',    turno:'apertura', prod:'Visual / cambio si aplica' },
+  { id:'t04', tarea:'Limpiar plancha exterior',             area:'Cocina',    turno:'apertura', prod:'Espátula + paño seco' },
+  { id:'t05', tarea:'Limpiar nevera (regueros o derrames)', area:'Zona fría', turno:'apertura', prod:'Paño húmedo + desinfectante' },
+  { id:'t06', tarea:'Barrer piso de cocina',                area:'Cocina',    turno:'apertura', prod:'Escoba + recogedor' },
+  { id:'t07', tarea:'Revisar fechas de insumos abiertos',   area:'Cocina',    turno:'apertura', prod:'Visual' },
+  { id:'t08', tarea:'Revisar estado del gas',               area:'General',   turno:'apertura', prod:'Visual / olfato' },
+  // Cierre
+  { id:'t09', tarea:'Limpiar freidora completa + canasto',  area:'Cocina',    turno:'cierre', prod:'Desengrasante + agua caliente' },
+  { id:'t10', tarea:'Desengrasado de plancha',              area:'Cocina',    turno:'cierre', prod:'Desengrasante industrial' },
+  { id:'t11', tarea:'Lavar ollas, sartenes y utensilios',   area:'Cocina',    turno:'cierre', prod:'Jabón loza + esponja' },
+  { id:'t12', tarea:'Limpiar y desinfectar mesón',          area:'Cocina',    turno:'cierre', prod:'Hipoclorito' },
+  { id:'t13', tarea:'Barrer y trapear piso de cocina',      area:'Cocina',    turno:'cierre', prod:'Trapero + desinfectante piso' },
+  { id:'t14', tarea:'Sacar basura y cambiar bolsas',        area:'General',   turno:'cierre', prod:'Bolsas de basura' },
+  { id:'t15', tarea:'Limpiar superficie de caja y POS',     area:'Caja',      turno:'cierre', prod:'Paño húmedo suave' },
+  { id:'t16', tarea:'Desinfectar baño del personal',        area:'General',   turno:'cierre', prod:'Desinfectante baño' },
+  // Semanal
+  { id:'t17', tarea:'Limpieza profunda de nevera',          area:'Zona fría', turno:'semanal', prod:'Agua caliente + vinagre' },
+  { id:'t18', tarea:'Cambio de aceite de freidora',         area:'Cocina',    turno:'semanal', prod:'Aceite nuevo' },
+  { id:'t19', tarea:'Limpiar campana extractora (filtros)',  area:'Cocina',    turno:'semanal', prod:'Desengrasante fuerte' },
+  { id:'t20', tarea:'Desinfección profunda de tablas',      area:'Cocina',    turno:'semanal', prod:'Hipoclorito concentrado' },
+  { id:'t21', tarea:'Limpiar paredes y azulejos de cocina', area:'Cocina',    turno:'semanal', prod:'Desengrasante + esponja' },
+  { id:'t22', tarea:'Revisar y limpiar extintor (visual)',  area:'General',   turno:'semanal', prod:'Visual + paño seco' },
+];
+
+// ══════════════════════════════
+//  ESTADO
+// ══════════════════════════════
+let state = {
+  users: [],
+  equipos: [],
+  tareas: [],
+  historial: [],
+  currentUser: null,
+  adminUnlocked: false,
+  turnoActivo: 'apertura',
+  checkToday: {},   // { fecha: { turno: { tareaId: bool } } }
+};
+
+function loadState() {
+  // 1️⃣ Carga inmediata desde localStorage
+  try {
+    const s = localStorage.getItem('mendy_sanea_v1');
+    if (s) {
+      const p = JSON.parse(s);
+      state.users     = p.users     || DEFAULT_USERS;
+      state.equipos   = p.equipos   || EQUIPOS_DEFAULT;
+      state.tareas    = p.tareas    || TAREAS_DEFAULT;
+      state.historial = p.historial || [];
+      state.checkToday= normalizeCheckToday(p.checkToday);
+      state.quimicos  = p.quimicos || null;
+      state.mig       = p.mig || {};
+      state.plan      = p.plan || null;
+    } else {
+      state.users   = DEFAULT_USERS;
+      state.equipos = EQUIPOS_DEFAULT;
+      state.tareas  = TAREAS_DEFAULT;
+    }
+  } catch {
+    state.users   = DEFAULT_USERS;
+    state.equipos = EQUIPOS_DEFAULT;
+    state.tareas  = TAREAS_DEFAULT;
+  }
+
+  prepararQuimicos();
+  migrarEquipos();
+
+  // 2️⃣ Escucha en tiempo real desde Firebase
+  DB_REF.on('value', (snap) => {
+    const data = snap.val();
+    if (data) {
+      state.users     = data.users     || DEFAULT_USERS;
+      state.equipos   = data.equipos   || EQUIPOS_DEFAULT;
+      state.tareas    = data.tareas    || TAREAS_DEFAULT;
+      state.historial = data.historial || [];
+      state.checkToday= normalizeCheckToday(data.checkToday);
+      state.quimicos  = data.quimicos || null;
+      state.mig       = data.mig || {};
+      state.plan      = data.plan || null;
+      prepararQuimicos();
+      migrarEquipos();
+      localStorage.setItem('mendy_sanea_v1', JSON.stringify(data));
+      if (typeof renderUserGrid === 'function') renderUserGrid();
+      if (state.currentUser && typeof renderAll === 'function') renderAll();
+    }
+  });
+}
+
+// Sanitizar claves para Firebase (no permite "/",".","#","$","[","]")
+function sanitizeKeys(obj) {
+  if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) return obj;
+  const result = {};
+  Object.keys(obj).forEach(k => {
+    const safeKey = k.split('/').join('_').split('.').join('_').split('#').join('_').split('$').join('_');
+    result[safeKey] = sanitizeKeys(obj[k]);
+  });
+  return result;
+}
+
+function saveState() {
+  const local = {users:state.users, equipos:state.equipos,
+    tareas:state.tareas, historial:state.historial, checkToday:state.checkToday,
+    quimicos:state.quimicos, mig:state.mig, plan:state.plan};
+  // Firebase no permite "/" en claves — sanitizamos fechas
+  const remote = sanitizeKeys(local);
+  DB_REF.set(remote).catch(() => console.warn('Firebase no disponible, guardado solo en local.'));
+  localStorage.setItem('mendy_sanea_v1', JSON.stringify(local));
+}
+
+function todayKey() {
+  return new Date().toLocaleDateString('es-CO');   // para mostrar: 28/9/2026
+}
+// Clave con la que el checklist se guarda en Firebase (no admite "/"): 28_9_2026
+function dayKey() {
+  return todayKey().split('/').join('_');
+}
+// Une claves viejas "28/9/2026" con "28_9_2026" sin perder marcas
+function normalizeCheckToday(ct) {
+  const out = {};
+  Object.keys(ct || {}).forEach(k => {
+    const nk = k.split('/').join('_');
+    out[nk] = out[nk] || {};
+    Object.keys(ct[k] || {}).forEach(turno => {
+      out[nk][turno] = out[nk][turno] || {};
+      Object.entries(ct[k][turno] || {}).forEach(([id, v]) => {
+        if (v) out[nk][turno][id] = true;
+      });
+    });
+  });
+  return out;
+}
+
+// ══════════════════════════════
+//  LOGIN
+// ══════════════════════════════
+let selectedUserId = null;
+
+function renderUserGrid() {
+  const grid = document.getElementById('user-grid');
+  grid.innerHTML = '';
+  state.users.forEach(u => {
+    const btn = document.createElement('button');
+    btn.className = 'user-btn' + (u.id === selectedUserId ? ' selected' : '');
+    btn.innerHTML = `<div class="u-avatar">${u.avatar}</div>
+      <div class="u-name">${u.name}</div>
+      <div class="u-role">${roleLabel(u.role)}</div>`;
+    btn.onclick = () => {
+      selectedUserId = u.id;
+      document.querySelectorAll('.user-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('pin-input').focus();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function roleLabel(r) {
+  return r === 'admin' ? '👑 Admin' : r === 'supervisor' ? '👴 Supervisor' : '👩 Empleada';
+}
+
+function doLogin() {
+  const pin = document.getElementById('pin-input').value.trim();
+  if (!selectedUserId) { document.getElementById('login-error').textContent = 'Selecciona tu nombre primero.'; return; }
+  const user = state.users.find(u => u.id === selectedUserId && u.pin === pin);
+  if (!user) { document.getElementById('login-error').textContent = 'PIN incorrecto.'; return; }
+  state.currentUser = user;
+  state.adminUnlocked = false;
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-app').style.display = 'block';
+  document.getElementById('nav-user-name').innerHTML = `${user.avatar} <strong>${user.name}</strong>`;
+  document.getElementById('tab-admin-btn').style.display = user.role === 'admin' ? 'inline-block' : 'none';
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-locked').style.display = 'block';
+  switchTab('resumen', document.querySelector('.tab-btn'));
+}
+
+function doLogout() {
+  state.currentUser = null; selectedUserId = null;
+  document.getElementById('screen-app').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('pin-input').value = '';
+  document.getElementById('login-error').textContent = '';
+  renderUserGrid();
+}
+
+document.getElementById('pin-input').addEventListener('keyup', e => { if(e.key==='Enter') doLogin(); });
+
+// ══════════════════════════════
+//  REFRESCO EN VIVO (cambios desde otro celular)
+// ══════════════════════════════
+function renderAll() {
+  const activa = document.querySelector('.tab-content.active');
+  if (!activa) return;
+  const id = activa.id.replace('tab-','');
+  if (id==='resumen')   renderResumen();
+  if (id==='checklist') renderChecklist(true);
+  if (id==='equipos' && !state.eqModo) renderEquipos();
+  if (id==='historial') renderHistorial();
+  if (id==='registros') renderRegistros();
+  if (id==='quimicos' && !state.qEdit) renderQuimicos();
+  if (id==='plan' && !state.planEdit) renderPlan();
+  // Admin no se refresca solo, para no borrar lo que se esté escribiendo
+}
+
+// ══════════════════════════════
+//  TABS
+// ══════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id==='resumen')   renderResumen();
+  if (id==='checklist') renderChecklist();
+  if (id==='equipos')   renderEquipos();
+  if (id==='historial') renderHistorial();
+  if (id==='admin' && state.adminUnlocked) renderAdmin();
+  if (id==='registros') renderRegistros();
+  if (id==='quimicos')  renderQuimicos();
+  if (id==='plan')      renderPlan();
+}
+
+// ══════════════════════════════
+//  RESUMEN
+// ══════════════════════════════
+function renderResumen() {
+  const eq = state.equipos;
+  document.getElementById('kpi-equipos').textContent  = eq.length;
+  document.getElementById('kpi-eq-ok').textContent    = eq.filter(e=>e.status==='ok').length;
+  document.getElementById('kpi-eq-warn').textContent  = eq.filter(e=>e.status==='warn').length;
+  document.getElementById('kpi-eq-alert').textContent = eq.filter(e=>e.status==='alert').length;
+
+  // Equipos con problemas
+  const problemas = eq.filter(e => e.status !== 'ok');
+  const mantAlert = eq.filter(e => { const m = mantEstado(e); return m && m.cls!=='ok' && e.mant && e.mant.ultimo; });
+  const sinMant = eq.filter(e => e.critico && !(e.mant && e.mant.ultimo));
+  const esAdm = state.currentUser && state.currentUser.role==='admin';
+  const lineas = [
+    ...problemas.map(e => `<div style="font-size:.84rem;padding:3px 0;display:flex;gap:8px;align-items:center;">
+        <span>${e.status==='alert'?'🔴':'🟡'}</span><span><strong>${esc(e.name)}</strong> — ${esc(e.area)}</span></div>`),
+    ...mantAlert.map(e => { const m = mantEstado(e); return `<div style="font-size:.84rem;padding:3px 0;display:flex;gap:8px;align-items:center;">
+        <span>🔧</span><span><strong>${esc(e.name)}</strong> — <span style="color:${colorCls(m.cls)}">${m.txt}</span></span></div>`; }),
+    ...(esAdm && sinMant.length ? [`<div style="font-size:.8rem;padding:6px 0 0;color:rgba(255,255,255,.55);">🔧 ${sinMant.length} equipo${sinMant.length>1?'s':''} crítico${sinMant.length>1?'s':''} sin mantenimiento registrado: ${sinMant.map(e=>esc(e.name)).join(', ')}</div>`] : []),
+  ];
+  const box = document.getElementById('equipos-alert-box');
+  if (lineas.length) {
+    box.style.display = 'block';
+    document.getElementById('equipos-alert-list').innerHTML = lineas.join('');
+  } else { box.style.display = 'none'; }
+
+  // Checklist hoy
+  const div = document.getElementById('resumen-hoy');
+  const turnos = ['apertura','cierre','semanal'];
+  const checks = state.checkToday[dayKey()] || {};
+  const resumen = turnos.map(t => {
+    const tareasTurno = state.tareas.filter(x=>x.turno===t);
+    if (!tareasTurno.length) return null;
+    const hechas = tareasTurno.filter(x => checks[t] && checks[t][x.id]).length;
+    const pct = Math.round(hechas/tareasTurno.length*100);
+    const etiqueta = t==='apertura'?'🌅 Apertura':t==='cierre'?'🌙 Cierre':'📅 Semanal';
+    return `<div style="display:flex;justify-content:space-between;font-size:.84rem;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);">
+      <span>${etiqueta}</span>
+      <span style="color:${pct===100?'var(--green)':pct>0?'var(--yellow)':'rgba(255,255,255,.4)'}">
+        ${hechas}/${tareasTurno.length} · ${pct}%</span>
+    </div>`;
+  }).filter(Boolean).join('');
+  div.innerHTML = resumen || 'Sin tareas registradas hoy.';
+  renderResumenTemps();
+  renderResumenAP();
+}
+
+// ══════════════════════════════
+//  CHECKLIST
+// ══════════════════════════════
+function setTurno(t, el) {
+  state.turnoActivo = t;
+  document.querySelectorAll('.turno-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderChecklist();
+}
+
+function renderChecklist(desdeRefresco) {
+  const hoy = todayKey();
+  document.getElementById('check-fecha').textContent = '📅 ' + hoy + ' · ' + state.currentUser.name;
+  if (!desdeRefresco) { state.temp.editando = false; state.temp.draft = {}; }
+  if (!desdeRefresco || (!state.temp.editando && !hayBorrador())) renderTempCard();
+  if (!desdeRefresco) state.per.abierto = null;
+  if (!desdeRefresco || !state.per.abierto) renderPeriodicas();
+  const turno = state.turnoActivo;
+  const tareas = state.tareas.filter(t => t.turno === turno);
+  const checks = (state.checkToday[dayKey()] && state.checkToday[dayKey()][turno]) || {};
+
+  const list = document.getElementById('checklist-items');
+  list.innerHTML = tareas.map(t => {
+    const done = !!checks[t.id];
+    return `<div class="check-item ${done?'done':''}" id="ci-${t.id}">
+      <div class="check-box ${done?'checked':''}" onclick="toggleCheck('${t.id}')">
+        ${done?'✓':''}
+      </div>
+      <div class="ci-info">
+        <div class="ci-name">${t.tarea}</div>
+        <div class="ci-area">${t.area}</div>
+        ${productoTareaHtml(t)}
+      </div>
+    </div>`;
+  }).join('') || '<p style="color:rgba(255,255,255,.35);font-size:.84rem;">No hay tareas para este turno.</p>';
+
+  updateProgressBar();
+}
+
+function toggleCheck(id) {
+  const hoy = dayKey();
+  const turno = state.turnoActivo;
+  if (!state.checkToday[hoy]) state.checkToday[hoy] = {};
+  if (!state.checkToday[hoy][turno]) state.checkToday[hoy][turno] = {};
+  const val = !state.checkToday[hoy][turno][id];
+  state.checkToday[hoy][turno][id] = val;
+  // Se guarda solo esta marca: no pisa lo que otro celular haya marcado
+  DB_REF.child(`checkToday/${hoy}/${turno}/${id}`).set(val ? true : null)
+    .catch(() => console.warn('Firebase no disponible, marca guardada solo en local.'));
+
+  const item = document.getElementById('ci-'+id);
+  const box  = item.querySelector('.check-box');
+  item.classList.toggle('done', val);
+  box.classList.toggle('checked', val);
+  box.textContent = val ? '✓' : '';
+  updateProgressBar();
+}
+
+function updateProgressBar() {
+  const hoy = todayKey();
+  const turno = state.turnoActivo;
+  const tareas = state.tareas.filter(t => t.turno === turno);
+  const checks = (state.checkToday[dayKey()] && state.checkToday[dayKey()][turno]) || {};
+  const hechas = tareas.filter(t => checks[t.id]).length;
+  const pct = tareas.length ? Math.round(hechas/tareas.length*100) : 0;
+  document.getElementById('check-progress').style.width = pct + '%';
+  document.getElementById('check-pct').textContent = pct + '%';
+}
+
+function guardarChecklist() {
+  const hoy = todayKey();
+  const turno = state.turnoActivo;
+  const tareas = state.tareas.filter(t => t.turno === turno);
+  const checks = (state.checkToday[dayKey()] && state.checkToday[dayKey()][turno]) || {};
+  const hechas = tareas.filter(t => checks[t.id]).length;
+  const pct = tareas.length ? Math.round(hechas/tareas.length*100) : 0;
+  const etiqueta = turno==='apertura'?'Apertura':turno==='cierre'?'Cierre':'Semanal';
+
+  state.historial.unshift({
+    id: Date.now(),
+    fecha: hoy,
+    hora: new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
+    user: state.currentUser.name,
+    turno: etiqueta,
+    hechas,
+    total: tareas.length,
+    pct,
+  });
+  saveState();
+  showToast(`✅ Checklist ${etiqueta} guardado · ${pct}%`);
+  renderResumen();
+}
+
+// ══════════════════════════════
+//  EQUIPOS
+// ══════════════════════════════
+function updateEquipoStatus(id, status) {
+  const eq = state.equipos.find(e=>e.id===id);
+  if (!eq) return;
+  eq.status = status;
+  const card = document.getElementById('eq-'+id);
+  if (card) card.className = 'equipo-card' + (status==='ok'?'':status==='warn'?' warn':' alert');
+  saveState();
+  showToast(status==='ok'?'✅ Estado actualizado':status==='warn'?'⚠️ Marcado para revisión':'🔴 Marcado como dañado');
+  renderResumen();
+}
+
+// ══════════════════════════════
+//  HISTORIAL
+// ══════════════════════════════
+function renderHistorial() {
+  const list = document.getElementById('historial-list');
+  if (!state.historial.length) {
+    list.innerHTML = '<p style="color:rgba(255,255,255,.35);font-size:.84rem;">Aún no hay registros.</p>';
+    return;
+  }
+  list.innerHTML = state.historial.slice(0,20).map(h => {
+    const color = h.pct===100?'var(--green)':h.pct>=70?'var(--yellow)':'var(--red)';
+    return `<div class="hist-row">
+      <div>
+        <div class="hr-name">${h.turno} · ${h.fecha} ${h.hora}</div>
+        <div class="hr-meta">👤 ${h.user} · ${h.hechas} de ${h.total} tareas completadas</div>
+      </div>
+      <span class="badge-pct" style="background:${color}20;color:${color}">${h.pct}%</span>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════
+//  ADMIN
+// ══════════════════════════════
+function openAdminPin() {
+  document.getElementById('overlay-admin').classList.add('open');
+  document.getElementById('admin-pin-input').value = '';
+  document.getElementById('admin-pin-error').textContent = '';
+  setTimeout(() => document.getElementById('admin-pin-input').focus(), 100);
+}
+function closeOverlay() { document.getElementById('overlay-admin').classList.remove('open'); }
+function verifyAdminPin() {
+  const pin = document.getElementById('admin-pin-input').value.trim();
+  const user = state.users.find(u => u.id === state.currentUser.id);
+  if (pin === user.pin && user.role === 'admin') {
+    state.adminUnlocked = true;
+    closeOverlay();
+    document.getElementById('admin-locked').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    renderAdmin();
+  } else {
+    document.getElementById('admin-pin-error').textContent = 'PIN incorrecto.';
+  }
+}
+
+function renderAdmin() {
+  renderAdminAP();
+  document.getElementById('nt-quim').innerHTML = opcionesQuimico(null);
+  renderAdminTemps();
+  renderRespaldoInfo();
+  // Usuarios
+  document.getElementById('users-list').innerHTML = state.users.map(u =>
+    `<div class="catalog-row">
+      <span class="cr-name">${u.avatar} ${u.name}</span>
+      <span class="cr-tag">${roleLabel(u.role)}</span>
+      <span class="cr-tag">PIN: ${'•'.repeat(u.pin.length)}</span>
+      ${u.id!=='u1'?`<button class="btn-del" onclick="deleteUser('${u.id}')">✕</button>`:''}
+    </div>`
+  ).join('');
+
+  // Equipos
+  document.getElementById('equipos-catalog').innerHTML = state.equipos.map(e =>
+    `<div class="catalog-row">
+      <span class="cr-name">${e.icon||'🔧'} ${e.name}</span>
+      <span class="cr-tag">${e.area}</span>
+      <span class="cr-tag">${e.resp}</span>
+      <button class="btn-del" onclick="deleteEquipo('${e.id}')">✕</button>
+    </div>`
+  ).join('');
+
+  // Tareas
+  document.getElementById('tareas-catalog').innerHTML = state.tareas.map(t =>
+    `<div class="catalog-row">
+      <span class="cr-name">${t.tarea}</span>
+      <span class="cr-tag">${t.turno==='apertura'?'🌅':t.turno==='cierre'?'🌙':'📅'} ${t.turno}</span>
+      <span class="cr-tag">${t.area}</span>
+      <select class="form-select" style="max-width:190px;padding:6px 8px;font-size:.75rem;" onchange="setTareaQuimico('${t.id}',this.value)" aria-label="Químico de la tarea">${opcionesQuimico(t.quimicoId)}</select>
+      <button class="btn-del" onclick="deleteTarea('${t.id}')">✕</button>
+    </div>`
+  ).join('');
+}
+
+function addUser() {
+  const name=document.getElementById('nu-name').value.trim();
+  const role=document.getElementById('nu-role').value;
+  const pin=document.getElementById('nu-pin').value.trim();
+  const avatar=document.getElementById('nu-avatar').value.trim()||'👩';
+  if(!name||!pin){showToast('⚠️ Completa nombre y PIN','warn');return;}
+  state.users.push({id:'u'+Date.now(),name,role,pin,avatar});
+  saveState(); renderAdmin(); renderUserGrid();
+  ['nu-name','nu-pin','nu-avatar'].forEach(id=>document.getElementById(id).value='');
+  showToast('✅ Usuario creado: '+name);
+}
+function deleteUser(id){
+  if(!confirm('¿Eliminar usuario?'))return;
+  state.users=state.users.filter(u=>u.id!==id);
+  saveState();renderAdmin();renderUserGrid();
+}
+function addEquipo(){
+  const name=document.getElementById('ne-name').value.trim();
+  const area=document.getElementById('ne-area').value;
+  const resp=document.getElementById('ne-resp').value.trim();
+  const icon=document.getElementById('ne-icon').value.trim()||'🔧';
+  if(!name){showToast('⚠️ Ingresa el nombre','warn');return;}
+  state.equipos.push({id:'e'+Date.now(),name,area,icon,resp,status:'ok'});
+  saveState();renderAdmin();
+  ['ne-name','ne-resp','ne-icon'].forEach(id=>document.getElementById(id).value='');
+  showToast('✅ Equipo agregado: '+name);
+}
+function deleteEquipo(id){
+  if(!confirm('¿Eliminar este equipo?'))return;
+  state.equipos=state.equipos.filter(e=>e.id!==id);
+  saveState();renderAdmin();
+}
+function addTarea(){
+  const tarea=document.getElementById('nt-tarea').value.trim();
+  const area=document.getElementById('nt-area').value.trim();
+  const turno=document.getElementById('nt-turno').value;
+  const prod=document.getElementById('nt-prod').value.trim();
+  const quimicoId=document.getElementById('nt-quim').value||null;
+  if(!tarea){showToast('⚠️ Ingresa la tarea','warn');return;}
+  state.tareas.push({id:'t'+Date.now(),tarea,area,turno,prod,quimicoId});
+  saveState();renderAdmin();
+  ['nt-tarea','nt-area','nt-prod'].forEach(id=>document.getElementById(id).value='');
+  showToast('✅ Tarea agregada');
+}
+function deleteTarea(id){
+  if(!confirm('¿Eliminar esta tarea?'))return;
+  state.tareas=state.tareas.filter(t=>t.id!==id);
+  saveState();renderAdmin();
+}
+
+// ══════════════════════════════
+//  EXPORT / IMPORT
+// ══════════════════════════════
+function exportarJSON(){
+  const data=JSON.stringify({users:state.users,equipos:state.equipos,tareas:state.tareas,historial:state.historial,checkToday:state.checkToday,quimicos:state.quimicos,plan:state.plan},null,2);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
+  a.download='mendy-sanea-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  showToast('⬇ JSON exportado');
+}
+function importarJSON(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(d.users)   state.users=d.users;
+      if(d.equipos) state.equipos=d.equipos;
+      if(d.tareas)  state.tareas=d.tareas;
+      if(d.historial) state.historial=d.historial;
+      if(d.checkToday) state.checkToday=normalizeCheckToday(d.checkToday);
+      if(d.quimicos) state.quimicos=d.quimicos;
+      if(d.plan) state.plan=d.plan;
+      saveState();renderResumen();
+      showToast('✅ Datos importados');
+    }catch{showToast('❌ Error al leer archivo','error');}
+  };
+  r.readAsText(file);
+}
+
+// ══════════════════════════════
+//  TOAST
+// ══════════════════════════════
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=type==='ok'?'var(--green)':type==='warn'?'var(--yellow)':'var(--red)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ══════════════════════════════
+//  TEMPERATURAS
+//  Guardadas aparte del estado general, un espacio por mes:
+//  mendy/saneamiento_registros/temperaturas/AAAA-MM/<id>
+//  (no van dentro de mendy/saneamiento porque saveState() reescribe esa ruta completa)
+// ══════════════════════════════
+const REG_REF  = db.ref('mendy/saneamiento_registros');
+const TEMP_REF = REG_REF.child('temperaturas');
+const TCFG_REF = REG_REF.child('config/temperaturas');
+
+state.temp = { cfg:null, meses:{}, mesVista:null, draft:{}, editando:false };
+
+function pad2(n){ return String(n).padStart(2,'0'); }
+function isoDate(d=new Date()){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+function mesKey(d=new Date()){ return d.getFullYear()+'-'+pad2(d.getMonth()+1); }
+function mesAnteriorKey(m){ const [y,mo]=m.split('-').map(Number); const d=new Date(y,mo-2,1); return mesKey(d); }
+function mesSiguienteKey(m){ const [y,mo]=m.split('-').map(Number); const d=new Date(y,mo,1); return mesKey(d); }
+function fechaCorta(iso){ const [y,m,d]=iso.split('-'); return d+'/'+m; }
+function esc(t){ return String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtT(v){ return String(v).replace('.',','); }
+
+function defaultEqCfg(e){
+  return /congel/i.test(e.name)
+    ? { activo:true, tipo:'congelacion', min:null, max:-18 }
+    : { activo:true, tipo:'refrigeracion', min:2, max:6 };
+}
+function getTempCfg(){
+  const base = state.temp.cfg || {};
+  const eqs = Object.assign({}, base.equipos || {});
+  state.equipos.filter(e=>e.area==='Zona fría').forEach(e=>{ if(!eqs[e.id]) eqs[e.id]=defaultEqCfg(e); });
+  return { frecuencia: base.frecuencia || 'ambos', equipos: eqs };
+}
+function equiposFrio(){
+  const cfg = getTempCfg();
+  return state.equipos.filter(e => e.area==='Zona fría' && cfg.equipos[e.id] && cfg.equipos[e.id].activo);
+}
+function turnoTieneTemp(turno){
+  const f = getTempCfg().frecuencia;
+  return turno==='apertura' || (turno==='cierre' && f==='ambos');
+}
+function enRango(c,v){
+  if (c.min!=null && c.min!=='' && v < Number(c.min)) return false;
+  if (c.max!=null && c.max!=='' && v > Number(c.max)) return false;
+  return true;
+}
+function rangoTxt(c){
+  const hasMin = c.min!=null && c.min!=='', hasMax = c.max!=null && c.max!=='';
+  if (hasMin && hasMax) return `${c.min} a ${c.max} °C`;
+  if (hasMax) return `${c.max} °C o menos`;
+  if (hasMin) return `${c.min} °C o más`;
+  return 'sin rango definido';
+}
+function registrosMes(m){ return Object.values(state.temp.meses[m] || {}).sort((a,b)=>a.ts-b.ts); }
+function ultimoRegistro(fecha, turno){
+  const r = registrosMes(fecha.slice(0,7)).filter(x=>x.fecha===fecha && x.turno===turno);
+  return r.length ? r[r.length-1] : null;
+}
+
+// ── Carga ──
+function escucharMes(m){
+  if (state.temp.meses[m] !== undefined && state.temp['_on_'+m]) return;
+  state.temp['_on_'+m] = true;
+  TEMP_REF.child(m).on('value', snap => {
+    state.temp.meses[m] = snap.val() || {};
+    refrescarVistasTemp();
+  });
+}
+function initTemperaturas(){
+  TCFG_REF.on('value', snap => { state.temp.cfg = snap.val(); refrescarVistasTemp(); });
+  const actual = mesKey();
+  state.temp.mesVista = actual;
+  escucharMes(actual);
+  escucharMes(mesAnteriorKey(actual)); // para el resumen de 7 días
+}
+function refrescarVistasTemp(){
+  if (!state.currentUser) return;
+  const activa = document.querySelector('.tab-content.active');
+  if (!activa) return;
+  if (activa.id==='tab-resumen') renderResumenTemps();
+  if (activa.id==='tab-checklist' && !state.temp.editando && !hayBorrador()) renderTempCard();
+  if (activa.id==='tab-registros') renderRegistros();
+}
+function hayBorrador(){ return Object.values(state.temp.draft).some(d => d && d.txt); }
+
+// ── Tarjeta dentro del checklist ──
+function valorBorrador(id){
+  const d = state.temp.draft[id];
+  if (!d || !d.txt) return null;
+  const t = d.txt.trim().replace(',','.');
+  if (t==='' || t==='-' ) return null;
+  let v = parseFloat(t);
+  if (isNaN(v)) return null;
+  if (d.neg && v > 0) v = -v;
+  return Math.round(v*10)/10;
+}
+function renderTempCard(){
+  const wrap = document.getElementById('temp-card-wrap');
+  if (!wrap) return;
+  const turno = state.turnoActivo;
+  const eqs = equiposFrio();
+  if (!turnoTieneTemp(turno) || !eqs.length) { wrap.innerHTML=''; return; }
+  const cfg = getTempCfg();
+  const hoy = isoDate();
+  const reg = ultimoRegistro(hoy, turno);
+  const nombreTurno = turno==='apertura' ? 'apertura' : 'cierre';
+
+  if (reg && !state.temp.editando) {
+    const chips = Object.entries(reg.lecturas||{}).map(([id,l]) => {
+      const eq = state.equipos.find(e=>e.id===id);
+      return `<span class="temp-chip ${l.ok?'ok':'bad'}">${eq?eq.icon:'🧊'} ${esc(eq?eq.name:'Equipo')} ${fmtT(l.v)} °C</span>`;
+    }).join('');
+    wrap.innerHTML = `<div class="temp-card ${reg.fuera?'bad':'done'}">
+      <div class="temp-head"><h4>${reg.fuera?'🔴':'✅'} Temperaturas de ${nombreTurno} registradas</h4>
+        <span>${esc(reg.hora)} · ${esc(reg.user)}</span></div>
+      <div class="temp-chips">${chips}</div>
+      ${reg.fuera ? `<div class="dv-meta" style="font-size:.8rem;margin-top:6px;">Acción tomada: ${esc(reg.accion)}</div>
+        <button class="btn-temp btn-wa" onclick="avisarWhatsApp('${hoy}','${turno}')">📲 Avisar a Aljavis por WhatsApp</button>` : ''}
+      <button class="btn-temp ghost" onclick="corregirTemps()">✏️ Registrar de nuevo</button>
+    </div>`;
+    return;
+  }
+
+  const filas = eqs.map(e => {
+    const c = cfg.equipos[e.id];
+    const d = state.temp.draft[e.id] || { txt:'', neg: c.tipo==='congelacion' };
+    state.temp.draft[e.id] = d;
+    const v = valorBorrador(e.id);
+    const cls = v==null ? '' : (enRango(c,v) ? 'ok' : 'bad');
+    return `<div class="temp-row">
+      <div class="temp-name"><strong>${e.icon||'🧊'} ${esc(e.name)}</strong><span class="temp-range">Rango: ${rangoTxt(c)}</span></div>
+      <button class="sign-btn" id="sg-${e.id}" onclick="toggleSigno('${e.id}')" aria-label="Cambiar signo">${d.neg?'−':'+'}</button>
+      <input class="temp-input ${cls}" id="ti-${e.id}" type="text" inputmode="decimal" autocomplete="off"
+        value="${esc(d.txt)}" placeholder="°C" aria-label="Temperatura ${esc(e.name)}" oninput="onTempInput('${e.id}',this)">
+      <span class="temp-unit">°C</span>
+    </div>`;
+  }).join('');
+
+  wrap.innerHTML = `<div class="temp-card">
+    <div class="temp-head"><h4>🌡️ Temperaturas de ${nombreTurno}</h4><span>Lee el termómetro de cada equipo</span></div>
+    ${filas}
+    <div class="temp-accion" id="temp-accion" style="display:none">
+      <p>🔴 Hay equipos fuera de rango. ¿Qué se hizo?</p>
+      <textarea class="form-input" id="temp-accion-txt" placeholder="Ej: se pasó la carne al congelador y se llamó al técnico"></textarea>
+    </div>
+    <button class="btn-temp" onclick="guardarTemperaturas()">💾 Guardar temperaturas</button>
+    ${state.temp.editando ? `<button class="btn-temp ghost" onclick="cancelarCorreccion()">Cancelar</button>` : ''}
+  </div>`;
+  actualizarAccionVisible();
+}
+function toggleSigno(id){
+  const d = state.temp.draft[id]; if (!d) return;
+  d.neg = !d.neg;
+  document.getElementById('sg-'+id).textContent = d.neg ? '−' : '+';
+  evaluarInput(id);
+}
+function onTempInput(id, el){
+  const d = state.temp.draft[id]; if (!d) return;
+  d.txt = el.value;
+  if (el.value.trim().startsWith('-')) { d.neg = true; document.getElementById('sg-'+id).textContent='−'; }
+  evaluarInput(id);
+}
+function evaluarInput(id){
+  const c = getTempCfg().equipos[id];
+  const el = document.getElementById('ti-'+id);
+  const v = valorBorrador(id);
+  el.classList.remove('ok','bad');
+  if (v!=null) el.classList.add(enRango(c,v)?'ok':'bad');
+  actualizarAccionVisible();
+}
+function actualizarAccionVisible(){
+  const cfg = getTempCfg();
+  const fuera = equiposFrio().some(e => { const v=valorBorrador(e.id); return v!=null && !enRango(cfg.equipos[e.id],v); });
+  const box = document.getElementById('temp-accion');
+  if (box) box.style.display = fuera ? 'block' : 'none';
+}
+function corregirTemps(){ state.temp.editando = true; state.temp.draft = {}; renderTempCard(); }
+function cancelarCorreccion(){ state.temp.editando = false; state.temp.draft = {}; renderTempCard(); }
+
+function guardarTemperaturas(){
+  const cfg = getTempCfg();
+  const eqs = equiposFrio();
+  const lecturas = {};
+  for (const e of eqs) {
+    const v = valorBorrador(e.id);
+    if (v==null) { showToast(`⚠️ Falta la temperatura de ${e.name}`,'warn'); document.getElementById('ti-'+e.id).focus(); return; }
+    if (v < -40 || v > 40) { showToast(`⚠️ Revisa el valor de ${e.name}`,'warn'); document.getElementById('ti-'+e.id).focus(); return; }
+    const c = cfg.equipos[e.id];
+    lecturas[e.id] = { v, ok: enRango(c,v), min: (c.min===''?null:c.min), max: (c.max===''?null:c.max), tipo: c.tipo };
+  }
+  const fuera = Object.values(lecturas).some(l => !l.ok);
+  let accion = null;
+  if (fuera) {
+    accion = (document.getElementById('temp-accion-txt').value || '').trim();
+    if (accion.length < 5) { showToast('⚠️ Escribe qué se hizo con el equipo fuera de rango','warn'); document.getElementById('temp-accion-txt').focus(); return; }
+  }
+  const ahora = new Date();
+  const rec = {
+    ts: ahora.getTime(),
+    fecha: isoDate(ahora),
+    hora: ahora.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
+    turno: state.turnoActivo,
+    userId: state.currentUser.id,
+    user: state.currentUser.name,
+    lecturas, fuera, accion,
+  };
+  TEMP_REF.child(mesKey(ahora)).push(rec).catch(() => showToast('❌ No se pudo guardar en la nube. Revisa la conexión.','error'));
+  state.temp.draft = {}; state.temp.editando = false;
+  showToast(fuera ? '🔴 Guardado. Avisa a Aljavis.' : '✅ Temperaturas guardadas', fuera ? 'warn' : 'ok');
+  renderTempCard();
+}
+
+function avisarWhatsApp(fecha, turno){
+  const reg = ultimoRegistro(fecha, turno); if (!reg) return;
+  const malas = Object.entries(reg.lecturas).filter(([,l])=>!l.ok).map(([id,l]) => {
+    const eq = state.equipos.find(e=>e.id===id);
+    return `• ${eq?eq.name:'Equipo'}: ${fmtT(l.v)} °C (rango ${rangoTxt(l)})`;
+  }).join('\n');
+  const txt = `🌡️ Mendy – temperatura fuera de rango\n${fechaCorta(fecha)} ${reg.hora} (${turno}) – registró ${reg.user}\n${malas}\nAcción tomada: ${reg.accion}`;
+  window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank');
+}
+
+// ── Resumen ──
+function renderResumenTemps(){
+  const div = document.getElementById('resumen-temps'); if (!div) return;
+  if (!equiposFrio().length) { div.innerHTML = 'No hay equipos de zona fría configurados.'; return; }
+  const hoy = isoDate();
+  const turnos = ['apertura','cierre'].filter(turnoTieneTemp);
+  const estadoHoy = turnos.map(t => {
+    const r = ultimoRegistro(hoy, t);
+    const et = t==='apertura' ? '🌅 Apertura' : '🌙 Cierre';
+    const st = !r ? '<span style="color:rgba(255,255,255,.4)">⏳ Pendiente</span>'
+      : r.fuera ? `<span style="color:var(--red);font-weight:700">🔴 Fuera de rango · ${esc(r.hora)}</span>`
+      : `<span style="color:var(--green)">✅ En rango · ${esc(r.hora)}</span>`;
+    return `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);"><span>${et}</span>${st}</div>`;
+  }).join('');
+
+  const desde = new Date(); desde.setDate(desde.getDate()-6);
+  const desdeIso = isoDate(desde);
+  const m = mesKey();
+  const ult7 = [...registrosMes(mesAnteriorKey(m)), ...registrosMes(m)].filter(r => r.fecha >= desdeIso);
+  const desv = ult7.filter(r => r.fuera).reverse();
+  const resumen7 = desv.length
+    ? `<p style="margin-top:10px;font-size:.8rem;color:var(--red);font-weight:700;">Últimos 7 días: ${desv.length} registro${desv.length>1?'s':''} fuera de rango</p>` +
+      desv.slice(0,5).map(r => desvHtml(r)).join('')
+    : `<p style="margin-top:10px;font-size:.8rem;color:rgba(255,255,255,.55);">Últimos 7 días: ${ult7.length ? 'todo en rango ✅' : 'sin registros aún'}</p>`;
+  let aviso = '';
+  if (state.currentUser && state.currentUser.role==='admin') {
+    const dias = state.respaldo ? diasDesde(state.respaldo.fecha) : null;
+    if (dias==null || dias > 30) aviso = `<p style="margin-top:12px;font-size:.8rem;color:var(--yellow);">🛟 ${dias==null?'Aún no hay copia de seguridad':'Hace '+dias+' días de la última copia'}. Descárgala en Admin.</p>`;
+  }
+  div.innerHTML = estadoHoy + resumen7 + aviso;
+}
+function desvHtml(r){
+  const malas = Object.entries(r.lecturas||{}).filter(([,l])=>!l.ok).map(([id,l]) => {
+    const eq = state.equipos.find(e=>e.id===id);
+    return `${esc(eq?eq.name:'Equipo')} ${fmtT(l.v)} °C`;
+  }).join(' · ');
+  return `<div class="desv-row" style="margin-top:8px;"><strong>${malas}</strong>
+    <div class="dv-meta">${fechaCorta(r.fecha)} ${esc(r.hora)} · ${r.turno==='apertura'?'apertura':'cierre'} · ${esc(r.user)}</div>
+    <div class="dv-meta">Acción: ${esc(r.accion)}</div></div>`;
+}
+
+// ── Pestaña Registros ──
+function cambiarMesRegistro(delta){
+  const m = state.temp.mesVista;
+  const nuevo = delta < 0 ? mesAnteriorKey(m) : mesSiguienteKey(m);
+  if (nuevo > mesKey()) return;
+  state.temp.mesVista = nuevo;
+  if (state.temp.meses[nuevo] === undefined) {
+    document.getElementById('reg-tabla').innerHTML = '<tr><td style="padding:14px;color:rgba(255,255,255,.4)">Cargando…</td></tr>';
+    TEMP_REF.child(nuevo).once('value').then(snap => { state.temp.meses[nuevo] = snap.val() || {}; renderRegistros(); });
+  }
+  cargarMesAP(nuevo).then(() => renderRegAP(nuevo));
+  renderRegistros();
+}
+function renderRegistros(){
+  const m = state.temp.mesVista || mesKey();
+  const [y,mo] = m.split('-').map(Number);
+  document.getElementById('reg-mes-titulo').textContent =
+    new Date(y,mo-1,1).toLocaleDateString('es-CO',{month:'long',year:'numeric'});
+  document.getElementById('reg-next').disabled = (m >= mesKey());
+  renderRegAP(m);
+  if (state.temp.meses[m] === undefined) return;
+
+  const regs = registrosMes(m);
+  const esActual = m === mesKey();
+  const diasMes = new Date(y,mo,0).getDate();
+  const hasta = esActual ? new Date().getDate() : diasMes;
+
+  // Equipos: los activos más los que aparezcan en registros del mes
+  const ids = new Set(equiposFrio().map(e=>e.id));
+  regs.forEach(r => Object.keys(r.lecturas||{}).forEach(id => ids.add(id)));
+  const eqs = [...ids].map(id => state.equipos.find(e=>e.id===id) || { id, name:'Equipo retirado', icon:'🧊' });
+
+  // Último registro por día y turno
+  const ult = {};
+  regs.forEach(r => { ult[r.fecha+'|'+r.turno] = r; });
+
+  let head = `<tr><th rowspan="2">Día</th>${eqs.map(e=>`<th colspan="2">${e.icon||'🧊'} ${esc(e.name)}</th>`).join('')}</tr>
+    <tr>${eqs.map(()=>'<th>A</th><th>C</th>').join('')}</tr>`;
+  let body = '';
+  let aperturaOk = 0, cierreFalt = 0;
+  const pideCierre = getTempCfg().frecuencia === 'ambos';
+  for (let d = hasta; d >= 1; d--) {
+    const f = `${y}-${pad2(mo)}-${pad2(d)}`;
+    const ra = ult[f+'|apertura'], rc = ult[f+'|cierre'];
+    if (ra) aperturaOk++;
+    if (pideCierre && !rc && !(esActual && d===hasta)) cierreFalt++;
+    const celda = (r,id) => {
+      const l = r && r.lecturas && r.lecturas[id];
+      if (!l) return '<td class="t-none">—</td>';
+      return `<td class="${l.ok?'t-ok':'t-bad'}">${fmtT(l.v)}</td>`;
+    };
+    body += `<tr><td>${pad2(d)}/${pad2(mo)}</td>${eqs.map(e => celda(ra,e.id)+celda(rc,e.id)).join('')}</tr>`;
+  }
+  document.getElementById('reg-tabla').innerHTML = eqs.length ? head+body
+    : '<tr><td style="padding:14px;color:rgba(255,255,255,.4)">No hay equipos de zona fría.</td></tr>';
+
+  const lecturasFuera = regs.reduce((n,r)=> n + Object.values(r.lecturas||{}).filter(l=>!l.ok).length, 0);
+  document.getElementById('reg-kpis').innerHTML = `
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--blue)">${aperturaOk}/${hasta}</div><div class="kpi-label">Días con registro de apertura</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:${lecturasFuera?'var(--red)':'var(--green)'}">${lecturasFuera}</div><div class="kpi-label">Lecturas fuera de rango</div></div>
+    ${pideCierre ? `<div class="kpi-card"><div class="kpi-num" style="color:${cierreFalt?'var(--yellow)':'var(--green)'}">${cierreFalt}</div><div class="kpi-label">Cierres sin registro</div></div>` : ''}
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--accent)">${regs.length}</div><div class="kpi-label">Registros guardados</div></div>`;
+
+  const desv = regs.filter(r=>r.fuera).reverse();
+  document.getElementById('reg-desv').innerHTML = desv.length ? desv.map(desvHtml).join('')
+    : '<p style="font-size:.84rem;color:rgba(255,255,255,.45);">Ninguna lectura fuera de rango este mes.</p>';
+}
+
+// ── Admin: configuración ──
+function renderAdminTemps(){
+  const cfg = getTempCfg();
+  document.getElementById('tcfg-frec').value = cfg.frecuencia;
+  const eqs = state.equipos.filter(e=>e.area==='Zona fría');
+  document.getElementById('tcfg-equipos').innerHTML = eqs.length ? eqs.map(e => {
+    const c = cfg.equipos[e.id];
+    return `<div class="temp-cfg-row">
+      <span><strong>${e.icon||'🧊'} ${esc(e.name)}</strong></span>
+      <label style="display:flex;gap:6px;align-items:center;font-size:.8rem;"><input type="checkbox" id="tc-act-${e.id}" ${c.activo?'checked':''}> Registrar</label>
+      <select class="form-select" id="tc-tipo-${e.id}">
+        <option value="refrigeracion" ${c.tipo==='refrigeracion'?'selected':''}>Refrigeración</option>
+        <option value="congelacion" ${c.tipo==='congelacion'?'selected':''}>Congelación</option>
+      </select>
+      <input class="form-input" type="number" step="0.5" id="tc-min-${e.id}" value="${c.min==null?'':c.min}" placeholder="Mín °C" aria-label="Mínimo">
+      <input class="form-input" type="number" step="0.5" id="tc-max-${e.id}" value="${c.max==null?'':c.max}" placeholder="Máx °C" aria-label="Máximo">
+    </div>`;
+  }).join('') : '<p style="font-size:.82rem;color:rgba(255,255,255,.4);margin-bottom:10px;">No hay equipos en el área "Zona fría".</p>';
+}
+function guardarTempCfg(){
+  const cfg = { frecuencia: document.getElementById('tcfg-frec').value, equipos:{} };
+  for (const e of state.equipos.filter(x=>x.area==='Zona fría')) {
+    const num = id => { const v=document.getElementById(id).value; return v===''?null:Number(v); };
+    const c = { activo: document.getElementById('tc-act-'+e.id).checked,
+      tipo: document.getElementById('tc-tipo-'+e.id).value,
+      min: num('tc-min-'+e.id), max: num('tc-max-'+e.id) };
+    if (c.min==null && c.max==null) { showToast(`⚠️ ${e.name}: define al menos un límite`,'warn'); return; }
+    if (c.min!=null && c.max!=null && c.min > c.max) { showToast(`⚠️ ${e.name}: el mínimo es mayor que el máximo`,'warn'); return; }
+    cfg.equipos[e.id] = c;
+  }
+  TCFG_REF.set(cfg).then(()=>showToast('✅ Configuración guardada')).catch(()=>showToast('❌ No se pudo guardar','error'));
+  state.temp.cfg = cfg;
+}
+
+
+// ══════════════════════════════
+//  AGUA Y PLAGAS
+//  Registros inmodificables en mendy/saneamiento_registros/<tipo>/AAAA-MM/<id>
+//  tipos: agua_lavado, agua_cloro, plagas_inspeccion, plagas_fumigacion
+//  "config/estado" guarda el último lavado y la última fumigación (para no leer meses viejos)
+// ══════════════════════════════
+const TIPOS_AP  = ['agua_lavado','agua_cloro','plagas_inspeccion','plagas_fumigacion'];
+const ESTADO_REF = REG_REF.child('config/estado');
+const APCFG_REF  = REG_REF.child('config/agua_plagas');
+state.regs = {}; TIPOS_AP.forEach(t => state.regs[t] = {});
+state.estadoReg = null; state.estadoCargado = false; state.apCfg = null;
+state.per = { abierto:null, zonas:{} };
+
+function getAPCfg(){
+  const c = state.apCfg || {};
+  return {
+    diasLavado: Number(c.diasLavado) || 15,
+    cloroMin: c.cloroMin!=null ? Number(c.cloroMin) : 0.3,
+    cloroMax: c.cloroMax!=null ? Number(c.cloroMax) : 2,
+    zonas: (c.zonas && c.zonas.length) ? c.zonas : ['Cocina','Bodega','Zona de basuras','Baño'],
+  };
+}
+function addDays(iso,n){ const [y,m,d]=iso.split('-').map(Number); return isoDate(new Date(y,m-1,d+n)); }
+function diasHasta(iso){ return -diasDesde(iso); }
+function fechaLarga(iso){ return iso ? fechaCorta(iso)+'/'+iso.slice(0,4) : ''; }
+function regsTipo(tipo, m){ return Object.values(state.regs[tipo][m] || {}).sort((a,b)=>a.ts-b.ts); }
+function regsUltimosDias(tipo, n){
+  const d = new Date(); d.setDate(d.getDate()-(n-1));
+  const desde = isoDate(d), m = mesKey();
+  return [...regsTipo(tipo, mesAnteriorKey(m)), ...regsTipo(tipo, m)].filter(r => r.fecha >= desde);
+}
+function ultimoTipo(tipo){ const r = regsUltimosDias(tipo, 62); return r.length ? r[r.length-1] : null; }
+function numDecimal(txt){ const t=(txt||'').trim().replace(',','.'); if(t==='') return null; const v=parseFloat(t); return isNaN(v)?null:Math.round(v*100)/100; }
+function cloroOk(v){ const c=getAPCfg(); return v>=c.cloroMin && v<=c.cloroMax; }
+function linkOk(l){ return !l || /^https:\/\//i.test(l); }
+function abrirWA(txt){ window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank'); }
+function pushRegistro(tipo, rec){
+  return REG_REF.child(tipo).child(rec.fecha.slice(0,7)).push(rec)
+    .catch(() => showToast('❌ No se pudo guardar en la nube. Revisa la conexión.','error'));
+}
+function nuevoRec(extra){
+  const a = new Date();
+  return Object.assign({ ts:a.getTime(), fecha:isoDate(a),
+    hora:a.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
+    userId:state.currentUser.id, user:state.currentUser.name }, extra);
+}
+
+// ── Carga ──
+function escucharTipoMes(tipo, m){
+  const k = '_on_'+tipo+'_'+m; if (state[k]) return; state[k] = true;
+  REG_REF.child(tipo).child(m).on('value', snap => { state.regs[tipo][m] = snap.val() || {}; refrescarVistasAP(); });
+}
+function cargarMesAP(m){
+  return Promise.all(TIPOS_AP.filter(t => state.regs[t][m]===undefined).map(t =>
+    REG_REF.child(t).child(m).once('value').then(s => { state.regs[t][m] = s.val() || {}; })));
+}
+function initAguaPlagas(){
+  const m = mesKey();
+  TIPOS_AP.forEach(t => { escucharTipoMes(t, m); escucharTipoMes(t, mesAnteriorKey(m)); });
+  ESTADO_REF.on('value', s => { state.estadoReg = s.val() || {}; state.estadoCargado = true; refrescarVistasAP(); });
+  APCFG_REF.on('value', s => { state.apCfg = s.val(); refrescarVistasAP(); });
+}
+function refrescarVistasAP(){
+  if (!state.currentUser) return;
+  const activa = document.querySelector('.tab-content.active'); if (!activa) return;
+  if (activa.id==='tab-resumen') renderResumenAP();
+  if (activa.id==='tab-registros' && !document.getElementById('reg-plagas').contains(document.activeElement)) renderRegAP(state.temp.mesVista || mesKey());
+  if (activa.id==='tab-checklist') {
+    const wrap = document.getElementById('periodicas-wrap');
+    if (!(wrap && wrap.contains(document.activeElement)) && !state.per.abierto) renderPeriodicas();
+  }
+}
+
+// ── Qué está pendiente ──
+function pendientesAP(){
+  if (!state.estadoCargado) return [];
+  const out = [];
+  const est = state.estadoReg || {};
+  const lav = est.agua_lavado;
+  if (!lav) out.push({ id:'lavado', icon:'💧', titulo:'Lavado del tanque', detalle:'No hay lavados registrados' });
+  else {
+    const d = diasHasta(lav.proxima);
+    if (d <= 2) out.push({ id:'lavado', icon:'💧', titulo:'Lavado del tanque',
+      detalle: d<0 ? `Vencido hace ${-d} día${d===-1?'':'s'}` : d===0 ? 'Toca hoy' : `Toca en ${d} día${d===1?'':'s'} (${fechaCorta(lav.proxima)})`, urgente: d<0 });
+  }
+  if (!regsUltimosDias('agua_cloro', 7).length)
+    out.push({ id:'cloro', icon:'🧪', titulo:'Lectura de cloro del agua', detalle:'Toca la de esta semana' });
+  if (!regsUltimosDias('plagas_inspeccion', 7).length)
+    out.push({ id:'plagas', icon:'🐜', titulo:'Inspección de plagas', detalle:'Toca la de esta semana' });
+  return out;
+}
+
+// ── Tarjetas en el checklist ──
+function renderPeriodicas(){
+  const wrap = document.getElementById('periodicas-wrap'); if (!wrap) return;
+  const pend = pendientesAP();
+  if (!pend.length) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = pend.map(p => state.per.abierto===p.id ? formPeriodica(p) : `
+    <div class="temp-card ${p.urgente?'bad':''}" style="display:flex;align-items:center;gap:12px;">
+      <div style="flex:1;"><strong style="font-size:.9rem;">${p.icon} ${p.titulo}</strong>
+        <div class="temp-range" style="margin-top:2px;">${p.detalle}</div></div>
+      <button class="btn-temp" style="width:auto;margin:0;padding:10px 14px;font-size:.84rem;" onclick="abrirPeriodica('${p.id}')">Registrar</button>
+    </div>`).join('');
+}
+function abrirPeriodica(id){ state.per.abierto = id; state.per.zonas = {}; renderPeriodicas(); }
+function cerrarPeriodica(){ state.per.abierto = null; renderPeriodicas(); }
+function formPeriodica(p){
+  const c = getAPCfg();
+  const pie = `<button class="btn-temp ghost" onclick="cerrarPeriodica()">Cancelar</button>`;
+  if (p.id==='lavado') {
+    const ult = (state.estadoReg||{}).agua_lavado;
+    const hipo = (state.quimicos||[]).find(q=>/hipoclorito/i.test(q.nombre));
+    const sugerido = (ult && ult.producto) || (hipo ? `${hipo.nombre}${hipo.dilucion?' · '+hipo.dilucion:''}` : '');
+    return `<div class="temp-card"><div class="temp-head"><h4>💧 Lavado y desinfección del tanque</h4><span>Cada ${c.diasLavado} días</span></div>
+      <div class="form-group" style="margin:8px 0;"><label class="form-label">Producto y dosis usados</label>
+        <input class="form-input" id="lv-prod" value="${esc(sugerido)}" placeholder="Ej: Hipoclorito · __ ml en 500 L"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Cloro después de llenar (mg/L, opcional)</label>
+          <input class="form-input" id="lv-cloro" inputmode="decimal" placeholder="Ej: 0,8" oninput="evaluarCloroLavado()"></div>
+        <div class="form-group"><label class="form-label">Enlace a la foto (Drive, opcional)</label>
+          <input class="form-input" id="lv-foto" placeholder="https://…"></div>
+      </div>
+      <div class="temp-accion" id="lv-accion" style="display:none"><p>🔴 Cloro fuera de rango. ¿Qué se hizo?</p>
+        <textarea class="form-input" id="lv-accion-txt" placeholder="Ej: se agregó cloro y se medirá de nuevo mañana"></textarea></div>
+      <button class="btn-temp" onclick="guardarLavado()">💾 Registrar lavado</button>${pie}</div>`;
+  }
+  if (p.id==='cloro') {
+    return `<div class="temp-card"><div class="temp-head"><h4>🧪 Cloro residual del agua</h4><span>Rango: ${String(c.cloroMin).replace('.',',')} a ${String(c.cloroMax).replace('.',',')} mg/L</span></div>
+      <div class="temp-row"><div class="temp-name"><strong>Lectura del kit</strong><span class="temp-range">Toma el agua de la llave de la cocina</span></div>
+        <input class="temp-input" id="cl-val" inputmode="decimal" placeholder="mg/L" oninput="evaluarCloro()" aria-label="Cloro en mg/L"><span class="temp-unit">mg/L</span></div>
+      <div class="temp-accion" id="cl-accion" style="display:none"><p>🔴 Fuera de rango. ¿Qué se hizo?</p>
+        <textarea class="form-input" id="cl-accion-txt" placeholder="Ej: se volvió a clorar el tanque y se medirá mañana"></textarea></div>
+      <button class="btn-temp" onclick="guardarCloro()">💾 Guardar lectura</button>${pie}</div>`;
+  }
+  // plagas
+  const filas = c.zonas.map((z,i) => {
+    const v = state.per.zonas[z];
+    return `<div class="temp-row"><div class="temp-name"><strong>${esc(z)}</strong></div>
+      <button class="sign-btn" style="width:auto;padding:0 12px;font-size:.8rem;${v==='ok'?'background:var(--green);border-color:var(--green);':''}" onclick="marcarZona(${i},'ok')">✅ Sin rastro</button>
+      <button class="sign-btn" style="width:auto;padding:0 12px;font-size:.8rem;${v==='rastro'?'background:var(--red);border-color:var(--red);':''}" onclick="marcarZona(${i},'rastro')">🔴 Hay rastro</button></div>`;
+  }).join('');
+  const hay = Object.values(state.per.zonas).includes('rastro');
+  return `<div class="temp-card"><div class="temp-head"><h4>🐜 Inspección de plagas</h4><span>Rincones, debajo de equipos, cajas y desagües</span></div>
+    ${filas}
+    <div class="temp-accion" style="display:${hay?'block':'none'}"><p>🔴 ¿Qué se encontró y qué se hizo?</p>
+      <textarea class="form-input" id="pl-obs" placeholder="Qué se vio (cucarachas, excremento, daños…)"></textarea>
+      <textarea class="form-input" id="pl-accion" style="margin-top:8px;" placeholder="Acción tomada (limpieza, sellado, llamar a la empresa…)"></textarea></div>
+    <button class="btn-temp" onclick="guardarInspeccion()">💾 Guardar inspección</button>${pie}</div>`;
+}
+function marcarZona(i, v){
+  const z = getAPCfg().zonas[i];
+  const obs = document.getElementById('pl-obs'), acc = document.getElementById('pl-accion');
+  const guard = { o: obs?obs.value:'', a: acc?acc.value:'' };
+  state.per.zonas[z] = v; renderPeriodicas();
+  if (document.getElementById('pl-obs')) { document.getElementById('pl-obs').value = guard.o; document.getElementById('pl-accion').value = guard.a; }
+}
+function evaluarCloroLavado(){
+  const el = document.getElementById('lv-cloro'); const v = numDecimal(el.value);
+  document.getElementById('lv-accion').style.display = (v!=null && !cloroOk(v)) ? 'block' : 'none';
+}
+function evaluarCloro(){
+  const el = document.getElementById('cl-val'); const v = numDecimal(el.value);
+  el.classList.remove('ok','bad'); if (v!=null) el.classList.add(cloroOk(v)?'ok':'bad');
+  document.getElementById('cl-accion').style.display = (v!=null && !cloroOk(v)) ? 'block' : 'none';
+}
+
+function guardarLavado(){
+  const prod = document.getElementById('lv-prod').value.trim();
+  const cloroTxt = document.getElementById('lv-cloro').value;
+  const foto = document.getElementById('lv-foto').value.trim();
+  if (prod.length < 3) { showToast('⚠️ Escribe el producto y la dosis usados','warn'); return; }
+  if (!linkOk(foto)) { showToast('⚠️ El enlace debe empezar por https://','warn'); return; }
+  const cloro = numDecimal(cloroTxt);
+  if (cloroTxt.trim() && cloro==null) { showToast('⚠️ Revisa la lectura de cloro','warn'); return; }
+  const c = getAPCfg();
+  let accionCl = null;
+  if (cloro!=null && !cloroOk(cloro)) {
+    accionCl = document.getElementById('lv-accion-txt').value.trim();
+    if (accionCl.length < 5) { showToast('⚠️ Escribe qué se hizo con el cloro fuera de rango','warn'); return; }
+  }
+  const rec = nuevoRec({ producto:prod, foto:foto||null, cloro, proxima:null });
+  rec.proxima = addDays(rec.fecha, c.diasLavado);
+  pushRegistro('agua_lavado', rec);
+  ESTADO_REF.child('agua_lavado').set({ fecha:rec.fecha, proxima:rec.proxima, user:rec.user, producto:prod });
+  if (cloro!=null) pushRegistro('agua_cloro', nuevoRec({ v:cloro, ok:cloroOk(cloro), min:c.cloroMin, max:c.cloroMax, accion:accionCl, origen:'lavado' }));
+  state.per.abierto = null;
+  showToast(`✅ Lavado registrado. Próximo: ${fechaCorta(rec.proxima)}`);
+  if (accionCl) abrirWA(`💧 Mendy – cloro fuera de rango después del lavado\n${fechaCorta(rec.fecha)} ${rec.hora} – ${rec.user}\nLectura: ${String(cloro).replace('.',',')} mg/L\nAcción: ${accionCl}`);
+  renderPeriodicas();
+}
+function guardarCloro(){
+  const v = numDecimal(document.getElementById('cl-val').value);
+  if (v==null || v<0 || v>10) { showToast('⚠️ Escribe la lectura del kit','warn'); return; }
+  const c = getAPCfg(); const ok = cloroOk(v);
+  let accion = null;
+  if (!ok) { accion = document.getElementById('cl-accion-txt').value.trim(); if (accion.length<5) { showToast('⚠️ Escribe qué se hizo','warn'); return; } }
+  const rec = nuevoRec({ v, ok, min:c.cloroMin, max:c.cloroMax, accion });
+  pushRegistro('agua_cloro', rec);
+  state.per.abierto = null;
+  showToast(ok ? '✅ Lectura guardada' : '🔴 Guardado. Avisa a Aljavis.', ok?'ok':'warn');
+  if (!ok) abrirWA(`💧 Mendy – cloro fuera de rango\n${fechaCorta(rec.fecha)} ${rec.hora} – ${rec.user}\nLectura: ${String(v).replace('.',',')} mg/L (rango ${c.cloroMin}–${c.cloroMax})\nAcción: ${accion}`);
+  renderPeriodicas();
+}
+function guardarInspeccion(){
+  const zonas = getAPCfg().zonas;
+  const faltan = zonas.filter(z => !state.per.zonas[z]);
+  if (faltan.length) { showToast(`⚠️ Falta revisar: ${faltan.join(', ')}`,'warn'); return; }
+  const hallazgo = Object.values(state.per.zonas).includes('rastro');
+  let obs=null, accion=null;
+  if (hallazgo) {
+    obs = document.getElementById('pl-obs').value.trim(); accion = document.getElementById('pl-accion').value.trim();
+    if (obs.length<3 || accion.length<5) { showToast('⚠️ Escribe qué se encontró y qué se hizo','warn'); return; }
+  }
+  const zonasRec = {}; zonas.forEach((z,i) => zonasRec['z'+i] = { nombre:z, estado:state.per.zonas[z] });
+  const rec = nuevoRec({ zonas:zonasRec, hallazgo, obs, accion });
+  pushRegistro('plagas_inspeccion', rec);
+  state.per.abierto = null; state.per.zonas = {};
+  showToast(hallazgo ? '🔴 Guardado. Avisa a Aljavis.' : '✅ Inspección guardada: sin rastro', hallazgo?'warn':'ok');
+  if (hallazgo) {
+    const donde = Object.values(zonasRec).filter(z=>z.estado==='rastro').map(z=>z.nombre).join(', ');
+    abrirWA(`🐜 Mendy – rastro de plagas\n${fechaCorta(rec.fecha)} ${rec.hora} – ${rec.user}\nDónde: ${donde}\nQué se vio: ${obs}\nAcción: ${accion}`);
+  }
+  renderPeriodicas();
+}
+
+// ── Resumen ──
+function renderResumenAP(){
+  const div = document.getElementById('resumen-ap'); if (!div) return;
+  if (!state.estadoCargado) { div.textContent = 'Cargando…'; return; }
+  const est = state.estadoReg || {};
+  const fila = (et, html) => `<div style="display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);"><span>${et}</span><span style="text-align:right">${html}</span></div>`;
+  const gris = t => `<span style="color:rgba(255,255,255,.4)">${t}</span>`;
+  const verde = t => `<span style="color:var(--green)">${t}</span>`;
+  const amar = t => `<span style="color:var(--yellow)">${t}</span>`;
+  const rojo = t => `<span style="color:var(--red);font-weight:700">${t}</span>`;
+
+  let tanque;
+  if (!est.agua_lavado) tanque = amar('Sin lavados registrados');
+  else { const d = diasHasta(est.agua_lavado.proxima);
+    tanque = d<0 ? rojo(`Vencido hace ${-d} día${d===-1?'':'s'}`) : d<=2 ? amar(`Toca ${d===0?'hoy':'el '+fechaCorta(est.agua_lavado.proxima)}`) : verde(`Próximo ${fechaCorta(est.agua_lavado.proxima)}`); }
+
+  const cl = ultimoTipo('agua_cloro');
+  let cloro;
+  if (!cl) cloro = amar('Sin lecturas');
+  else { const dd = diasDesde(cl.fecha); const txt = `${String(cl.v).replace('.',',')} mg/L · ${dd===0?'hoy':'hace '+dd+' d'}`;
+    cloro = !cl.ok ? rojo('🔴 '+txt) : dd>7 ? amar(txt+' (toca nueva)') : verde('✅ '+txt); }
+
+  const ins = ultimoTipo('plagas_inspeccion');
+  let insp;
+  if (!ins) insp = amar('Sin inspecciones');
+  else { const dd = diasDesde(ins.fecha);
+    if (ins.hallazgo) { const donde = Object.values(ins.zonas||{}).filter(z=>z.estado==='rastro').map(z=>z.nombre).join(', ');
+      insp = rojo(`🔴 Rastro en ${esc(donde)} · ${fechaCorta(ins.fecha)}`); }
+    else insp = dd>7 ? amar(`Hace ${dd} días (toca nueva)`) : verde(`✅ Sin rastro · ${dd===0?'hoy':'hace '+dd+' d'}`); }
+
+  const fu = est.plagas_fumigacion;
+  let fum;
+  if (!fu) fum = rojo('Sin fumigación registrada');
+  else if (!fu.proxima) fum = verde(`Última ${fechaCorta(fu.fecha)}`);
+  else { const d = diasHasta(fu.proxima); fum = d<0 ? rojo(`Vencida desde ${fechaCorta(fu.proxima)}`) : d<=15 ? amar(`Próxima ${fechaCorta(fu.proxima)}`) : verde(`Próxima ${fechaCorta(fu.proxima)}`); }
+
+  div.innerHTML = fila('💧 Tanque', tanque) + fila('🧪 Cloro', cloro) + fila('🐜 Inspección', insp) + fila('🏢 Fumigación', fum);
+}
+
+// ── Pestaña Registros: agua y plagas del mes ──
+function renderRegAP(m){
+  const ag = document.getElementById('reg-agua'), pl = document.getElementById('reg-plagas');
+  if (!ag || !pl) return;
+  if (TIPOS_AP.some(t => state.regs[t][m]===undefined)) { ag.innerHTML = pl.innerHTML = '<p style="font-size:.84rem;color:rgba(255,255,255,.4)">Cargando…</p>'; return; }
+  const row = (titulo, meta, extra='', mal=false) => `<div class="hist-row" ${mal?'style="border-left:3px solid var(--red)"':''}><div><div class="hr-name">${titulo}</div><div class="hr-meta">${meta}</div>${extra}</div></div>`;
+  const vacio = t => `<p style="font-size:.84rem;color:rgba(255,255,255,.45);margin-bottom:10px;">${t}</p>`;
+
+  const lav = regsTipo('agua_lavado', m).reverse();
+  const clo = regsTipo('agua_cloro', m).reverse();
+  ag.innerHTML =
+    `<p style="font-size:.8rem;color:rgba(255,255,255,.55);margin-bottom:6px;font-weight:700;">Lavados del tanque</p>` +
+    (lav.length ? lav.map(r => row(`💧 ${fechaCorta(r.fecha)} · ${esc(r.hora)}`, `👤 ${esc(r.user)} · ${esc(r.producto)}${r.cloro!=null?' · cloro '+String(r.cloro).replace('.',',')+' mg/L':''}`,
+        r.foto?`<a href="${esc(r.foto)}" target="_blank" rel="noopener" style="font-size:.75rem;color:var(--blue)">📷 Ver foto</a>`:'')).join('') : vacio('Sin lavados este mes.')) +
+    `<p style="font-size:.8rem;color:rgba(255,255,255,.55);margin:12px 0 6px;font-weight:700;">Lecturas de cloro</p>` +
+    (clo.length ? clo.map(r => row(`${r.ok?'✅':'🔴'} ${String(r.v).replace('.',',')} mg/L · ${fechaCorta(r.fecha)} ${esc(r.hora)}`, `👤 ${esc(r.user)}${r.origen==='lavado'?' · después del lavado':''}`,
+        r.accion?`<div class="hr-meta">Acción: ${esc(r.accion)}</div>`:'', !r.ok)).join('') : vacio('Sin lecturas este mes.'));
+
+  const ins = regsTipo('plagas_inspeccion', m).reverse();
+  const fum = regsTipo('plagas_fumigacion', m).reverse();
+  const est = (state.estadoReg||{}).plagas_fumigacion;
+  const esAdmin = state.currentUser && state.currentUser.role==='admin';
+  pl.innerHTML =
+    `<p style="font-size:.8rem;color:rgba(255,255,255,.55);margin-bottom:6px;font-weight:700;">Inspecciones semanales</p>` +
+    (ins.length ? ins.map(r => {
+      const malas = Object.values(r.zonas||{}).filter(z=>z.estado==='rastro').map(z=>z.nombre);
+      return row(`${r.hallazgo?'🔴 Rastro en '+esc(malas.join(', ')):'✅ Sin rastro'} · ${fechaCorta(r.fecha)}`, `👤 ${esc(r.user)} · ${Object.keys(r.zonas||{}).length} zonas revisadas`,
+        r.hallazgo?`<div class="hr-meta">Qué se vio: ${esc(r.obs)}</div><div class="hr-meta">Acción: ${esc(r.accion)}</div>`:'', r.hallazgo);
+    }).join('') : vacio('Sin inspecciones este mes.')) +
+    `<p style="font-size:.8rem;color:rgba(255,255,255,.55);margin:12px 0 6px;font-weight:700;">Fumigación</p>` +
+    (est ? `<p style="font-size:.82rem;margin-bottom:8px;">Última: <strong>${fechaLarga(est.fecha)}</strong> · ${esc(est.empresa)}${est.proxima?` · próxima ${fechaLarga(est.proxima)}`:''}${est.link?` · <a href="${esc(est.link)}" target="_blank" rel="noopener" style="color:var(--blue)">📄 Certificado</a>`:''}</p>`
+         : `<p style="font-size:.82rem;color:var(--red);margin-bottom:8px;">No hay fumigación registrada.</p>`) +
+    (fum.length ? fum.map(r => row(`🏢 ${fechaLarga(r.fechaServicio)} · ${esc(r.empresa)}`, `Registrado por ${esc(r.user)}${r.proxima?' · próxima '+fechaLarga(r.proxima):''}`)).join('') : '') +
+    (esAdmin ? (state.per.fumForm ? formFumigacion() : `<button class="btn-export" onclick="state.per.fumForm=true;renderRegAP(state.temp.mesVista||mesKey())">➕ Registrar fumigación</button>`) : '');
+}
+function formFumigacion(){
+  const hoy = isoDate();
+  return `<div class="form-card" style="margin-top:10px;"><h3>🏢 Registrar fumigación</h3>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Fecha del servicio</label><input class="form-input" type="date" id="fu-fecha" value="${hoy}" max="${hoy}"></div>
+      <div class="form-group"><label class="form-label">Empresa</label><input class="form-input" id="fu-empresa" placeholder="Nombre de la empresa"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Enlace al certificado (Drive)</label><input class="form-input" id="fu-link" placeholder="https://…"></div>
+      <div class="form-group"><label class="form-label">Próxima fumigación (según la empresa)</label><input class="form-input" type="date" id="fu-prox"></div>
+    </div>
+    <div style="display:flex;gap:8px;"><button class="btn-primary" onclick="guardarFumigacion()">💾 Guardar fumigación</button>
+      <button class="btn-export" onclick="state.per.fumForm=false;renderRegAP(state.temp.mesVista||mesKey())">Cancelar</button></div></div>`;
+}
+function guardarFumigacion(){
+  const fecha = document.getElementById('fu-fecha').value, empresa = document.getElementById('fu-empresa').value.trim();
+  const link = document.getElementById('fu-link').value.trim(), prox = document.getElementById('fu-prox').value || null;
+  if (!fecha || empresa.length<2) { showToast('⚠️ Escribe la fecha y la empresa','warn'); return; }
+  if (!linkOk(link)) { showToast('⚠️ El enlace debe empezar por https://','warn'); return; }
+  if (prox && prox <= fecha) { showToast('⚠️ La próxima fecha debe ser posterior al servicio','warn'); return; }
+  const rec = nuevoRec({ fechaServicio:fecha, empresa, link:link||null, proxima:prox });
+  state.per.fumForm = false;
+  pushRegistro('plagas_fumigacion', rec);
+  const actual = (state.estadoReg||{}).plagas_fumigacion;
+  if (!actual || fecha >= actual.fecha) ESTADO_REF.child('plagas_fumigacion').set({ fecha, empresa, link:link||null, proxima:prox });
+  renderRegAP(state.temp.mesVista || mesKey());
+  showToast(link ? '✅ Fumigación registrada' : '✅ Registrada. Sube el certificado al Drive y agrégalo en la próxima.', link?'ok':'warn');
+}
+
+// ── Admin ──
+function renderAdminAP(){
+  const c = getAPCfg();
+  document.getElementById('apc-dias').value = c.diasLavado;
+  document.getElementById('apc-min').value = c.cloroMin;
+  document.getElementById('apc-max').value = c.cloroMax;
+  document.getElementById('apc-zonas').value = c.zonas.join(', ');
+}
+function guardarAPCfg(){
+  const dias = parseInt(document.getElementById('apc-dias').value,10);
+  const min = parseFloat(document.getElementById('apc-min').value), max = parseFloat(document.getElementById('apc-max').value);
+  const zonas = document.getElementById('apc-zonas').value.split(',').map(z=>z.trim()).filter(Boolean);
+  if (!(dias>=1 && dias<=180)) { showToast('⚠️ Días entre lavados: entre 1 y 180','warn'); return; }
+  if (isNaN(min) || isNaN(max) || min>=max) { showToast('⚠️ Revisa el rango de cloro','warn'); return; }
+  if (!zonas.length) { showToast('⚠️ Escribe al menos una zona','warn'); return; }
+  const cfg = { diasLavado:dias, cloroMin:min, cloroMax:max, zonas };
+  APCFG_REF.set(cfg).then(()=>showToast('✅ Configuración guardada')).catch(()=>showToast('❌ No se pudo guardar','error'));
+  state.apCfg = cfg;
+}
+
+// ══════════════════════════════
+//  EQUIPOS: ficha de limpieza y mantenimiento
+//  La ficha y el último/próximo mantenimiento viven en el equipo (mendy/saneamiento/equipos).
+//  Cada mantenimiento queda además como registro inmodificable en
+//  mendy/saneamiento_registros/mantenimiento/AAAA-MM/<id>
+// ══════════════════════════════
+const FRECUENCIAS = ['Cada uso','Diaria','Semanal','Quincenal','Mensual','Según fabricante'];
+state.eqAbierto = null; state.eqModo = null;
+
+function migrarEquipos(){
+  state.mig = state.mig || {};
+  if (state.mig.equipos2) return;
+  [ { id:'e19', name:'Estufas',                area:'Cocina',  icon:'🔥', resp:'Cocinera', status:'ok' },
+    { id:'e20', name:'Tanque de agua (500 L)', area:'General', icon:'💧', resp:'Aljavis',  status:'ok' },
+  ].forEach(a => { if (!state.equipos.find(e => e.id===a.id)) state.equipos.push(a); });
+  ['e01','e05','e11','e12','e16','e19'].forEach(id => {
+    const e = state.equipos.find(x => x.id===id); if (e && e.critico===undefined) e.critico = true;
+  });
+  state.mig.equipos2 = true;   // se guarda con el próximo cambio
+}
+function mantEstado(eq){
+  if (!eq.critico) return null;
+  const m = eq.mant;
+  if (!m || !m.ultimo) return { cls:'warn', txt:'Sin mantenimiento registrado' };
+  if (!m.proximo) return { cls:'ok', txt:`Último mantenimiento: ${fechaCorta(m.ultimo)}` };
+  const d = diasHasta(m.proximo);
+  if (d < 0)   return { cls:'alert', txt:`Mantenimiento vencido desde ${fechaCorta(m.proximo)}` };
+  if (d <= 15) return { cls:'warn',  txt:`Próximo mantenimiento: ${fechaCorta(m.proximo)}` };
+  return { cls:'ok', txt:`Próximo mantenimiento: ${fechaCorta(m.proximo)}` };
+}
+function colorCls(c){ return c==='alert'?'var(--red)':c==='warn'?'var(--yellow)':'var(--green)'; }
+
+function renderEquipos(){
+  const list = document.getElementById('equipos-list');
+  const esAdmin = state.currentUser && state.currentUser.role==='admin';
+  const sinTerm = !state.equipos.some(e => /term[oó]metro/i.test(e.name));
+  const aviso = sinTerm ? `<div class="desv-row" style="border-left-color:var(--yellow);background:rgba(245,158,11,.08);margin-bottom:16px;">🌡️ No hay termómetros en la lista. El acta pide instrumentos para medir temperaturas (ítem 2.1) y el registro de temperaturas depende de ellos. ${esAdmin?'Agrégalos en Admin cuando los tengan.':''}</div>` : '';
+  const areas = [...new Set(state.equipos.map(e=>e.area))];
+  list.innerHTML = aviso + areas.map(area => {
+    const eqs = state.equipos.filter(e=>e.area===area);
+    return `<div style="margin-bottom:20px;">
+      <p class="section-title">📍 ${esc(area)}</p>
+      ${eqs.map(eq => equipoCardHtml(eq, esAdmin)).join('')}
+    </div>`;
+  }).join('');
+}
+function equipoCardHtml(eq, esAdmin){
+  const cls = eq.status==='ok' ? '' : eq.status==='warn' ? ' warn' : ' alert';
+  const me = mantEstado(eq);
+  const f = eq.ficha || {};
+  const q = f.quimicoId && quimicoPorId(f.quimicoId);
+  const resumenFicha = (f.frecuencia || q) ? `🧽 ${[f.frecuencia, q && q.nombre].filter(Boolean).map(esc).join(' · ')}` : '<span style="color:rgba(255,255,255,.3)">Sin ficha de limpieza</span>';
+  const abierto = state.eqAbierto === eq.id;
+  return `<div class="equipo-card${cls}" id="eq-${eq.id}">
+    <span class="eq-icon">${eq.icon||'🔧'}</span>
+    <div class="eq-info">
+      <div class="eq-name">${esc(eq.name)}${eq.critico?' <span class="cr-tag" style="font-size:.66rem;">crítico</span>':''}</div>
+      <div class="eq-resp">👤 ${esc(eq.resp)}</div>
+      <div class="eq-resp">${resumenFicha}</div>
+      ${me ? `<div class="eq-resp" style="color:${colorCls(me.cls)}">🔧 ${me.txt}</div>` : ''}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+      <select class="eq-status-select" onchange="updateEquipoStatus('${eq.id}',this.value)" aria-label="Estado de ${esc(eq.name)}">
+        <option value="ok"    ${eq.status==='ok'   ?'selected':''}>✅ Bueno</option>
+        <option value="warn"  ${eq.status==='warn' ?'selected':''}>⚠️ Revisar</option>
+        <option value="alert" ${eq.status==='alert'?'selected':''}>🔴 Dañado</option>
+      </select>
+      <button class="eq-toggle" onclick="toggleEquipo('${eq.id}')" aria-expanded="${abierto}">${abierto?'Cerrar ▴':'📋 Ficha ▾'}</button>
+    </div>
+    ${abierto ? `<div class="eq-panel">${state.eqModo==='ficha' ? formFicha(eq) : state.eqModo==='mant' ? formMant(eq) : panelEquipo(eq, esAdmin)}</div>` : ''}
+  </div>`;
+}
+function panelEquipo(eq, esAdmin){
+  const f = eq.ficha || {};
+  const q = f.quimicoId && quimicoPorId(f.quimicoId);
+  const m = eq.mant || {};
+  const ficha = (f.frecuencia || q || f.pasos)
+    ? `<dl class="q-grid">
+        ${f.frecuencia?`<dt>Frecuencia</dt><dd>${esc(f.frecuencia)}</dd>`:''}
+        ${q?`<dt>Producto</dt><dd>${esc(q.nombre)}${q.dilucion?' · '+esc(q.dilucion):' · <span style="color:var(--yellow)">dilución por definir</span>'}</dd>`:''}
+        ${f.pasos?`<dt>Cómo se limpia</dt><dd style="white-space:pre-line">${esc(f.pasos)}</dd>`:''}
+      </dl>`
+    : `<p style="font-size:.8rem;color:rgba(255,255,255,.45);">Aún no tiene ficha de limpieza.</p>`;
+  const mant = eq.critico ? `<p class="eq-sub">🔧 Mantenimiento</p>` + (m.ultimo
+    ? `<dl class="q-grid"><dt>Último</dt><dd>${fechaLarga(m.ultimo)} · ${esc(m.tipo||'')} · ${esc(m.quien||'')}${m.link?` · <a href="${esc(m.link)}" target="_blank" rel="noopener" style="color:var(--blue)">📄 Soporte</a>`:''}</dd>
+        <dt>Próximo</dt><dd>${m.proximo?fechaLarga(m.proximo):'Sin fecha definida'}</dd></dl>`
+    : `<p style="font-size:.8rem;color:var(--yellow);">Sin mantenimiento registrado.</p>`) : '';
+  return `<p class="eq-sub">🧽 Ficha de limpieza</p>${ficha}${mant}
+    ${esAdmin ? `<div class="q-actions" style="margin-top:12px;flex-wrap:wrap;">
+      <button onclick="modoEquipo('${eq.id}','ficha')">✏️ Editar ficha</button>
+      <button onclick="modoEquipo('${eq.id}','mant')">🔧 Registrar mantenimiento</button></div>` : ''}`;
+}
+function formFicha(eq){
+  const f = eq.ficha || {};
+  return `<p class="eq-sub">✏️ Ficha de limpieza · ${esc(eq.name)}</p>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Frecuencia</label>
+        <select class="form-select" id="ef-frec"><option value="">—</option>${FRECUENCIAS.map(x=>`<option ${x===f.frecuencia?'selected':''}>${x}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">Producto (de la tabla de Químicos)</label>
+        <select class="form-select" id="ef-quim">${opcionesQuimico(f.quimicoId)}</select></div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;"><label class="form-label">Cómo se limpia (un paso por línea)</label>
+      <textarea class="form-input" id="ef-pasos" style="min-height:90px;" placeholder="1. Apagar y desconectar&#10;2. Retirar residuos&#10;3. Lavar con…&#10;4. Desinfectar con…">${esc(f.pasos||'')}</textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Responsable</label>
+        <input class="form-input" id="ef-resp" value="${esc(eq.resp||'')}"></div>
+      <label style="display:flex;gap:8px;align-items:center;font-size:.84rem;margin-top:20px;">
+        <input type="checkbox" id="ef-crit" ${eq.critico?'checked':''}> Equipo crítico (lleva mantenimiento)</label>
+    </div>
+    <div style="display:flex;gap:8px;"><button class="btn-primary" onclick="guardarFicha('${eq.id}')">💾 Guardar ficha</button>
+      <button class="btn-export" onclick="modoEquipo('${eq.id}',null)">Cancelar</button></div>`;
+}
+function formMant(eq){
+  const hoy = isoDate();
+  return `<p class="eq-sub">🔧 Registrar mantenimiento · ${esc(eq.name)}</p>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Fecha del servicio</label>
+        <input class="form-input" type="date" id="em-fecha" value="${hoy}" max="${hoy}"></div>
+      <div class="form-group"><label class="form-label">Tipo</label>
+        <select class="form-select" id="em-tipo"><option>Preventivo</option><option>Correctivo (reparación)</option><option>Limpieza por empresa</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Quién lo hizo (técnico o empresa)</label>
+        <input class="form-input" id="em-quien" placeholder="Nombre"></div>
+      <div class="form-group"><label class="form-label">Enlace al soporte o certificado (Drive)</label>
+        <input class="form-input" id="em-link" placeholder="https://…"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Próximo mantenimiento (opcional)</label>
+        <input class="form-input" type="date" id="em-prox"></div>
+      <div class="form-group"><label class="form-label">Qué se hizo (opcional)</label>
+        <input class="form-input" id="em-nota" placeholder="Ej: cambio de empaque"></div>
+    </div>
+    ${eq.status!=='ok' ? `<label style="display:flex;gap:8px;align-items:center;font-size:.84rem;margin-bottom:12px;"><input type="checkbox" id="em-ok" checked> El equipo quedó funcionando bien</label>` : ''}
+    <div style="display:flex;gap:8px;"><button class="btn-primary" onclick="guardarMant('${eq.id}')">💾 Guardar mantenimiento</button>
+      <button class="btn-export" onclick="modoEquipo('${eq.id}',null)">Cancelar</button></div>`;
+}
+function toggleEquipo(id){ state.eqAbierto = state.eqAbierto===id ? null : id; state.eqModo = null; renderEquipos(); }
+function modoEquipo(id, modo){ state.eqAbierto = id; state.eqModo = modo; renderEquipos();
+  const el = document.getElementById('eq-'+id); if (el && el.scrollIntoView) el.scrollIntoView({block:'nearest'}); }
+function guardarFicha(id){
+  const eq = state.equipos.find(e=>e.id===id); if (!eq) return;
+  eq.ficha = { frecuencia: document.getElementById('ef-frec').value || null,
+    quimicoId: document.getElementById('ef-quim').value || null,
+    pasos: document.getElementById('ef-pasos').value.trim() || null };
+  eq.resp = document.getElementById('ef-resp').value.trim() || eq.resp;
+  eq.critico = document.getElementById('ef-crit').checked;
+  saveState(); state.eqModo = null; renderEquipos(); showToast('✅ Ficha guardada');
+}
+function guardarMant(id){
+  const eq = state.equipos.find(e=>e.id===id); if (!eq) return;
+  const g = x => document.getElementById(x).value.trim();
+  const fecha = g('em-fecha'), quien = g('em-quien'), link = g('em-link'), prox = g('em-prox') || null;
+  if (!fecha || quien.length < 2) { showToast('⚠️ Escribe la fecha y quién lo hizo','warn'); return; }
+  if (!linkOk(link)) { showToast('⚠️ El enlace debe empezar por https://','warn'); return; }
+  if (prox && prox <= fecha) { showToast('⚠️ El próximo debe ser posterior al servicio','warn'); return; }
+  const tipo = g('em-tipo');
+  const rec = nuevoRec({ equipoId:id, equipo:eq.name, fechaServicio:fecha, tipo, quien, link:link||null, proxima:prox, nota:g('em-nota')||null });
+  const okBox = document.getElementById('em-ok');
+  // Primero se actualiza y guarda el equipo; después el registro (así ningún refresco pisa el cambio)
+  if (!eq.mant || !eq.mant.ultimo || fecha >= eq.mant.ultimo) eq.mant = { ultimo:fecha, proximo:prox, quien, tipo, link:link||null };
+  eq.critico = true;
+  if (okBox && okBox.checked) eq.status = 'ok';
+  saveState();
+  pushRegistro('mantenimiento', rec);
+  state.eqModo = null; renderEquipos();
+  showToast(link ? '✅ Mantenimiento registrado' : '✅ Registrado. Sube el soporte al Drive cuando lo tengas.', link?'ok':'warn');
+}
+
+// ══════════════════════════════
+//  QUÍMICOS (tabla de productos y diluciones)
+//  Se guardan con el estado del módulo (mendy/saneamiento/quimicos).
+//  Las diluciones las llena Aljavis con la etiqueta de cada producto.
+// ══════════════════════════════
+const QUIMICOS_SEMILLA = [
+  { id:'q1', nombre:'Hipoclorito',            tipo:'Desinfectante', uso:'Desinfectar tablas, mesones y superficies', clave:/hipoclorito/i },
+  { id:'q2', nombre:'Desengrasante',          tipo:'Desengrasante', uso:'Freidora, plancha, campana y paredes',     clave:/desengrasante/i },
+  { id:'q3', nombre:'Jabón para loza',        tipo:'Detergente',    uso:'Ollas, sartenes y utensilios',             clave:/jab[oó]n loza/i },
+  { id:'q4', nombre:'Desinfectante de pisos', tipo:'Desinfectante', uso:'Pisos de cocina',                          clave:/desinfectante piso/i },
+  { id:'q5', nombre:'Desinfectante de baño',  tipo:'Desinfectante', uso:'Baño del personal',                        clave:/desinfectante baño/i },
+];
+state.qEdit = null;
+
+// Primera vez: propone los productos que ya aparecen en las tareas (sin diluciones) y los enlaza.
+// Solo en memoria: se guarda cuando Aljavis edita algo.
+function prepararQuimicos(){
+  if (state.quimicos) return;
+  state.quimicos = QUIMICOS_SEMILLA.map(({clave, ...q}) => ({ ...q, dilucion:'', tiempo:'', formaUso:'', guarda:'', ficha:false, fichaLink:'' }));
+  state.tareas.forEach(t => {
+    if (t.quimicoId) return;
+    const q = QUIMICOS_SEMILLA.find(x => x.clave.test(t.prod||''));
+    if (q) t.quimicoId = q.id;
+  });
+}
+function quimicoPorId(id){ return (state.quimicos||[]).find(q => q.id===id); }
+function quimicoIncompleto(q){ return !q.dilucion || !q.formaUso; }
+function opcionesQuimico(sel){
+  return `<option value="">— Sin químico —</option>` + (state.quimicos||[]).map(q =>
+    `<option value="${q.id}" ${q.id===sel?'selected':''}>${esc(q.nombre)}</option>`).join('');
+}
+function productoTareaHtml(t){
+  const q = t.quimicoId && quimicoPorId(t.quimicoId);
+  if (q) {
+    const partes = [ `🧴 ${esc(q.nombre)}` ];
+    partes.push(q.dilucion ? esc(q.dilucion) : '<span style="color:var(--yellow)">⚠️ dilución por definir</span>');
+    if (q.tiempo) partes.push('⏱ '+esc(q.tiempo));
+    return `<div class="ci-producto">${partes.join(' · ')}</div>`;
+  }
+  return t.prod ? `<div class="ci-producto">🧴 ${esc(t.prod)}</div>` : '';
+}
+function setTareaQuimico(tid, qid){
+  const t = state.tareas.find(x => x.id===tid); if (!t) return;
+  t.quimicoId = qid || null;
+  saveState(); showToast('✅ Tarea enlazada');
+}
+
+function renderQuimicos(){
+  const esAdmin = state.currentUser && state.currentUser.role==='admin';
+  document.getElementById('q-btn-nuevo').style.display = esAdmin ? 'inline-block' : 'none';
+  const lista = state.quimicos || [];
+  const incompletos = lista.filter(quimicoIncompleto).length;
+  const aviso = incompletos && esAdmin
+    ? `<div class="desv-row" style="border-left-color:var(--yellow);background:rgba(245,158,11,.08);margin-bottom:14px;">⚠️ ${incompletos} producto${incompletos>1?'s':''} sin dilución o forma de uso. Complétalos con la etiqueta en la mano: el inspector pide "sustancia, concentración y forma de uso".</div>` : '';
+  document.getElementById('quimicos-list').innerHTML = aviso + (lista.length ? lista.map(q => {
+    const tareas = state.tareas.filter(t => t.quimicoId===q.id);
+    const inc = quimicoIncompleto(q);
+    return `<div class="q-card ${inc?'incompleto':''}">
+      <div class="q-top">
+        <div><div class="q-name">🧪 ${esc(q.nombre)}</div>
+          <div class="q-uso">${esc(q.tipo)}${q.uso?' · '+esc(q.uso):''}</div></div>
+        ${esAdmin ? `<div class="q-actions">
+          <button onclick="abrirFormQuimico('${q.id}')">✏️ Editar</button>
+          <button onclick="eliminarQuimico('${q.id}')" aria-label="Eliminar ${esc(q.nombre)}">✕</button></div>` : ''}
+      </div>
+      <div class="q-dil ${q.dilucion?'':'falta'}">${q.dilucion ? esc(q.dilucion) : '⚠️ Dilución por definir'}</div>
+      <dl class="q-grid">
+        ${q.tiempo   ? `<dt>Tiempo de contacto</dt><dd>${esc(q.tiempo)}</dd>` : ''}
+        ${q.formaUso ? `<dt>Forma de uso</dt><dd>${esc(q.formaUso)}</dd>` : ''}
+        ${q.guarda   ? `<dt>Se guarda en</dt><dd>${esc(q.guarda)}</dd>` : ''}
+        <dt>Ficha de seguridad</dt><dd>${q.ficha ? (q.fichaLink ? `<a href="${esc(q.fichaLink)}" target="_blank" rel="noopener" style="color:var(--blue)">✅ Ver ficha</a>` : '✅ Sí, en el local') : '— No'}</dd>
+      </dl>
+      <div class="q-tareas">${tareas.length ? `Se usa en ${tareas.length} tarea${tareas.length>1?'s':''}: ${tareas.map(t=>esc(t.tarea)).join(' · ')}` : 'No está enlazado a ninguna tarea.'}</div>
+    </div>`;
+  }).join('') : '<p style="color:rgba(255,255,255,.4);font-size:.85rem;">No hay productos registrados.</p>');
+}
+
+function abrirFormQuimico(id){
+  const q = id ? quimicoPorId(id) : { nombre:'', tipo:'Desinfectante', uso:'', dilucion:'', tiempo:'', formaUso:'', guarda:'', ficha:false, fichaLink:'' };
+  state.qEdit = id || 'nuevo';
+  const tipos = ['Desinfectante','Detergente','Desengrasante','Otro'];
+  document.getElementById('q-form-wrap').innerHTML = `<div class="form-card">
+    <h3>${id ? '✏️ Editar producto' : '➕ Nuevo producto'}</h3>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nombre (como dice la etiqueta)</label>
+        <input class="form-input" id="qf-nombre" value="${esc(q.nombre)}" placeholder="Ej: Hipoclorito de sodio 5 %"></div>
+      <div class="form-group"><label class="form-label">Tipo</label>
+        <select class="form-select" id="qf-tipo">${tipos.map(t=>`<option ${t===q.tipo?'selected':''}>${t}</option>`).join('')}</select></div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;"><label class="form-label">Para qué se usa</label>
+      <input class="form-input" id="qf-uso" value="${esc(q.uso)}" placeholder="Ej: Desinfectar tablas y mesones"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Dilución (de la etiqueta)</label>
+        <input class="form-input" id="qf-dil" value="${esc(q.dilucion)}" placeholder="Ej: __ ml por litro de agua"></div>
+      <div class="form-group"><label class="form-label">Tiempo de contacto</label>
+        <input class="form-input" id="qf-tiempo" value="${esc(q.tiempo)}" placeholder="Ej: dejar actuar __ minutos"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px;"><label class="form-label">Forma de uso</label>
+      <textarea class="form-input" id="qf-forma" style="min-height:60px;" placeholder="Ej: lavar primero con jabón, aplicar, dejar actuar y dejar secar al aire">${esc(q.formaUso)}</textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Dónde se guarda</label>
+        <input class="form-input" id="qf-guarda" value="${esc(q.guarda)}" placeholder="Ej: estante de aseo, lejos de alimentos"></div>
+      <div class="form-group"><label class="form-label">Enlace a la ficha de seguridad (Drive, opcional)</label>
+        <input class="form-input" id="qf-link" value="${esc(q.fichaLink)}" placeholder="https://drive.google.com/…"></div>
+    </div>
+    <label style="display:flex;gap:8px;align-items:center;font-size:.84rem;margin-bottom:14px;">
+      <input type="checkbox" id="qf-ficha" ${q.ficha?'checked':''}> Tenemos la ficha de seguridad del producto</label>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-primary" onclick="guardarQuimico()">💾 Guardar producto</button>
+      <button class="btn-export" onclick="cerrarFormQuimico()">Cancelar</button>
+    </div>
+  </div>`;
+  document.getElementById('qf-nombre').focus();
+}
+function cerrarFormQuimico(){ state.qEdit = null; document.getElementById('q-form-wrap').innerHTML=''; renderQuimicos(); }
+function guardarQuimico(){
+  const v = id => document.getElementById(id).value.trim();
+  const nombre = v('qf-nombre');
+  if (!nombre) { showToast('⚠️ Escribe el nombre del producto','warn'); return; }
+  const link = v('qf-link');
+  if (link && !/^https:\/\//i.test(link)) { showToast('⚠️ El enlace debe empezar por https://','warn'); return; }
+  const datos = { nombre, tipo:v('qf-tipo'), uso:v('qf-uso'), dilucion:v('qf-dil'), tiempo:v('qf-tiempo'),
+    formaUso:v('qf-forma'), guarda:v('qf-guarda'), ficha:document.getElementById('qf-ficha').checked || !!link, fichaLink:link };
+  if (!state.quimicos) state.quimicos = [];
+  if (state.qEdit && state.qEdit!=='nuevo') Object.assign(quimicoPorId(state.qEdit), datos);
+  else state.quimicos.push({ id:'q'+Date.now(), ...datos });
+  saveState();
+  showToast(datos.dilucion ? '✅ Producto guardado' : '✅ Guardado. Falta la dilución.', datos.dilucion ? 'ok' : 'warn');
+  cerrarFormQuimico();
+}
+function eliminarQuimico(id){
+  const q = quimicoPorId(id); if (!q) return;
+  const n = state.tareas.filter(t=>t.quimicoId===id).length;
+  if (!confirm(`¿Eliminar ${q.nombre}?${n?` Se quitará de ${n} tarea${n>1?'s':''}.`:''}`)) return;
+  state.quimicos = state.quimicos.filter(x=>x.id!==id);
+  state.tareas.forEach(t => { if (t.quimicoId===id) t.quimicoId = null; });
+  saveState(); renderQuimicos(); showToast('Producto eliminado');
+}
+
+function imprimirQuimicos(){
+  const lista = state.quimicos || [];
+  const hoy = new Date().toLocaleDateString('es-CO');
+  document.getElementById('print-quimicos').innerHTML = `
+    <h1>Productos de limpieza y desinfección – Mendy Fast Food</h1>
+    <p>Prepara siempre con la dilución indicada. Nunca mezcles productos. Actualizado: ${hoy}</p>
+    <table><thead><tr><th>Producto</th><th>Para qué</th><th>Dilución</th><th>Tiempo</th><th>Forma de uso</th></tr></thead>
+    <tbody>${lista.map(q => `<tr><td><b>${esc(q.nombre)}</b></td><td>${esc(q.uso)}</td>
+      <td class="dil">${q.dilucion ? esc(q.dilucion) : 'POR DEFINIR'}</td><td>${esc(q.tiempo)}</td><td>${esc(q.formaUso)}</td></tr>`).join('')}</tbody></table>`;
+  document.body.classList.add('imprimiendo-quimicos');
+  const fin = () => { document.body.classList.remove('imprimiendo-quimicos'); window.removeEventListener('afterprint', fin); };
+  window.addEventListener('afterprint', fin);
+  window.print();
+  setTimeout(fin, 1500);
+}
+
+// ══════════════════════════════
+//  EVIDENCIA DE OTROS MÓDULOS (transversal, solo lectura)
+//  Personal, Turnos e Inventario publican en mendy/evidencia_sanitaria/<modulo>
+//  lo que sirve ante el inspector (sin datos sensibles). Aquí solo se lee.
+// ══════════════════════════════
+const EVID_REF = db.ref('mendy/evidencia_sanitaria');
+state.evid = { personal:null, turnos:null, recep:{} };
+function initEvidencia(){
+  EVID_REF.child('personal').on('value', s => { state.evid.personal = s.val(); refrescarPlanSiVisible(); });
+  EVID_REF.child('turnos').on('value',   s => { state.evid.turnos   = s.val(); refrescarPlanSiVisible(); });
+  const m = mesKey();
+  [m, mesAnteriorKey(m)].forEach(mm => EVID_REF.child('inventario/recepciones').child(mm).on('value', s => { state.evid.recep[mm] = s.val() || {}; refrescarPlanSiVisible(); }));
+}
+function refrescarPlanSiVisible(){
+  const a = document.querySelector('.tab-content.active');
+  if (state.currentUser && a && a.id==='tab-plan' && !state.planEdit) renderPlan();
+}
+function cargarRecepMes(m){
+  if (state.evid.recep[m] !== undefined) return Promise.resolve();
+  return EVID_REF.child('inventario/recepciones').child(m).once('value').then(s => { state.evid.recep[m] = s.val() || {}; });
+}
+function estadoCert(c){
+  if (!c || !c.vence) return { cls:'falta', txt:'Sin certificado' };
+  const d = diasHasta(c.vence);
+  if (d < 0) return { cls:'vencido', txt:`Vencido desde ${fechaLarga(c.vence)}` };
+  if (d <= 30) return { cls:'porvencer', txt:`Vence ${fechaLarga(c.vence)}` };
+  return { cls:'vigente', txt:`Vigente hasta ${fechaLarga(c.vence)}` };
+}
+function personasActivas(){ return ((state.evid.personal||{}).personas || []).filter(p => p.activo); }
+function horasAnio(pid, anio){
+  return ((state.evid.personal||{}).capacitaciones || []).filter(c => c.fecha && c.fecha.startsWith(String(anio)) && (c.participantes||[]).includes(pid))
+    .reduce((t,c) => t + (Number(c.horas)||0), 0);
+}
+function tareasSanitariasTurnos(){ return ((state.evid.turnos||{}).tareas) || []; }
+function diasCumplidosTarea(id, desdeIso, hastaIso){
+  const dias = (state.evid.turnos||{}).dias || {};
+  return Object.keys(dias).filter(f => f >= desdeIso && f <= hastaIso && dias[f] && dias[f][id]).length;
+}
+function recepMes(m){ return Object.values(state.evid.recep[m] || {}).sort((a,b)=>a.ts-b.ts); }
+function evalTxt(e){ return e==='aprobaron' ? 'Todos aprobaron' : e==='repetir' ? 'Algunos repiten' : 'Sin evaluar'; }
+
+function pendientesEvidencia(){
+  const p = [];
+  if (!state.evid.personal) { p.push('Personal: aún no ha publicado su evidencia (Aljavis debe entrar una vez al módulo de Personal)'); return p; }
+  const pers = personasActivas();
+  const certs = state.evid.personal.certificados || {};
+  const malos = pers.filter(x => ['falta','vencido'].includes(estadoCert(certs[x.id]).cls));
+  if (malos.length) p.push(`Certificado médico faltante o vencido: ${malos.map(x=>esc(x.nombre.split(' ')[0])).join(', ')} (módulo Personal)`);
+  const anio = new Date().getFullYear();
+  const cortas = pers.filter(x => horasAnio(x.id, anio) < 10);
+  if (cortas.length) p.push(`${cortas.length} persona${cortas.length>1?'s':''} con menos de 10 horas de capacitación sanitaria en ${anio} (módulo Personal)`);
+  if (!state.evid.turnos) p.push('Turnos: aún no ha publicado sus tareas sanitarias (Aljavis debe entrar una vez al módulo de Turnos)');
+  return p;
+}
+
+function evidenciaPlanHtml(){
+  const anio = new Date().getFullYear();
+  const pers = personasActivas();
+  const certs = ((state.evid.personal||{}).certificados) || {};
+  const tablaCert = pers.length ? `<table class="pt"><thead><tr><th>Persona</th><th>Cargo</th><th>Certificado médico (3.2)</th><th>Capacitación sanitaria ${anio} (3.4)</th></tr></thead><tbody>
+    ${pers.map(x => { const e = estadoCert(certs[x.id]); const h = horasAnio(x.id, anio);
+      return `<tr><td>${esc(x.nombre)}</td><td>${esc(x.cargo)}</td><td${['falta','vencido'].includes(e.cls)?' class="malo"':''}>${e.txt}</td><td${h<10?' class="malo"':''}>${String(h).replace('.',',')} de 10 h</td></tr>`; }).join('')}</tbody></table>`
+    : '<p><i>El módulo de Personal aún no ha publicado su información.</i></p>';
+  const caps = (((state.evid.personal||{}).capacitaciones) || []).filter(c => c.fecha && c.fecha.startsWith(String(anio))).sort((a,b)=>a.fecha<b.fecha?-1:1);
+  const nombre = id => { const x = ((state.evid.personal||{}).personas||[]).find(p=>p.id===id); return x ? x.nombre.split(' ')[0] : ''; };
+  const tablaCaps = caps.length ? `<table class="pt"><thead><tr><th>Fecha</th><th>Tema</th><th>Horas</th><th>Asistentes</th><th>Evaluación</th></tr></thead><tbody>
+    ${caps.map(c => `<tr><td>${fechaLarga(c.fecha)}</td><td>${esc(c.tema)}</td><td>${String(c.horas).replace('.',',')}</td><td>${(c.participantes||[]).map(nombre).filter(Boolean).map(esc).join(', ')}</td><td>${evalTxt(c.evaluacion)}</td></tr>`).join('')}</tbody></table>`
+    : `<p><i>Sin capacitaciones sanitarias registradas en ${anio}.</i></p>`;
+  const tareas = tareasSanitariasTurnos();
+  const hoy = isoDate(); const d30 = new Date(); d30.setDate(d30.getDate()-29); const desde = isoDate(d30);
+  const tablaTurnos = tareas.length ? `<table class="pt"><thead><tr><th>Tarea del checklist de Turnos</th><th>Ítem</th><th>Días cumplidos (últimos 30)</th></tr></thead><tbody>
+    ${tareas.map(t => `<tr><td>${esc(t.tarea)}</td><td>${esc(t.acta)}</td><td>${diasCumplidosTarea(t.id, desde, hoy)} de 30</td></tr>`).join('')}</tbody></table>`
+    : '<p><i>El módulo de Turnos aún no ha publicado sus tareas sanitarias.</i></p>';
+  const rec = recepMes(mesKey());
+  const recTxt = rec.length ? `${rec.length} recepciones este mes: ${rec.filter(r=>r.ok).length} revisadas sin novedad, ${rec.filter(r=>!r.ok).length} con novedad y ${rec.filter(r=>!r.factura).length} sin factura. El detalle va en la hoja mensual.`
+    : 'Sin recepciones registradas este mes.';
+  return `<section><h2>Evidencia de otros módulos</h2>
+    <p class="pm">Se registra en Personal, Turnos e Inventario y se muestra aquí sin copiarla.</p>
+    <h3>Personal manipulador</h3>${tablaCert}
+    <h3>Capacitaciones sanitarias ${anio}</h3>${tablaCaps}
+    <h3>Prácticas diarias verificadas en Turnos</h3>${tablaTurnos}
+    <h3>Recepción de materias primas (4.1)</h3><p>${recTxt}</p></section>`;
+}
+
+function evidenciaHojaHtml(m){
+  const [y,mo] = m.split('-').map(Number);
+  const ultimo = m===mesKey() ? new Date().getDate() : new Date(y,mo,0).getDate();
+  const desde = `${m}-01`, hasta = `${m}-${pad2(ultimo)}`;
+  const tareas = tareasSanitariasTurnos();
+  const caps = (((state.evid.personal||{}).capacitaciones) || []).filter(c => c.fecha && c.fecha.startsWith(m));
+  const nombre = id => { const x = ((state.evid.personal||{}).personas||[]).find(p=>p.id===id); return x ? x.nombre.split(' ')[0] : ''; };
+  const rec = recepMes(m);
+  const filas = (arr, cols, n) => arr.length ? arr.map(r => `<tr>${cols.map(c=>`<td>${c(r)}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${n}"><i>Sin registros este mes.</i></td></tr>`;
+  return `<h3>Prácticas diarias verificadas en Turnos</h3>
+    <table class="pt"><thead><tr><th>Tarea</th><th>Ítem</th><th>Días cumplidos</th></tr></thead><tbody>
+      ${filas(tareas, [t=>esc(t.tarea), t=>esc(t.acta), t=>`${diasCumplidosTarea(t.id, desde, hasta)} de ${ultimo}`], 3)}</tbody></table>
+    <h3>Capacitaciones sanitarias del mes</h3>
+    <table class="pt"><thead><tr><th>Fecha</th><th>Tema</th><th>Horas</th><th>Asistentes</th><th>Evaluación</th></tr></thead><tbody>
+      ${filas(caps, [c=>fechaCorta(c.fecha), c=>esc(c.tema), c=>String(c.horas).replace('.',','), c=>(c.participantes||[]).map(nombre).filter(Boolean).map(esc).join(', '), c=>evalTxt(c.evaluacion)], 5)}</tbody></table>
+    <h3>Recepción de materias primas</h3>
+    <table class="pt"><thead><tr><th>Fecha</th><th>Insumo</th><th>Proveedor</th><th>Factura</th><th>Revisión</th><th>Quién</th></tr></thead><tbody>
+      ${filas(rec, [r=>fechaCorta(r.fecha), r=>esc(r.insumo), r=>esc(r.proveedor), r=>r.factura?'Sí':'<b>No</b>', r=>r.ok?'Sin novedad':`<b>${esc(r.novedad)}</b>`, r=>esc(r.user)], 6)}</tbody></table>`;
+}
+
+// ══════════════════════════════
+//  PLAN DE SANEAMIENTO (vista e impresión)
+//  Los textos se guardan en mendy/saneamiento/plan; todo lo demás sale de los datos del módulo.
+// ══════════════════════════════
+const PLAN_TEXTOS_BASE = {
+  generalidades: `Objetivo: reducir el riesgo de contaminación de los alimentos mediante limpieza y desinfección, manejo de residuos, control de plagas y agua potable, con registros que demuestren su cumplimiento.
+Alcance: todas las áreas de Mendy Fast Food en San Andrés: cocina, zona fría, caja, baño del personal y almacenamiento.
+Marco normativo: Resolución 2674 de 2013 (Art. 26), Decreto 1575 de 2007 (Art. 10) y Resolución 2115 de 2007.
+Responsables: Aljavis aprueba, hace cumplir y actualiza el plan y guarda los certificados. Don Alfonso verifica los registros. El personal de turno ejecuta las tareas y las registra en el sistema.`,
+  limpieza: `Toda área, equipo y utensilio que toca el alimento se limpia y desinfecta con frecuencia fija.
+Procedimiento general: 1) retirar residuos; 2) lavar con agua potable y detergente o desengrasante; 3) enjuagar; 4) desinfectar con el producto y la dilución de la tabla; 5) dejar secar al aire, sin paños sucios.
+Los productos se preparan con la dilución del fabricante, nunca "a ojo"; se guardan rotulados y lejos de alimentos, y los implementos de aseo se lavan fuera del área de preparación.`,
+  residuos: `Cada área tiene un recipiente lavable, con tapa y bolsa, lejos de donde se preparan o sirven alimentos.
+Al cierre se sacan las bolsas amarradas y se cambian. Las bolsas esperan la recolección en un punto fuera de la cocina, tapado y protegido de plagas.
+La empresa de aseo recoge todas las noches después de las 12 a. m. Los recipientes se lavan y desinfectan cada semana.
+El aceite usado se recoge en recipiente cerrado y no se bota al desagüe.`,
+  plagas: `El control es preventivo: puertas y aberturas cerradas o con malla, alimentos en recipientes cerrados y lejos del piso, basura tapada y retirada cada noche, sin acumulación de cajas ni objetos en desuso.
+Cada semana se inspeccionan las zonas definidas; si hay rastro, se registra qué se encontró y qué se hizo, y se avisa a Aljavis.
+Una empresa autorizada fumiga y deja certificado con fecha, productos y próxima aplicación. No se aplican productos con alimentos expuestos.`,
+  agua: `El agua llega del acueducto y se almacena en un tanque de 500 litros, tapado, de material sanitario y de fácil acceso.
+El tanque se vacía, se restriega, se desinfecta con el producto y la dosis registrados, se enjuaga y se llena de nuevo con la frecuencia indicada abajo.
+El cloro residual se mide con kit cada semana y después de cada lavado. Se guarda la factura del acueducto como soporte de la fuente.`,
+};
+const PLAN_SECCIONES = [
+  ['generalidades','Generalidades'], ['limpieza','Programa 1 · Limpieza y desinfección'],
+  ['residuos','Programa 2 · Residuos sólidos'], ['plagas','Programa 3 · Control integrado de plagas'],
+  ['agua','Programa 4 · Abastecimiento de agua potable'],
+];
+state.planEdit = false;
+
+function planTextos(){ return Object.assign({}, PLAN_TEXTOS_BASE, (state.plan && state.plan.textos) || {}); }
+function parrafos(t){ return esc(t).split('\n').filter(x=>x.trim()).map(x=>`<p>${x}</p>`).join(''); }
+function turnoNombre(t){ return t==='apertura'?'Apertura':t==='cierre'?'Cierre':'Semanal'; }
+
+// ── Pendientes para que el plan quede completo ──
+function pendientesPlan(){
+  const p = [];
+  const qi = (state.quimicos||[]).filter(quimicoIncompleto).length;
+  if (qi) p.push(`${qi} químico${qi>1?'s':''} sin dilución o forma de uso (pestaña Químicos)`);
+  const sinFicha = state.equipos.filter(e => ['Cocina','Zona fría'].includes(e.area) && !(e.ficha && (e.ficha.frecuencia || e.ficha.pasos))).length;
+  if (sinFicha) p.push(`${sinFicha} equipo${sinFicha>1?'s':''} de cocina o zona fría sin ficha de limpieza (pestaña Equipos)`);
+  const sinMant = state.equipos.filter(e => e.critico && !(e.mant && e.mant.ultimo)).length;
+  if (sinMant) p.push(`${sinMant} equipo${sinMant>1?'s':''} crítico${sinMant>1?'s':''} sin mantenimiento registrado`);
+  if (!state.equipos.some(e => /term[oó]metro/i.test(e.name))) p.push('Termómetros: no están en la lista de equipos');
+  const est = state.estadoReg || {};
+  if (state.estadoCargado) {
+    if (!est.plagas_fumigacion) p.push('Fumigación con empresa autorizada: no hay ninguna registrada');
+    else if (est.plagas_fumigacion.proxima && diasHasta(est.plagas_fumigacion.proxima) < 0) p.push('Fumigación vencida');
+    if (!est.agua_lavado) p.push('Lavado del tanque: no hay ninguno registrado');
+    if (!regsUltimosDias('agua_cloro', 7).length) p.push('Cloro residual: sin lectura en los últimos 7 días (¿ya compraron el kit?)');
+  }
+  p.push(...pendientesEvidencia());
+  const rev = state.plan && state.plan.revision;
+  if (!rev) p.push('El plan no tiene fecha de revisión: revísalo, fírmalo y registra la fecha');
+  else if (diasDesde(rev.fecha) > 183) p.push('Han pasado más de 6 meses desde la última revisión del plan');
+  return p;
+}
+
+// ── Contenido del plan (el mismo HTML para pantalla e impresión) ──
+function planContenidoHtml(){
+  const tx = planTextos();
+  const cfg = getAPCfg();
+  const est = state.estadoReg || {};
+  const quim = state.quimicos || [];
+  const tablaQuim = quim.length ? `<table class="pt"><thead><tr><th>Producto</th><th>Para qué</th><th>Dilución</th><th>Tiempo</th><th>Forma de uso</th><th>Se guarda en</th></tr></thead><tbody>
+    ${quim.map(q=>`<tr><td><b>${esc(q.nombre)}</b></td><td>${esc(q.uso)}</td><td>${q.dilucion?esc(q.dilucion):'<i>por definir</i>'}</td><td>${esc(q.tiempo)}</td><td>${esc(q.formaUso)}</td><td>${esc(q.guarda)}</td></tr>`).join('')}</tbody></table>` : '<p><i>Sin productos registrados.</i></p>';
+  const tareasTurno = ['apertura','cierre','semanal'].map(t => {
+    const ts = state.tareas.filter(x=>x.turno===t); if (!ts.length) return '';
+    return `<tr><td><b>${turnoNombre(t)}</b></td><td>${ts.map(x => { const q = x.quimicoId && quimicoPorId(x.quimicoId);
+      return `${esc(x.tarea)}${q?` <span class="pm">(${esc(q.nombre)})</span>`:x.prod?` <span class="pm">(${esc(x.prod)})</span>`:''}`; }).join('<br>')}</td></tr>`;
+  }).join('');
+  const fichas = state.equipos.filter(e => e.ficha && (e.ficha.frecuencia || e.ficha.pasos || e.ficha.quimicoId));
+  const tablaFichas = fichas.length ? `<table class="pt"><thead><tr><th>Equipo</th><th>Frecuencia</th><th>Producto</th><th>Cómo se limpia</th><th>Responsable</th></tr></thead><tbody>
+    ${fichas.map(e => { const q = e.ficha.quimicoId && quimicoPorId(e.ficha.quimicoId);
+      return `<tr><td><b>${esc(e.name)}</b></td><td>${esc(e.ficha.frecuencia||'')}</td><td>${q?esc(q.nombre):''}</td><td style="white-space:pre-line">${esc(e.ficha.pasos||'')}</td><td>${esc(e.resp||'')}</td></tr>`; }).join('')}</tbody></table>` : '<p><i>Aún no hay fichas de limpieza por equipo.</i></p>';
+  const criticos = state.equipos.filter(e => e.critico);
+  const tablaMant = criticos.length ? `<table class="pt"><thead><tr><th>Equipo crítico</th><th>Último mantenimiento</th><th>Quién</th><th>Próximo</th></tr></thead><tbody>
+    ${criticos.map(e => { const m = e.mant||{}; return `<tr><td>${esc(e.name)}</td><td>${m.ultimo?fechaLarga(m.ultimo)+' · '+esc(m.tipo||''):'<i>sin registro</i>'}</td><td>${esc(m.quien||'')}</td><td>${m.proximo?fechaLarga(m.proximo):''}</td></tr>`; }).join('')}</tbody></table>` : '';
+  const fu = est.plagas_fumigacion, lav = est.agua_lavado;
+  const soporte = [
+    ['5.1 Agua potable','Programa 4','Lavados del tanque, lecturas de cloro, factura del acueducto'],
+    ['5.2 Residuos líquidos','—','Desagües con rejilla y sin estancamientos (se verifica en sitio)'],
+    ['5.3 Residuos sólidos','Programa 2','Tarea diaria de basura; recipientes con tapa'],
+    ['5.4 Control de plagas','Programa 3','Inspecciones semanales; certificados de fumigación'],
+    ['5.5 Limpieza y desinfección','Programa 1','Checklists por turno, fichas de equipos, tabla de químicos, certificados de limpieza por empresa'],
+    ['5.6 Soportes documentales','Todos','Este plan firmado y la hoja mensual de registros'],
+    ['3.2 Reconocimiento médico','Personal','Certificados médicos vigentes (copia en el local)'],
+    ['3.3 Prácticas higiénicas','Turnos','Lavado de manos y uniforme verificados en cada apertura'],
+    ['3.4 Capacitación','Personal','Capacitaciones con horas, asistentes y evaluación'],
+    ['4.1 Materias primas','Inventario · Turnos','Recepción revisada, proveedor y factura; descongelación y desinfección de vegetales'],
+    ['4.2 Contaminación cruzada','Turnos','Revisión diaria de la nevera; lavado de tablas y utensilios'],
+    ['4.3 Temperaturas','Saneamiento','Registro de temperaturas de apertura y cierre'],
+  ];
+  return `
+    <section><h2>${PLAN_SECCIONES[0][1]}</h2>${parrafos(tx.generalidades)}</section>
+    <section><h2>${PLAN_SECCIONES[1][1]}</h2>${parrafos(tx.limpieza)}
+      <h3>Productos de limpieza y desinfección</h3>${tablaQuim}
+      <h3>Tareas de limpieza por turno</h3><table class="pt"><tbody>${tareasTurno}</tbody></table>
+      <h3>Fichas de limpieza por equipo</h3>${tablaFichas}
+      ${tablaMant ? `<h3>Mantenimiento de equipos críticos</h3>${tablaMant}` : ''}</section>
+    <section><h2>${PLAN_SECCIONES[2][1]}</h2>${parrafos(tx.residuos)}</section>
+    <section><h2>${PLAN_SECCIONES[3][1]}</h2>${parrafos(tx.plagas)}
+      <p><b>Zonas de la inspección semanal:</b> ${cfg.zonas.map(esc).join(', ')}.</p>
+      <p><b>Fumigación:</b> ${fu ? `última el ${fechaLarga(fu.fecha)} por ${esc(fu.empresa)}${fu.proxima?`; próxima ${fechaLarga(fu.proxima)}`:''}${fu.link?` (certificado en la carpeta del plan)`:''}.` : '<i>pendiente de contratar y registrar.</i>'}</p></section>
+    <section><h2>${PLAN_SECCIONES[4][1]}</h2>${parrafos(tx.agua)}
+      <p><b>Frecuencia de lavado del tanque:</b> cada ${cfg.diasLavado} días.${lav ? ` Último: ${fechaLarga(lav.fecha)} (${esc(lav.producto)}). Próximo: ${fechaLarga(lav.proxima)}.` : ''}</p>
+      <p><b>Cloro residual aceptable:</b> ${String(cfg.cloroMin).replace('.',',')} a ${String(cfg.cloroMax).replace('.',',')} mg/L (Res. 2115 de 2007). Si sale fuera de rango se registra la acción tomada.</p></section>
+    ${evidenciaPlanHtml()}
+    <section><h2>Registros y soportes</h2>
+      <p>Los registros se llevan en el sistema de saneamiento de Mendy; no se pueden modificar ni borrar una vez guardados. Cada mes se imprime la hoja de registros y se archiva con este plan.</p>
+      <table class="pt"><thead><tr><th>Ítem del acta</th><th>Programa</th><th>Soporte</th></tr></thead><tbody>
+      ${soporte.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></section>`;
+}
+
+// ── Pestaña ──
+function renderPlan(){
+  const esAdmin = state.currentUser && state.currentUser.role==='admin';
+  const rev = state.plan && state.plan.revision;
+  const pend = pendientesPlan();
+  document.getElementById('plan-estado').innerHTML =
+    `<p style="font-size:.84rem;margin-bottom:8px;">${rev ? `✅ Última revisión: <b>${fechaLarga(rev.fecha)}</b> por ${esc(rev.user)}` : '⚠️ El plan aún no tiene fecha de revisión.'}</p>` +
+    (pend.length ? `<div class="desv-row" style="border-left-color:var(--yellow);background:rgba(245,158,11,.08);"><b>Para que el plan quede completo:</b><ul style="margin:6px 0 0 18px;">${pend.map(x=>`<li>${x}</li>`).join('')}</ul></div>`
+                 : `<div class="desv-row" style="border-left-color:var(--green);background:rgba(34,197,94,.08);">✅ El plan tiene todo lo que pide el acta. Imprímelo, fírmalo y guárdalo en la carpeta.</div>`);
+  document.getElementById('plan-admin').style.display = esAdmin ? 'flex' : 'none';
+  const mesSel = document.getElementById('plan-mes');
+  if (!mesSel.options.length) {
+    const act = mesKey(); const meses = [act]; for (let i=0;i<5;i++) meses.push(mesAnteriorKey(meses[meses.length-1]));
+    mesSel.innerHTML = meses.map(m => { const [y,mo]=m.split('-').map(Number);
+      return `<option value="${m}">${new Date(y,mo-1,1).toLocaleDateString('es-CO',{month:'long',year:'numeric'})}</option>`; }).join('');
+  }
+  document.getElementById('plan-doc').innerHTML = state.planEdit ? planEditorHtml() : planContenidoHtml();
+}
+function planEditorHtml(){
+  const tx = planTextos();
+  return `<p style="font-size:.8rem;color:rgba(255,255,255,.55);margin-bottom:12px;">Escribe lo que el negocio hace de verdad: el inspector compara lo escrito con lo que ve. Las tablas (químicos, tareas, fichas, fumigación, tanque) se llenan solas desde el sistema.</p>` +
+    PLAN_SECCIONES.map(([k,t]) => `<div class="form-group" style="margin-bottom:14px;"><label class="form-label">${t}</label>
+      <textarea class="form-input" id="pt-${k}" style="min-height:120px;">${esc(tx[k])}</textarea></div>`).join('') +
+    `<div style="display:flex;gap:8px;"><button class="btn-primary" onclick="guardarTextosPlan()">💾 Guardar textos</button>
+     <button class="btn-export" onclick="state.planEdit=false;renderPlan()">Cancelar</button>
+     <button class="btn-export" onclick="restaurarTextosPlan()">↺ Volver al texto base</button></div>`;
+}
+function guardarTextosPlan(){
+  const textos = {}; PLAN_SECCIONES.forEach(([k]) => textos[k] = document.getElementById('pt-'+k).value.trim() || PLAN_TEXTOS_BASE[k]);
+  state.plan = Object.assign({}, state.plan, { textos });
+  state.planEdit = false; saveState(); renderPlan(); showToast('✅ Textos del plan guardados');
+}
+function restaurarTextosPlan(){
+  if (!confirm('¿Volver a los textos base? Se pierden los cambios hechos a los textos.')) return;
+  state.plan = Object.assign({}, state.plan, { textos:null });
+  state.planEdit = false; saveState(); renderPlan();
+}
+function registrarRevisionPlan(){
+  if (!confirm('¿Confirmas que revisaste el plan completo y que describe lo que el negocio hace hoy?')) return;
+  state.plan = Object.assign({}, state.plan, { revision:{ fecha:isoDate(), user:state.currentUser.name } });
+  saveState(); renderPlan(); showToast('✅ Revisión registrada. Imprime y firma el plan.');
+}
+
+// ── Hoja mensual de registros ──
+function cargarDatosMes(m){
+  const tareas = [ cargarMesAP(m), cargarRecepMes(m) ];
+  if (state.temp.meses[m]===undefined) tareas.push(TEMP_REF.child(m).once('value').then(s => { state.temp.meses[m] = s.val()||{}; }));
+  state.regsMant = state.regsMant || {};
+  if (state.regsMant[m]===undefined) tareas.push(REG_REF.child('mantenimiento').child(m).once('value').then(s => { state.regsMant[m] = s.val()||{}; }));
+  return Promise.all(tareas);
+}
+function hojaMesHtml(m){
+  const [y,mo] = m.split('-').map(Number);
+  const titulo = new Date(y,mo-1,1).toLocaleDateString('es-CO',{month:'long',year:'numeric'});
+  const hasta = m===mesKey() ? new Date().getDate() : new Date(y,mo,0).getDate();
+  const dias = []; for (let d=1; d<=hasta; d++) dias.push(d);
+
+  // Checklist por día
+  const cuenta = (d, turno) => {
+    const k = `${d}_${mo}_${y}`; const ts = state.tareas.filter(t=>t.turno===turno); if (!ts.length) return '';
+    const marcas = (state.checkToday[k] && state.checkToday[k][turno]) || {};
+    const h = ts.filter(t => marcas[t.id]).length;
+    return h ? `${h}/${ts.length}` : '—';
+  };
+  const tablaCheck = `<table class="pt compact"><thead><tr><th>Día</th><th>Apertura</th><th>Cierre</th><th>Semanal</th></tr></thead><tbody>
+    ${dias.map(d => `<tr><td>${pad2(d)}</td><td>${cuenta(d,'apertura')}</td><td>${cuenta(d,'cierre')}</td><td>${cuenta(d,'semanal')}</td></tr>`).join('')}</tbody></table>`;
+
+  // Temperaturas
+  const regsT = registrosMes(m);
+  const ids = new Set(equiposFrio().map(e=>e.id)); regsT.forEach(r => Object.keys(r.lecturas||{}).forEach(id => ids.add(id)));
+  const eqs = [...ids].map(id => state.equipos.find(e=>e.id===id) || { id, name:'Equipo retirado' });
+  const ult = {}; regsT.forEach(r => { ult[r.fecha+'|'+r.turno] = r; });
+  const celda = (r,id) => { const l = r && r.lecturas && r.lecturas[id]; return l ? `<td${l.ok?'':' class="malo"'}>${fmtT(l.v)}</td>` : '<td>—</td>'; };
+  const tablaTemp = eqs.length ? `<table class="pt compact"><thead><tr><th rowspan="2">Día</th>${eqs.map(e=>`<th colspan="2">${esc(e.name)}</th>`).join('')}</tr><tr>${eqs.map(()=>'<th>A</th><th>C</th>').join('')}</tr></thead><tbody>
+    ${dias.map(d => { const f = `${y}-${pad2(mo)}-${pad2(d)}`; return `<tr><td>${pad2(d)}</td>${eqs.map(e => celda(ult[f+'|apertura'],e.id)+celda(ult[f+'|cierre'],e.id)).join('')}</tr>`; }).join('')}</tbody></table>` : '<p><i>Sin equipos de frío.</i></p>';
+
+  // Desviaciones con acción
+  const desv = [];
+  regsT.filter(r=>r.fuera).forEach(r => desv.push([r.fecha, 'Temperatura', Object.entries(r.lecturas).filter(([,l])=>!l.ok).map(([id,l]) => `${(state.equipos.find(e=>e.id===id)||{name:'Equipo'}).name} ${fmtT(l.v)} °C`).join(', '), r.accion, r.user]));
+  regsTipo('agua_cloro', m).filter(r=>!r.ok).forEach(r => desv.push([r.fecha, 'Cloro', `${String(r.v).replace('.',',')} mg/L`, r.accion, r.user]));
+  regsTipo('plagas_inspeccion', m).filter(r=>r.hallazgo).forEach(r => desv.push([r.fecha, 'Plagas', `${Object.values(r.zonas||{}).filter(z=>z.estado==='rastro').map(z=>z.nombre).join(', ')}: ${r.obs}`, r.accion, r.user]));
+  desv.sort((a,b)=>a[0]<b[0]?-1:1);
+
+  const filas = (arr, cols) => arr.length ? arr.map(r => `<tr>${cols.map(c=>`<td>${c(r)}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${cols.length}"><i>Sin registros este mes.</i></td></tr>`;
+  const lav = regsTipo('agua_lavado', m), clo = regsTipo('agua_cloro', m), ins = regsTipo('plagas_inspeccion', m), fum = regsTipo('plagas_fumigacion', m);
+  const mant = Object.values((state.regsMant||{})[m] || {}).sort((a,b)=>a.ts-b.ts);
+
+  return `<section class="hoja"><h2>Hoja de registros · ${titulo}</h2>
+    <p class="pm">A = apertura, C = cierre. Checklist: tareas hechas / tareas del turno. Valores en negrita: fuera de rango.</p>
+    <div class="dos-col"><div><h3>Checklist de limpieza</h3>${tablaCheck}</div><div><h3>Temperaturas (°C)</h3>${tablaTemp}</div></div>
+    <h3>Agua potable</h3>
+    <table class="pt"><thead><tr><th>Fecha</th><th>Registro</th><th>Detalle</th><th>Quién</th></tr></thead><tbody>
+      ${filas([...lav.map(r=>({...r,_t:'Lavado del tanque',_d:r.producto+(r.cloro!=null?` · cloro ${String(r.cloro).replace('.',',')} mg/L`:'')})),
+               ...clo.filter(r=>r.origen!=='lavado').map(r=>({...r,_t:'Cloro residual',_d:`${String(r.v).replace('.',',')} mg/L ${r.ok?'(en rango)':'(fuera de rango)'}`}))].sort((a,b)=>a.ts-b.ts),
+        [r=>fechaCorta(r.fecha), r=>r._t, r=>esc(r._d), r=>esc(r.user)])}</tbody></table>
+    <h3>Control de plagas</h3>
+    <table class="pt"><thead><tr><th>Fecha</th><th>Registro</th><th>Resultado</th><th>Quién</th></tr></thead><tbody>
+      ${filas([...ins.map(r=>({...r,_t:'Inspección semanal',_d:r.hallazgo?'Con rastro (ver acciones)':`Sin rastro en ${Object.keys(r.zonas||{}).length} zonas`})),
+               ...fum.map(r=>({...r,_t:'Fumigación',_d:`${r.empresa} · servicio ${fechaCorta(r.fechaServicio)}${r.link?' · certificado archivado':''}`}))].sort((a,b)=>a.ts-b.ts),
+        [r=>fechaCorta(r.fecha), r=>r._t, r=>esc(r._d), r=>esc(r.user)])}</tbody></table>
+    <h3>Mantenimiento de equipos</h3>
+    <table class="pt"><thead><tr><th>Fecha</th><th>Equipo</th><th>Tipo</th><th>Quién</th></tr></thead><tbody>
+      ${filas(mant, [r=>fechaCorta(r.fechaServicio), r=>esc(r.equipo), r=>esc(r.tipo), r=>esc(r.quien)])}</tbody></table>
+    ${evidenciaHojaHtml(m)}
+    <h3>Fuera de rango y acciones tomadas</h3>
+    <table class="pt"><thead><tr><th>Fecha</th><th>Qué</th><th>Detalle</th><th>Acción tomada</th><th>Quién</th></tr></thead><tbody>
+      ${filas(desv, [r=>fechaCorta(r[0]), r=>r[1], r=>esc(r[2]), r=>esc(r[3]), r=>esc(r[4])])}</tbody></table>
+    <p class="firma">Revisó: ______________________________ &nbsp;&nbsp; Fecha: ______________</p></section>`;
+}
+
+// ── Impresión ──
+function imprimirHtml(html){
+  const area = document.getElementById('print-plan');
+  area.innerHTML = html;
+  document.body.classList.add('imprimiendo-plan');
+  const fin = () => { document.body.classList.remove('imprimiendo-plan'); window.removeEventListener('afterprint', fin); };
+  window.addEventListener('afterprint', fin);
+  window.print(); setTimeout(fin, 1500);
+}
+function encabezadoImpresion(sub){
+  const rev = state.plan && state.plan.revision;
+  return `<header class="enc"><h1>Plan de Saneamiento · Mendy Fast Food</h1>
+    <p>San Andrés Islas · ${sub} · Revisión: ${rev?fechaLarga(rev.fecha):'__________'}</p></header>`;
+}
+function imprimirPlan(conHoja){
+  const m = document.getElementById('plan-mes').value || mesKey();
+  const firma = `<p class="firma">Responsable del plan: ______________________________ (Aljavis) &nbsp;&nbsp; Fecha: ______________</p>`;
+  if (!conHoja) { imprimirHtml(encabezadoImpresion('Documento del plan') + planContenidoHtml() + firma); return; }
+  showToast('⏳ Preparando la hoja del mes…');
+  cargarDatosMes(m).then(() => imprimirHtml(encabezadoImpresion('Plan y hoja de registros') + planContenidoHtml() + firma + hojaMesHtml(m)));
+}
+function imprimirHoja(){
+  const m = document.getElementById('plan-mes').value || mesKey();
+  showToast('⏳ Preparando la hoja del mes…');
+  cargarDatosMes(m).then(() => imprimirHtml(encabezadoImpresion('Hoja de registros') + hojaMesHtml(m)));
+}
+
+// ══════════════════════════════
+//  COPIA DE SEGURIDAD COMPLETA (todos los módulos bajo mendy/)
+// ══════════════════════════════
+const RESPALDO_REF = REG_REF.child('config/respaldo');
+state.respaldo = null;
+RESPALDO_REF.on('value', snap => { state.respaldo = snap.val(); renderRespaldoInfo(); if (state.currentUser) renderResumenTemps(); });
+
+function diasDesde(iso){ if(!iso) return null; const [y,m,d]=iso.split('-').map(Number); return Math.floor((new Date() - new Date(y,m-1,d))/86400000); }
+function renderRespaldoInfo(){
+  const el = document.getElementById('respaldo-info'); if (!el) return;
+  const r = state.respaldo;
+  if (!r) { el.innerHTML = '<span style="color:var(--yellow)">⚠️ Aún no se ha descargado ninguna copia.</span>'; return; }
+  const dias = diasDesde(r.fecha);
+  const color = dias > 30 ? 'var(--yellow)' : 'var(--green)';
+  el.innerHTML = `<span style="color:${color}">Última copia: ${fechaCorta(r.fecha)}/${r.fecha.slice(0,4)} por ${esc(r.user)} (hace ${dias} día${dias===1?'':'s'})${dias>30?' · ya toca la de este mes':''}</span>`;
+}
+function descargarCopiaCompleta(){
+  const btn = document.getElementById('btn-respaldo');
+  btn.disabled = true; btn.textContent = '⏳ Descargando…';
+  db.ref('mendy').once('value').then(snap => {
+    const data = snap.val() || {};
+    const hoy = isoDate();
+    const archivo = { generado: new Date().toISOString(), por: state.currentUser.name, mendy: data };
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(archivo,null,1)],{type:'application/json'}));
+    a.download = `${hoy} copia mendy.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    RESPALDO_REF.set({ fecha: hoy, user: state.currentUser.name, modulos: Object.keys(data).length });
+    showToast(`✅ Copia descargada (${Object.keys(data).length} secciones). Súbela a tu Drive.`);
+  }).catch(() => showToast('❌ No se pudo descargar. Revisa la conexión.','error'))
+    .finally(() => { btn.disabled = false; btn.textContent = '⬇ Descargar copia completa'; });
+}
+// ══════════════════════════════
+//  INIT
+// ══════════════════════════════
+loadState();
+initTemperaturas();
+initAguaPlagas();
+initEvidencia();
+renderUserGrid();
+</script>
+</body>
+</html>
